@@ -1,0 +1,30 @@
+﻿@model VisionDB.Models.AppointmentType
+
+@{
+    ViewBag.Title = "Edit appointment type " + Model.Name;
+}
+
+<h2>Edit appointment type @Model.Name</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.AntiForgeryToken()
+        <br />
+        @Html.LabelFor(model => model.Name) &nbsp;
+        @Html.TextBoxFor(model => model.Name, new { @class = "k-textbox large-field" })
+        @Html.ValidationMessageFor(model => model.Name)
+        <br />
+        <br />
+        @Html.LabelFor(model => model.DefaultAppointmentLength) &nbsp;
+        @Html.TextBoxFor(model => model.DefaultAppointmentLength, new { @class = "k-textbox small" }) &nbsp; minutes
+        @Html.ValidationMessageFor(model => model.DefaultAppointmentLength)
+        <br />
+        <br />
+        @Html.LabelFor(model => model.AppointmentCategoryEnum) &nbsp; 
+        @Html.Kendo().DropDownListFor(model => model.AppointmentCategoryEnum).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.AppointmentCategory.None)).HtmlAttributes(new { @class = "kendo-dropdown-large" }).Value(Model.AppointmentCategoryEnum.ToString())
+        <br />
+        <br />
+    </div>
+    <input type="submit" value="Save" class="k-button" />
+}

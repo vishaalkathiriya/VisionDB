@@ -1,0 +1,50 @@
+﻿@using VisionDB.Helper
+@{
+    ViewBag.Title = "Launcher";
+}
+
+<h2>VisionDB</h2>
+<table>
+    <tr>
+        <td width="200px" height="200px">
+            <a href="@Url.Action("Dashboard", "Home")"><img src="~/Content/Images/speed-128.png"/></a>
+            <br /> <br /> @Html.ActionLink("Dashboard", "Dashboard", "Home")
+        </td>
+        <td width="200px">
+            <a href="@Url.Action("Search", "Customers")"><img src="~/Content/Images/group-128.png" /></a>
+            <br /> <br /> @Html.ActionLink("Patient Search", "Search", "Customers")
+        </td>
+        <td width="200px">
+            <a href="@Url.Action("Calendar", "Appointments")"><img src="~/Content/Images/calendar-128.png" /></a>
+            <br /> <br /> @Html.ActionLink("Calendar", "Calendar", "Appointments")
+        </td>
+    </tr>
+    <tr>
+        <td height="200px">
+            <a href="@Url.Action("Recall", "Recalls")"><img src="~/Content/Images/appointment_reminders-128.png" /></a>
+            <br /> <br /> @Html.ActionLink("Recalls", "Recall", "Recalls")
+        </td>
+        <td>
+            <a href="@Url.Action("Invoices", "Invoices")"><img src="~/Content/Images/shopping_bag-128.png" /></a>
+            <br /> <br /> @Html.ActionLink("Sales", "Invoices", "Invoices")
+        </td>
+        <td>
+            <a href="@Url.Action("Search", "Inventory")"><img src="~/Content/Images/sun_glasses-128.png" /></a>
+            <br /> <br /> @Html.ActionLink("Products", "Search", "Inventory")
+        </td>
+    </tr>
+    <tr>
+        <td height="200px">
+            <a href="@Url.Action("Practice", "Reports")"><img src="~/Content/Images/coins-128.png" /></a>
+            <br /> <br /> @Html.ActionLink("Reports", "Practice", "Reports")
+        </td>
+        <td>
+            <a href="@Url.Action("Index", "Setup")"><img src="~/Content/Images/settings-128.png" /></a>
+            <br /> <br /> @Html.ActionLink("Setup", "Index", "Setup")
+        </td>
+        <td>
+            <a href="@Url.Action("Support", "Home")"><img src="~/Content/Images/headset-128.png" /></a>
+            <br /> <br /> @Html.ActionLink("Support", "Support", "Home")
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,209 @@
+﻿@model VisionDB.Models.Practice
+@{
+    ViewBag.Title = @Model.Name;
+}
+
+<h2>@Model.Name</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.CreatedByUser)
+    <fieldset>
+        <table>
+            <tr>
+                <td width="230px">Practice name</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Name, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td>
+                    @Html.TextAreaFor(model => model.Address, 7, 1, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td>Postcode</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Postcode, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Postcode)
+                </td>
+            </tr>
+            <tr>
+                <td>Tel</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Tel, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Tel)
+                </td>
+            </tr>
+            <tr>
+                <td>Fax</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Fax, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Fax)
+                </td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Email, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Email)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.SchedulerMajorTick)</td>
+                <td>
+                    @Html.TextBoxFor(model => model.SchedulerMajorTick, new { @class = "k-textbox large" }) &nbsp; minutes
+                    @Html.ValidationMessageFor(model => model.SchedulerMajorTick)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.SchedulerMinorTickCount)</td>
+                <td>
+                    @Html.TextBoxFor(model => model.SchedulerMinorTickCount, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.SchedulerMinorTickCount)
+                </td>
+            </tr>
+            <tr>
+                <td>Work day start time</td>
+                <td>
+                    @Html.Kendo().TimePickerFor(model => model.WorkDayStart)
+                    @Html.ValidationMessageFor(model => model.WorkDayStart)
+                </td>
+            </tr>
+            <tr>
+                <td>Work day end time</td>
+                <td>
+                    @Html.Kendo().TimePickerFor(model => model.WorkDayEnd)
+                    @Html.ValidationMessageFor(model => model.WorkDayEnd)
+                </td>
+            </tr>
+            <tr>
+                <td>Default optician</td>
+                <td>
+                    <div class="selected-optician">
+                        @Html.Kendo().DropDownList().Name("SelectedOptician").BindTo(ViewBag.OpticiansViewModels).DataTextField("UserToString").DataValueField("Id").Value(Model.DefaultOptician != null ? Model.DefaultOptician.Id : null)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>SMS Sender</td>
+                <td>
+                    @Html.TextBoxFor(model => model.SMSSenderName, new { @class = "k-textbox large" }) &nbsp; This is the sender name displayed on your text messages. Note: this must be 11 characters or less.
+                    @Html.ValidationMessageFor(model => model.SMSSenderName)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ContractorName)</td>
+                <td>
+                    @Html.TextBoxFor(model => model.ContractorName, new { @class = "k-textbox large" }) &nbsp; This is the name printed on your GOS forms
+                    @Html.ValidationMessageFor(model => model.ContractorName)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ContractorNumber)</td>
+                <td>
+                    @Html.TextBoxFor(model => model.ContractorNumber, new { @class = "k-textbox large" }) &nbsp; This is the number printed on your GOS forms
+                    @Html.ValidationMessageFor(model => model.ContractorNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ShowDOBOnPatientSearch)</td>
+                <td>
+                    @Html.CheckBoxFor(model => model.ShowDOBOnPatientSearch)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.TelAreaPrefix)</td>
+                <td>
+                    @Html.TextBoxFor(model => model.TelAreaPrefix, new { @class = "k-textbox large" }) &nbsp; This is used to dial telephone numbers where the number has the area code removed
+                    @Html.ValidationMessageFor(model => model.TelAreaPrefix)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.EyeExamScreenDesign)</td>
+                <td>
+                    @(Html.Kendo().DropDownListFor(model => model.EyeExamScreenDesign)
+                    .DataTextField("Text")
+                    .DataValueField("Value")
+                    .BindTo(new List<SelectListItem>() {
+                        //new SelectListItem() {
+                        //    Text = "Original",
+                        //    Value = "1"
+                        //},
+                        //new SelectListItem() {
+                        //    Text = "Consultation",
+                        //    Value = "2"
+                        //},
+                        new SelectListItem() {
+                            Text = "Jersey",
+                            Value = "3"
+                        }
+                    }).HtmlAttributes(new { @class = "kendo-dropdown-large" })
+                    )
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.DefaultEyeExamTimeToPatientsAppointment)</td>
+                <td>
+                    @Html.CheckBoxFor(model => model.DefaultEyeExamTimeToPatientsAppointment) &nbsp; For example, if a patient has an appointment today at 10:00, choosing this option will automatically choose 10:00 as the time of their eye exam or contact lens exam.
+                </td>
+            </tr>
+            <tr>
+                <td>Primary Care Trust</td>
+                <td>
+                    @Html.TextBoxFor(model => model.PrimaryCareTrustGOS, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.PrimaryCareTrustGOS)
+                </td>   
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ShowGOSForms)</td>
+                <td>
+                    @Html.CheckBoxFor(model => model.ShowGOSForms)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ShowDomiciliaryFields)</td>
+                <td>
+                    @Html.CheckBoxFor(model => model.ShowDomiciliaryFields)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ShowCallButtons)</td>
+                <td>
+                    @Html.CheckBoxFor(model => model.ShowCallButtons)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.ShowPracticeNotesOnDashboard)</td>
+                <td>
+                    @Html.CheckBoxFor(model => model.ShowPracticeNotesOnDashboard)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.EditPatientFromCalendar)</td>
+                <td>
+                    @Html.CheckBoxFor(model => model.EditPatientFromCalendar) &nbsp; When ticked, clicking on the patient record button in the calendar will take you to the patient record in edit mode.
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.RecallDateCutOff)</td>
+                <td>
+                    @(Html.Kendo().DatePickerFor(model => model.RecallDateCutOff)
+                        .Value(Model.RecallDateCutOff)
+                    )
+                    @Html.ValidationMessageFor(model => model.RecallDateCutOff)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    <p>
+        <input class="k-button" type="submit" value="Save" /> &nbsp;
+        <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Index", "Setup")'">Back</button>
+    </p>
+}

@@ -1,0 +1,34 @@
+﻿@model IEnumerable<VisionDB.Models.AppointmentTypeViewModel>
+@{
+    ViewBag.Title = "Appointment types";
+}
+
+<h2>Appointment types</h2>
+
+<br />
+<button class="k-button" type="button" value="Add" onclick="location.href='@Url.Action("Add", "AppointmentTypes")'">Add appointment type</button>
+<br />
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.AppointmentTypeViewModel>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_Read", "AppointmentTypes"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.Name);
+          columns.Bound(j => j.AppointmentCategoryToString).Title("Category");
+          columns.Bound(j => j.DefaultAppointmentLength);
+          columns.Template(x => { }).ClientTemplate(
+              "<a class='k-button' href='" +
+              Url.Action("Edit", "AppointmentTypes") +
+              "/#= Id #'" +
+              ">View details</a>"
+              ).Width(130);
+      })
+        .Sortable()
+)

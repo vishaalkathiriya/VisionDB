@@ -1,0 +1,71 @@
+﻿@model VisionDB.Models.IOPViewModel
+<div>
+    &nbsp; &nbsp; Date and time recorded &nbsp; <input name="Added" type="text" required data-type="date" data-role="datetimepicker" data-bind="value: Added,invisible: isAllDay" data-format="dd/MM/yyyy HH:mm" />
+    <input name="Added" type="text" required data-type="date" data-role="datepicker" data-bind="value: Added,visible: isAllDay" />
+</div>
+<div>
+    &nbsp; &nbsp; 1 &nbsp; @Html.Kendo().NumericTextBoxFor(ip => ip.Value1).Min(0.0f).Step(1.0f).HtmlAttributes(new { @class = "kendo-numeric-small", @onchange = "IOPChanged();" })
+</div>
+<div>
+    &nbsp; &nbsp; 2 &nbsp; @Html.Kendo().NumericTextBoxFor(ip => ip.Value2).Min(0.0f).Step(1.0f).HtmlAttributes(new { @class = "kendo-numeric-small", @onchange = "IOPChanged();" })
+</div>
+<div>
+    &nbsp; &nbsp; 3 &nbsp; @Html.Kendo().NumericTextBoxFor(ip => ip.Value3).Min(0.0f).Step(1.0f).HtmlAttributes(new { @class = "kendo-numeric-small", @onchange = "IOPChanged();" })
+</div>
+<div>
+    &nbsp; &nbsp; 4 &nbsp; @Html.Kendo().NumericTextBoxFor(ip => ip.Value4).Min(0.0f).Step(1.0f).HtmlAttributes(new { @class = "kendo-numeric-small", @onchange = "IOPChanged();" })
+</div>
+<div>
+    &nbsp; &nbsp; 5 &nbsp; @Html.Kendo().NumericTextBoxFor(ip => ip.Value5).Min(0.0f).Step(1.0f).HtmlAttributes(new { @class = "kendo-numeric-small", @onchange = "IOPChanged();" })
+</div>
+<div>
+    &nbsp; &nbsp; Average &nbsp; @Html.Kendo().NumericTextBoxFor(ip => ip.Average).Min(0.0f).Step(1.0f).HtmlAttributes(new { @class = "kendo-numeric-small" })
+</div>
+
+<script>
+    function IOPChanged() {
+        var NoOfReadings = 0;
+        var Value1 = parseFloat(document.getElementById("Value1").value);
+        if (Value1 > 0) {
+            NoOfReadings += 1;
+        }
+        else {
+            Value1 = 0;
+        }
+
+        var Value2 = parseFloat(document.getElementById("Value2").value);
+        if (Value2 > 0) {
+            NoOfReadings += 1;
+        }
+        else {
+            Value2 = 0;
+        }
+
+        var Value3 = parseFloat(document.getElementById("Value3").value);
+        if (Value3 > 0) {
+            NoOfReadings += 1;
+        }
+        else {
+            Value3 = 0;
+        }
+
+        var Value4 = parseFloat(document.getElementById("Value4").value);
+        if (Value4 > 0) {
+            NoOfReadings += 1;
+        }
+        else {
+            Value4 = 0;
+        }
+
+        var Value5 = parseFloat(document.getElementById("Value5").value);
+        if (Value5 > 0) {
+            NoOfReadings += 1;
+        }
+        else {
+            Value5 = 0;
+        }
+        var Average = $("#Average").data("kendoNumericTextBox");
+        Average.value(Math.round((Value1 + Value2 + Value3 + Value4 + Value5) / NoOfReadings * 100) / 100);
+        Average.trigger('change');
+    }
+</script>

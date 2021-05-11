@@ -1,0 +1,494 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C28F8721-213F-4BBD-9334-85B1D56FF52C}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VisionDB</RootNamespace>
+    <AssemblyName>VisionDB</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Kendo.Mvc, Version=2013.2.716.340, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\KENDOUIMVC\2014.1.318.545\Kendo.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.0.0\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.0.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.2.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MvcReportViewer">
+      <HintPath>..\packages\MvcReportViewer.0.4.0\lib\net40\MvcReportViewer.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.1.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DynamicData">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.ApplicationServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.1.1\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.1.1\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Abstractions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Routing">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Services">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.EnterpriseServices">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Reporting">
+      <HintPath>..\lib\TelerikReporting\Telerik.Reporting.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Reporting.Services.WebApi">
+      <HintPath>..\lib\TelerikReporting\Telerik.Reporting.Services.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.ReportViewer.Mvc">
+      <HintPath>..\lib\TelerikReporting\Telerik.ReportViewer.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Web.Mvc">
+      <HintPath>..\packages\TelerikMvcExtensions.2013.2.611\lib\net40\Telerik.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AppointmentsController.cs" />
+    <Compile Include="Controllers\AppointmentTypesController.cs" />
+    <Compile Include="Controllers\AttachmentsController.cs" />
+    <Compile Include="Controllers\CompaniesController.cs" />
+    <Compile Include="Controllers\CustomersController.cs" />
+    <Compile Include="Controllers\ExpensesController.cs" />
+    <Compile Include="Controllers\EyeExamsController.cs" />
+    <Compile Include="Controllers\FinanceController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InventoryController.cs" />
+    <Compile Include="Controllers\InvoicesController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\KnowledgeBaseController.cs" />
+    <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Controllers\NotesController.cs" />
+    <Compile Include="Controllers\PracticesController.cs" />
+    <Compile Include="Controllers\RecallsController.cs" />
+    <Compile Include="Controllers\RecallTemplatesController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\SetupController.cs" />
+    <Compile Include="Controllers\TagsController.cs" />
+    <Compile Include="Controllers\DocumentTemplatesController.cs" />
+    <Compile Include="Controllers\VisionDBController.cs" />
+    <Compile Include="Helper\DateHelper.cs" />
+    <Compile Include="Helper\EmailHelper.cs" />
+    <Compile Include="Helper\ErrorHelper.cs" />
+    <Compile Include="Helper\EnumHelper.cs" />
+    <Compile Include="Helper\FastSMS.cs" />
+    <Compile Include="Helper\FeedResult.cs" />
+    <Compile Include="Helper\HtmlExtensions.cs" />
+    <Compile Include="Helper\NumericHelper.cs" />
+    <Compile Include="Helper\PostcodeAnywhere.cs" />
+    <Compile Include="Helper\TelephoneHelper.cs" />
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AddressLookupSummary.cs" />
+    <Compile Include="Models\Appointment.cs" />
+    <Compile Include="Models\AppointmentType.cs" />
+    <Compile Include="Models\AppointmentTypeViewModel.cs" />
+    <Compile Include="Models\Attachment.cs" />
+    <Compile Include="Models\AuditLogEntry.cs" />
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\Constants.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\CustomersDataContext.cs" />
+    <Compile Include="Models\CustomerTag.cs" />
+    <Compile Include="Models\DocumentTemplate.cs" />
+    <Compile Include="Models\DocumentTemplateViewModel.cs" />
+    <Compile Include="Models\Enums.cs" />
+    <Compile Include="Models\Expense.cs" />
+    <Compile Include="Models\ExpenseViewModel.cs" />
+    <Compile Include="Models\ExtensionHelper.cs" />
+    <Compile Include="Models\EyeExam.cs" />
+    <Compile Include="Models\EyeExamViewModel.cs" />
+    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Inventory.cs" />
+    <Compile Include="Models\Invoice.cs" />
+    <Compile Include="Models\InvoiceDetail.cs" />
+    <Compile Include="Models\InvoiceDetailViewModel.cs" />
+    <Compile Include="Models\InvoiceViewModel.cs" />
+    <Compile Include="Models\IOP.cs" />
+    <Compile Include="Models\IOPViewModel.cs" />
+    <Compile Include="Models\JournalViewModel.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MessageTemplate.cs" />
+    <Compile Include="Models\NHSVoucherCode.cs" />
+    <Compile Include="Models\Note.cs" />
+    <Compile Include="Models\NoteViewModel.cs" />
+    <Compile Include="Models\PatientViewModel.cs" />
+    <Compile Include="Models\PostcodeLookup.cs" />
+    <Compile Include="Models\Practice.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductViewModel.cs" />
+    <Compile Include="Models\RecallDocument.cs" />
+    <Compile Include="Models\RecallDocumentViewModel.cs" />
+    <Compile Include="Models\RecallTemplate.cs" />
+    <Compile Include="Models\RecallTemplateViewModel.cs" />
+    <Compile Include="Models\RecallViewModel.cs" />
+    <Compile Include="Models\Report.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\Schedule.cs" />
+    <Compile Include="Models\SessionInvoiceRepository.cs" />
+    <Compile Include="Models\Setting.cs" />
+    <Compile Include="Models\SMSTransaction.cs" />
+    <Compile Include="Models\Supplier.cs" />
+    <Compile Include="Models\Tag.cs" />
+    <Compile Include="Models\TestFrequency.cs" />
+    <Compile Include="Models\Ticket.cs" />
+    <Compile Include="Models\VATRate.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SQL\Admin\copy reports between practices.sql" />
+    <Content Include="SQL\Admin\create admin user for practice.sql" />
+    <Content Include="SQL\Admin\create company and practice.sql" />
+    <Content Include="SQL\Admin\create practice for company.sql" />
+    <Content Include="SQL\Admin\create user.sql" />
+    <Content Include="SQL\Admin\Export patient data for practice.sql" />
+    <Content Include="SQL\Admin\reset password.sql" />
+    <Content Include="SQL\DatabaseCreation\000 VisionDB schema.sql" />
+    <Content Include="SQL\DatabaseCreation\001 AspNetUsers.sql" />
+    <Content Include="SQL\DatabaseCreation\002 AspNetRoles.sql" />
+    <Content Include="SQL\DatabaseCreation\003 AspNetUserRoles.sql" />
+    <Content Include="SQL\DatabaseCreation\004 Bases.sql" />
+    <Content Include="SQL\DatabaseCreation\005 FrequencyUnit.sql" />
+    <Content Include="SQL\DatabaseCreation\006 ProductTypes.sql" />
+    <Content Include="SQL\DatabaseCreation\007 ReconciliationStatuses.sql" />
+    <Content Include="SQL\DatabaseCreation\008 TagType.sql" />
+    <Content Include="SQL\DatabaseCreation\009 Companies.sql" />
+    <Content Include="SQL\DatabaseCreation\010 Practices.sql" />
+    <Content Include="SQL\DatabaseCreation\011 Inventory.Added.sql" />
+    <Content Include="SQL\DatabaseCreation\021 Add Customer.PatientNumberPrefix.sql" />
+    <Content Include="SQL\DatabaseCreation\022 Update sp_VDB_InvoiceDetails.sql" />
+    <Content Include="SQL\DatabaseCreation\023 Update voucher values April 2016.sql" />
+    <Content Include="SQL\DatabaseCreation\024 Add Enums table.sql" />
+    <Content Include="SQL\DatabaseCreation\025 Update sp_VDB_EyeExamData.sql" />
+    <Content Include="SQL\DatabaseCreation\026 Add sp_VDB_IOPData.sql" />
+    <Content Include="SSRS reports\AllPatients.rdl" />
+    <Content Include="SSRS reports\AuditLog.rdl" />
+    <Content Include="SSRS reports\CalibrationPage.rdl" />
+    <Content Include="SSRS reports\CompanyAndPracticeList.rdl" />
+    <Content Include="SSRS reports\DispensingDetails_Sub.rdl" />
+    <Content Include="SSRS reports\DispensingRecord.rdl" />
+    <Content Include="SSRS reports\DispensingRecords.rdl" />
+    <Content Include="SSRS reports\Expenses.rdl" />
+    <Content Include="SSRS reports\ExpensesSummary.rdl" />
+    <Content Include="SSRS reports\EyeExamDetail.rdl" />
+    <Content Include="SSRS reports\EyeExamPrescription.rdl" />
+    <Content Include="SSRS reports\EyeExamPrescription_Sub.rdl" />
+    <Content Include="SSRS reports\EyeExams.rdl" />
+    <Content Include="SSRS reports\FinancialSummary.rdl" />
+    <Content Include="SSRS reports\GOS18.rdl" />
+    <Content Include="SSRS reports\GOS1Back.rdl" />
+    <Content Include="SSRS reports\GOS1Front.rdl" />
+    <Content Include="SSRS reports\GOS2Front.rdl" />
+    <Content Include="SSRS reports\GOS3Back.rdl" />
+    <Content Include="SSRS reports\GOS3Front.rdl" />
+    <Content Include="SSRS reports\GOS4Back.rdl" />
+    <Content Include="SSRS reports\GOS4Front.rdl" />
+    <Content Include="SSRS reports\GOS5Back.rdl" />
+    <Content Include="SSRS reports\GOS5Front.rdl" />
+    <Content Include="SSRS reports\GOS6Back.rdl" />
+    <Content Include="SSRS reports\GOS6Front.rdl" />
+    <Content Include="SSRS reports\Invoice.rdl" />
+    <Content Include="SSRS reports\InvoiceDetails.rdl" />
+    <Content Include="SSRS reports\LabOrders.rdl" />
+    <Content Include="SSRS reports\NHSVouchers.rdl" />
+    <Content Include="SSRS reports\PartialVATOrdersReport.rdl" />
+    <Content Include="SSRS reports\PatientGOS1Back.rdl" />
+    <Content Include="SSRS reports\PatientGOS1Front.rdl" />
+    <Content Include="SSRS reports\PatientGOS2Front.rdl" />
+    <Content Include="SSRS reports\PatientGOS3Back.rdl" />
+    <Content Include="SSRS reports\PatientGOS3Front.rdl" />
+    <Content Include="SSRS reports\PatientGOS4Back.rdl" />
+    <Content Include="SSRS reports\PatientGOS4Front.rdl" />
+    <Content Include="SSRS reports\PatientGOS5Back.rdl" />
+    <Content Include="SSRS reports\PatientGOS5Front.rdl" />
+    <Content Include="SSRS reports\PatientGOS6Back.rdl" />
+    <Content Include="SSRS reports\PatientGOS6Front.rdl" />
+    <Content Include="SSRS reports\PatientGOS6FrontDateRange.rdl" />
+    <Content Include="SSRS reports\PaymentsReport.rdl" />
+    <Content Include="SSRS reports\RecallLetter.rdl" />
+    <Content Include="SSRS reports\RecallLetters.rdl" />
+    <Content Include="SSRS reports\SalesReport.rdl" />
+    <Content Include="SSRS reports\SalesSummary.rdl" />
+    <Content Include="SSRS reports\Summary.rdl" />
+    <Content Include="SSRS reports\SummaryReport.rdl" />
+    <Content Include="SSRS reports\TransactionExport.rdl" />
+    <Content Include="SSRS reports\VATOrdersReport.rdl" />
+    <Content Include="SSRS reports\VATReport.rdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SSRS reports\Practice\9D24 - D58E - Johns Opticians\GOS3Front.rdl" />
+    <Content Include="SSRS reports\Practice\9D24 - D58E - Johns Opticians\PatientGOS1Back.rdl" />
+    <Content Include="SSRS reports\Practice\9D24 - D58E - Johns Opticians\PatientGOS1Front.rdl" />
+    <Content Include="SSRS reports\Practice\9D24 - D58E - Johns Opticians\PatientGOS2Front.rdl" />
+    <Content Include="SSRS reports\Practice\9D24 - D58E - Johns Opticians\PatientGOS3Back.rdl" />
+    <Content Include="SSRS reports\Practice\9D24 - D58E - Johns Opticians\PatientGOS3Front.rdl" />
+    <Content Include="SSRS reports\Practice\9D24 - D58E - Johns Opticians\RecallLetter.rdl" />
+    <Content Include="SSRS reports\Practice\9D24 - D58E - Johns Opticians\RecallLetters.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\GOS1Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\GOS2Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\GOS3Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\PatientGOS1Back.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\PatientGOS1Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\PatientGOS2Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\PatientGOS3Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\RecallLetters.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\RepairsAndReplacements.rdl" />
+    <Content Include="SSRS reports\Practice\archive\37B9 - Ophthalmic Care\VATReport.rdl" />
+    <Content Include="SSRS reports\Practice\archive\5B40 - Eye Designs\Invoice.rdl" />
+    <Content Include="SSRS reports\Practice\archive\6978 - Home Health Services\Appointments.rdl" />
+    <Content Include="SSRS reports\Practice\archive\6978 - Home Health Services\EyeExamsDone.rdl" />
+    <Content Include="SSRS reports\Practice\archive\6978 - Home Health Services\LabOrders.rdl" />
+    <Content Include="SSRS reports\Practice\archive\6978 - Home Health Services\PatientGOS2Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\6978 - Home Health Services\PatientGOS3Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\6978 - Home Health Services\PatientGOS6Back.rdl" />
+    <Content Include="SSRS reports\Practice\archive\6978 - Home Health Services\PatientGOS6Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\D872 - Eyefinity\PatientGOS1Front.rdl" />
+    <Content Include="SSRS reports\Practice\archive\D872 - Eyefinity\RecallExport.rdl" />
+    <Content Include="SSRS reports\Practice\archive\E51F - The Eye Site\DispensingRecord.rdl" />
+    <Content Include="SSRS reports\Practice\archive\E51F - The Eye Site\EyeExamPrescription.rdl" />
+    <Content Include="SSRS reports\Practice\archive\E51F - The Eye Site\Invoice.rdl" />
+    <Content Include="SSRS reports\Practice\E007 - Whipton Eyecare\PatientGOS1Front.rdl" />
+    <Content Include="SSRS reports\Practice\E007 - Whipton Eyecare\PatientGOS2Front.rdl" />
+    <Content Include="SSRS reports\Practice\E007 - Whipton Eyecare\PatientGOS3Front.rdl" />
+    <Content Include="SSRS reports\Practice\E007 - Whipton Eyecare\PatientGOS4Front.rdl" />
+    <Content Include="SSRS reports\Practice\E55B - Birmingham Opticians\Invoice.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\Appointments.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\GOS2Front.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\GOS3Back.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\GOS3Front.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\GOS4Back.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\GOS4Front.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\PatientGOS1Back.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\PatientGOS1Front.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\PatientGOS5Back.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\PatientGOS5Front.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\PatientGOS6Back.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\PatientGOS6Front.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\ProductList.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\SalesReport.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\SalesReportByDate.rdl" />
+    <Content Include="SSRS reports\Practice\F55D - Alpha Eyecare\SalesReportNew.rdl" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>1183</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:1183/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

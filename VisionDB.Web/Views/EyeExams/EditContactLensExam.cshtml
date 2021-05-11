@@ -1,0 +1,615 @@
+﻿@model VisionDB.Models.EyeExam
+
+@{
+    ViewBag.Title = "Contact Lens Exam";
+    VisionDB.Models.EyeExam eyeExam = Model;
+}
+
+<h2>Contact Lens Exam for @Model.customer.ToString()</h2>
+<br />
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        Appointment Date @(Html.Kendo().DateTimePicker()
+        .Name("TestDateAndTime")
+        .Value(DateTime.Now)
+        )
+        @Html.ValidationMessageFor(model => model.TestDateAndTime)
+        <br />
+        <br />
+        <div class="selected-optician">
+            Optician @Html.Kendo().DropDownList().Name("SelectedOptician").BindTo(ViewBag.OpticiansViewModels).DataTextField("UserToString").DataValueField("Id").Value(Model.Optician.Id)
+        </div>
+        <br />
+        @(Html.Kendo().PanelBar()
+          .Name("eyeExams")
+          .ExpandMode(PanelBarExpandMode.Multiple)
+          .Items(panelbar =>
+          {
+              panelbar.Add().Text("Contact Lens Information")
+                  .Expanded(true)
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <th width="50px" height="25px"></th>
+                            <th width="100px">Sph</th>
+                            <th width="100px">Cyl</th>
+                            <th width="100px">Axis</th>
+                            <th width="100px">VA</th>
+                            <th width="110px">Over Reaction</th>
+                            <th width="100px">Best VA</th>
+                            <th width="270px">Type / Name</th>
+                            <th width="100px">BC (BOZR)</th>
+                            <th width="100px">TD</th>
+                        </tr>
+                        <tr>
+                            <th height="50px">Right</th>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.RSphericalDist).Step(0.25f).HtmlAttributes(new { @class = "kendo-numeric-small" }).Events(e => e.Change("ChangedSignedNumeric").Spin("ChangedSignedNumeric"))@*rsphd*@</td>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.RCylDist).Step(0.25f).HtmlAttributes(new { @class = "kendo-numeric-small" }).Events(e => e.Change("ChangedSignedNumeric").Spin("ChangedSignedNumeric"))@*rcyld*@</td>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.RAxisDist).Min(0).Max(180).Step(1f).HtmlAttributes(new { @class = "kendo-numeric-small" })@*raxisd*@</td>
+                            <td>@Html.TextBoxFor(model => model.SubRVA, new { @class = "k-textbox small" })</td>
+                            <td>
+                                @Html.TextBoxFor(model => model.CLOverReactionR, new { @class = "k-textbox small" })
+                                @Html.ValidationMessageFor(model => model.CLOverReactionR)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.CLBestVaR, new { @class = "k-textbox small" })
+                                @Html.ValidationMessageFor(model => model.CLBestVaR)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.LensNameRight, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.LensNameRight)
+                            </td>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.CLBozrRight).Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" })</td>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.CLTdRight).Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" })</td>
+                        </tr>
+                        <tr>
+                            <td colspan="7"><input type="button" value="Copy to left eye" class="k-button" id="copyRightPrescriptionToLeft" /></td>
+                        </tr>
+                        <tr>
+                            <th height="50px">Left</th>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.LSphericalDist).Step(0.25f).HtmlAttributes(new { @class = "kendo-numeric-small" }).Events(e => e.Change("ChangedSignedNumeric").Spin("ChangedSignedNumeric"))@*lsphd*@</td>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.LCylDist).Step(0.25f).HtmlAttributes(new { @class = "kendo-numeric-small" }).Events(e => e.Change("ChangedSignedNumeric").Spin("ChangedSignedNumeric"))@*lcyld*@</td>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.LAxisDist).Min(0).Max(180).Step(1f).HtmlAttributes(new { @class = "kendo-numeric-small" })@*laxisd*@</td>
+                            <td>@Html.TextBoxFor(model => model.SubLVA, new { @class = "k-textbox small" })</td>
+                            <td>
+                                @Html.TextBoxFor(model => model.CLOverReactionL, new { @class = "k-textbox small" })
+                                @Html.ValidationMessageFor(model => model.CLOverReactionL)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.CLBestVaL, new { @class = "k-textbox small" })
+                                @Html.ValidationMessageFor(model => model.CLBestVaL)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.LensNameLeft, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.LensNameLeft)
+                            </td>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.CLBozrLeft).Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" })</td>
+                            <td>@Html.Kendo().NumericTextBoxFor(model => model.CLTdLeft).Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" })</td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+              panelbar.Add().Text("Contact Lens Trial")
+
+.Content(@<text>
+
+
+                    <br />
+                    <table>
+                        <tr>
+                            <th width="270px" height="25px">Right</th>
+                            <th width="220px"></th>
+                            <th>Left</th>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @(Html.Kendo().DropDownListFor(model => model.LensTypeRight)
+                                .BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.LensType.Not_Assigned))
+                                .Value(Model.LensTypeRight.ToString())
+                                )
+                            </td>
+                            <th>Lens Type</th>
+                            <td>
+                                @(Html.Kendo().DropDownListFor(model => model.LensTypeLeft)
+                                .BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.LensType.Not_Assigned))
+                                .Value(Model.LensTypeLeft.ToString())
+                                )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.SpecificationR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.SpecificationR)
+                            </td>
+                            <th>Specification</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.SpecificationL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.SpecificationL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.FittingCentrationR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.FittingCentrationR)
+                            </td>
+                            <th>Fitting / Centration</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.FittingCentrationL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.FittingCentrationL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.MovementR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.MovementR)
+                            </td>
+                            <th>Movement</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.MovementL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.MovementL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><input type="button" value="Copy to left eye" class="k-button" id="copyRightTrialToLeft" /></td>
+                        </tr>
+                    </table>
+                    <br />
+</text>);
+              panelbar.Add().Text("Slit Lamp / External Examination")
+
+.Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <th width="270px" height="25px">Right</th>
+                            <th width="220px"></th>
+                            <th>Left</th>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.PupilDiameterR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.PupilDiameterR)
+                            </td>
+                            <th>Pupil Diameter Vertical Aperture</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.PupilDiameterL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.PupilDiameterL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.UpperLidR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.UpperLidR)
+                            </td>
+                            <th>Upper Lid</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.UpperLidL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.UpperLidL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.CorneaR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.CorneaR)
+                            </td>
+                            <th>Cornea</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.CorneaL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.CorneaL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.LowerLidR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.LowerLidR)
+                            </td>
+                            <th>Lower Lid</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.LowerLidL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.LowerLidL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.MeibomianGlandsR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.MeibomianGlandsR)
+                            </td>
+                            <th>Meibomian Glands</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.MeibomianGlandsL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.MeibomianGlandsL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.LimbalAppearanceR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.LimbalAppearanceR)
+                            </td>
+                            <th>Limbal Appearance</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.LimbalAppearanceL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.LimbalAppearanceL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.CounjunctivalAppaeranceR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.CounjunctivalAppaeranceR)
+                            </td>
+                            <th>Counjunctival Appearance</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.CounjunctivalAppaeranceL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.CounjunctivalAppaeranceL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="55px">
+                                @Html.TextAreaFor(model => model.TearQualityR, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.TearQualityR)
+                            </td>
+                            <th>Tear Quality</th>
+                            <td>
+                                @Html.TextAreaFor(model => model.TearQualityL, 2, 1, new { @class = "k-textbox large" })
+                                @Html.ValidationMessageFor(model => model.TearQualityL)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><input type="button" value="Copy to left eye" class="k-button" id="copyRightSlitExternalToLeft" /></td>
+                        </tr>
+                    </table>
+                    <br />
+
+</text>);
+              panelbar.Add().Text("Lens Care and Handling")
+
+.Content(@<text>
+                    <br />
+                    @Html.LabelFor(model => model.CLFitPreviousWearingDetails)
+                    <br />
+                    @Html.TextAreaFor(model => model.CLFitPreviousWearingDetails, 4, 1, new { @class = "k-textbox extra-large" })
+                    @Html.ValidationMessageFor(model => model.CLFitPreviousWearingDetails)
+                    <br />
+                    <br />
+                    @Html.LabelFor(model => model.CLFitType)
+                    <br />
+                    @Html.TextAreaFor(model => model.CLFitType, 4, 1, new { @class = "k-textbox extra-large" })
+                    @Html.ValidationMessageFor(model => model.CLFitType)
+                    <br />
+                    <br />
+                    @Html.LabelFor(model => model.CLFitSolutionsUsed)
+                    <br />
+                    @Html.TextAreaFor(model => model.CLFitSolutionsUsed, 4, 1, new { @class = "k-textbox extra-large" })
+                    @Html.ValidationMessageFor(model => model.CLFitSolutionsUsed)
+                    <br />
+                    <br />
+                    @Html.LabelFor(model => model.CleaningRegime)
+                    <br />
+                    @Html.TextAreaFor(model => model.CleaningRegime, 4, 1, new { @class = "k-textbox extra-large" })
+                    @Html.ValidationMessageFor(model => model.CleaningRegime)
+                    <br />
+                    <br />
+                    @Html.LabelFor(model => model.CLFitWearingTime)
+                    <br />
+                    @Html.TextAreaFor(model => model.CLFitWearingTime, 2, 1, new { @class = "k-textbox extra-large" })
+                    @Html.ValidationMessageFor(model => model.CLFitWearingTime)
+                    <br />
+                    <br />
+                    @Html.LabelFor(model => model.CLFitCurrentPreviousProblems)
+                    <br />
+                    @Html.TextAreaFor(model => model.CLFitCurrentPreviousProblems, 4, 1, new { @class = "k-textbox extra-large" })
+                    @Html.ValidationMessageFor(model => model.CLFitCurrentPreviousProblems)
+                    <br />
+        </text>);
+              panelbar.Add().Text("Symptoms and History")
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <td width="160px" height="100px">
+                                @Html.LabelFor(model => model.MEDS)
+                            </td>
+                            <td width="260px">
+                                @Html.TextAreaFor(model => model.MEDS, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.MEDS)
+                            </td>
+                            <td width="160px">
+                                @Html.LabelFor(model => model.Allergies)
+                            </td>
+                            <td width="260px">
+                                @Html.TextAreaFor(model => model.Allergies, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Allergies)
+                            </td>
+                            <td width="160px"></td>
+                            <td width="260px"></td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.SymptomsAndHistory)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.SymptomsAndHistory, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.SymptomsAndHistory)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.RFV)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.RFV, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.RFV)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.GH)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.GH, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.GH)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.POH)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.POH, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.POH)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.FH)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.FH, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.FH)
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+          })
+        )
+        <br />
+        <table>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.PatientAdvice)
+                    <br />
+                    @Html.TextAreaFor(model => model.PatientAdvice, 7, 1, new { @class = "k-textbox extra-large" })
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ProductRecommendations)
+                    <br />
+                    @Html.TextAreaFor(model => model.ProductRecommendations, 7, 1, new { @class = "k-textbox extra-large" })
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.CheckBoxFor(model => model.ReferralSent) &nbsp; @Html.LabelFor(model => model.ReferralSent)
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Label("Contact Lens Exam Frequency") &nbsp;
+                    @Html.TextBox("ContactLensExamFrequencyValue", ((VisionDB.Models.Customer)ViewBag.Customer).ContactLensExamFrequencyValue, new { @class = "k-textbox small" })
+                    @(Html.Kendo().DropDownList()
+                    .Name("ContactLensExamFrequencyUnit")
+                    .Value(((VisionDB.Models.Customer)ViewBag.Customer).ContactLensExamFrequencyUnit.ToString())
+                    .BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.FrequencyUnit.Years))
+                    )
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    <p>
+        <input class="k-button" type="submit" value="Save" /> &nbsp;
+        <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+    </p>
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+
+<script>
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/Customers/Customer/@ViewBag.Customer.Id.ToString()');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/Customers/Customer/@ViewBag.Customer.Id.ToString()');
+        }
+    });
+
+    function ChangedSignedNumeric() {
+        var myId = '#' + this._form.context.id;
+        var numeric = $(myId).val();
+
+        if (numeric > 0) {
+            $(myId).kendoNumericTextBox({ format: "+##.##", decimals: 2 });
+        }
+        else {
+            $(myId).kendoNumericTextBox({ format: "##.##", decimals: 2 });
+        }
+    }
+
+    $(document).ready(function () {
+        $("#copyRightPrescriptionToLeft").click(function () {
+            var RSphericalDist = $("#RSphericalDist").data("kendoNumericTextBox");
+            var LSphericalDist = $("#LSphericalDist").data("kendoNumericTextBox");
+            if (RSphericalDist.value() != null) {
+                LSphericalDist.value(RSphericalDist.value());
+            }
+
+            var RCylDist = $("#RCylDist").data("kendoNumericTextBox");
+            var LCylDist = $("#LCylDist").data("kendoNumericTextBox");
+            if (RCylDist.value() != null) {
+                LCylDist.value(RCylDist.value());
+            }
+
+            var RAxisDist = $("#RAxisDist").data("kendoNumericTextBox");
+            var LAxisDist = $("#LAxisDist").data("kendoNumericTextBox");
+            if (RAxisDist.value() != null) {
+                LAxisDist.value(RAxisDist.value());
+            }
+
+            var SubRVA = document.getElementById("SubRVA")
+            var SubLVA = document.getElementById("SubLVA")
+            if (SubRVA.value != null) {
+                SubLVA.value = SubRVA.value;
+            }
+
+            var CLOverReactionR = document.getElementById("CLOverReactionR")
+            var CLOverReactionL = document.getElementById("CLOverReactionL")
+            if (CLOverReactionR.value != null) {
+                CLOverReactionL.value = CLOverReactionR.value;
+            }
+
+            var CLBestVaR = document.getElementById("CLBestVaR")
+            var CLBestVaL = document.getElementById("CLBestVaL")
+            if (CLBestVaR.value != null) {
+                CLBestVaL.value = CLBestVaR.value;
+            }
+
+            var LensNameRight = document.getElementById("LensNameRight")
+            var LensNameLeft = document.getElementById("LensNameLeft")
+            if (LensNameRight.value != null) {
+                LensNameLeft.value = LensNameRight.value;
+            }
+
+            var CLBozrRight = $("#CLBozrRight").data("kendoNumericTextBox");
+            var CLBozrLeft = $("#CLBozrLeft").data("kendoNumericTextBox");
+            if (CLBozrRight.value() != null) {
+                CLBozrLeft.value(CLBozrRight.value());
+            }
+
+            var CLTdRight = $("#CLTdRight").data("kendoNumericTextBox");
+            var CLTdLeft = $("#CLTdLeft").data("kendoNumericTextBox");
+            if (CLTdRight.value() != null) {
+                CLTdLeft.value(CLTdRight.value());
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $("#copyRightTrialToLeft").click(function () {
+
+            var LensTypeRight = $("#LensTypeRight").data("kendoDropDownList");
+            var LensTypeLeft = $("#LensTypeLeft").data("kendoDropDownList");
+            if (LensTypeRight.value() != null) {
+                LensTypeLeft.value(LensTypeRight.value());
+            }
+
+            var SpecificationR = document.getElementById("SpecificationR")
+            var SpecificationL = document.getElementById("SpecificationL")
+            if (SpecificationR.value != null) {
+                SpecificationL.value = SpecificationR.value;
+            }
+
+            var FittingCentrationR = document.getElementById("FittingCentrationR")
+            var FittingCentrationL = document.getElementById("FittingCentrationL")
+            if (FittingCentrationR.value != null) {
+                FittingCentrationL.value = FittingCentrationR.value;
+            }
+
+            var MovementR = document.getElementById("MovementR")
+            var MovementL = document.getElementById("MovementL")
+            if (MovementR.value != null) {
+                MovementL.value = MovementR.value;
+            }
+
+        });
+    });
+
+    $(document).ready(function () {
+        $("#copyRightSlitExternalToLeft").click(function () {
+
+            var PupilDiameterR = document.getElementById("PupilDiameterR")
+            var PupilDiameterL = document.getElementById("PupilDiameterL")
+            if (PupilDiameterR.value != null) {
+                PupilDiameterL.value = PupilDiameterR.value;
+            }
+
+            var UpperLidR = document.getElementById("UpperLidR")
+            var UpperLidL = document.getElementById("UpperLidL")
+            if (UpperLidR.value != null) {
+                UpperLidL.value = UpperLidR.value;
+            }
+
+            var CorneaR = document.getElementById("CorneaR")
+            var CorneaL = document.getElementById("CorneaL")
+            if (CorneaR.value != null) {
+                CorneaL.value = CorneaR.value;
+            }
+
+            var LowerLidR = document.getElementById("LowerLidR")
+            var LowerLidL = document.getElementById("LowerLidL")
+            if (LowerLidR.value != null) {
+                LowerLidL.value = LowerLidR.value;
+            }
+
+            var MeibomianGlandsR = document.getElementById("MeibomianGlandsR")
+            var MeibomianGlandsL = document.getElementById("MeibomianGlandsL")
+            if (MeibomianGlandsR.value != null) {
+                MeibomianGlandsL.value = MeibomianGlandsR.value;
+            }
+
+            var LimbalAppearanceR = document.getElementById("LimbalAppearanceR")
+            var LimbalAppearanceL = document.getElementById("LimbalAppearanceL")
+            if (LimbalAppearanceR.value != null) {
+                LimbalAppearanceL.value = LimbalAppearanceR.value;
+            }
+
+            var CounjunctivalAppaeranceR = document.getElementById("CounjunctivalAppaeranceR")
+            var CounjunctivalAppaeranceL = document.getElementById("CounjunctivalAppaeranceL")
+            if (CounjunctivalAppaeranceR.value != null) {
+                CounjunctivalAppaeranceL.value = CounjunctivalAppaeranceR.value;
+            }
+
+            var TearQualityR = document.getElementById("TearQualityR")
+            var TearQualityL = document.getElementById("TearQualityL")
+            if (TearQualityR.value != null) {
+                TearQualityL.value = TearQualityR.value;
+            }
+        });
+    });
+
+</script>

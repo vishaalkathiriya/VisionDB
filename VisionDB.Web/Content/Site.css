@@ -1,0 +1,166 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 600px;
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+    color: #b94a48;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #b94a48;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #b94a48;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.k-textbox.small {
+    width: 50px !important;
+    height: 30px;
+}
+
+.k-textbox.medium {
+    width: 80px !important;
+    height: 30px;
+}
+
+.k-textbox.medium-field {
+    width: 200px !important;
+}
+
+.k-textbox.large-field {
+    width: 400px !important;
+}
+
+.k-textbox.large {
+    width: 250px !important;
+}
+
+.k-textbox.extra-large {
+    width: 400px !important;
+}
+
+.k-textbox.super-sized {
+    width: 600px !important;
+}
+
+.k-textbox.large-singleline {
+    width: 250px !important;
+    height: 30px;
+}
+
+.k-textbox.extra-large-singleline {
+    width: 400px !important;
+    height: 30px;
+}
+
+.kendo-dropdown-small {
+    width: 100px !important;
+}
+
+.kendo-dropdown-medium {
+    width: 150px !important;
+}
+
+.kendo-dropdown-large {
+    width: 250px !important;
+}
+
+.k-textbox.notes-large {
+    width: 400px !important;
+}
+
+.kendo-numeric-small {
+    width: 90px !important;
+}
+
+.chart-wrapper {
+    width: 100%;
+}
+
+.red-text {
+    color: red;
+}
+
+.selected-optician .k-dropdown {
+     width: 269px;
+}
+
+ul.k-panelbar,
+ul.k-panelbar .k-group,
+ul.k-panelbar .k-content,
+ul.k-panelbar .k-link {
+    border-width: 0;
+}
+
+.rotation {
+    -moz-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.rotation-clockwise {
+    -moz-transform: rotate(-270deg);
+    -webkit-transform: rotate(-270deg);
+    -o-transform: rotate(-270deg);
+    -ms-transform: rotate(-270deg);
+    transform: rotate(-270deg);
+}
+
+.form-control {
+    max-width: 280px;
+}
+
+.appointment-none {
+    color: #6699ff;
+}
+
+.appointment-arrived {
+    color: #53cf53;
+}
+
+.appointment-cancelled {
+    color: #ff9900;
+}
+
+.appointment-rebooked {
+    color: #cc66ff;
+}
+
+.appointment-no-show {
+    color: #ff1919;
+}
+
+input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+}

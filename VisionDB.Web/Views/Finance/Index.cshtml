@@ -1,0 +1,389 @@
+﻿@using MvcReportViewer
+@{
+    ViewBag.Title = "Finance";
+}
+
+<h2><img src="~/Content/Images/coins-48.png" alt="Financial" /> Finance</h2>
+<!--<br />
+<img src="~/Content/Images/coins-48.png" alt="Financial" />
+<br /><br />
+    -->
+
+<div> Here you are able to add company expenses, view financial reports and reconcile incoming payments </div>
+    <h4>Company Expenses</h4>
+    <p>Expenses buttons are for adding expenditures relating to the practice e.g. gas, electric and internet bills</p>
+    <table>
+        <tr>
+            <td><button class="k-button" type="button" value="Expense" onclick="location.href='@Url.Action("Add", "Expenses")'">Add expense</button> &nbsp;</td>
+            <td><button class="k-button" type="button" value="ViewExpense" onclick="location.href='@Url.Action("Expenses", "Expenses")'">View expenses</button></td>
+            <td>
+                <div id="expensestip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                .For("#expensestip")
+                .Filter("div")
+                .Position(TooltipPosition.Right)
+                .AutoHide(false)
+                .ShowOn(TooltipShowOnEvent.Click)
+                .Content("Expenses buttons are for adding expenditures relating to the practice e.g. gas, electric and internet bills")
+                .Width(200)
+                )
+            </td>
+        </tr>
+    </table>
+    <hr />
+    <h4>End Of Day / Payment Reconciliation</h4>
+    <table>
+        <tr>
+            <td>
+                <button class="k-button" type="button" value="Reconcile" onclick="location.href='@Url.Action("Reconcile", "Invoices")'">Reconcile payments</button>
+            </td>
+            <td>
+                <div id="reconciliationtip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                    .For("#reconciliationtip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                    .Content("Reconcile incoming payments and vouchers for a specified date or date range")
+            .Width(200)
+
+                )
+
+            </td>
+        </tr>
+    </table>
+    <hr />
+    <h4>Financial Reports</h4>
+
+    @if (ViewBag.PracticeBalanceExcVAT != null)
+    {
+        @:<strong>Outstanding practice balance</strong> £@Math.Round(ViewBag.PracticeBalanceExcVAT, 2) Exc VAT
+    }
+    <br />
+    <br />
+
+    @if (ViewBag.PracticeTodaysTakingsExcVAT != null)
+    {
+        @:<strong>Today's takings </strong> £@Math.Round(ViewBag.PracticeTodaysTakingsExcVAT, 2) Exc VAT 
+    }
+
+    <br />
+    <br />
+
+
+    <table>
+        <tr>
+            <td>
+                <button class="k-button" id="opensalessummary">Sales summary</button>
+            </td>
+            <td>
+                <div id="financialsummarytip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+            .For("#financialsummarytip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                    .Content("Summarises payments")
+            .Width(200)
+
+                )
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="k-button" id="openfinancialsummary">Financial summary</button>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="k-button" id="opentransactionreport">Transaction report</button>
+            </td>
+            <td>
+                <div id="transactiontip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                    .For("#transactiontip")
+                    .Filter("div")
+                    .Position(TooltipPosition.Right)
+                    .AutoHide(false)
+                    .ShowOn(TooltipShowOnEvent.Click)
+                            .Content("Shows transactions. Select your date range within the report")
+                    .Width(200)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="k-button" id="openexpensessummaryreport">Expenses Summary report</button>
+            </td>
+            <td>
+                <div id="expensessummaryreporttip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                .For("#expensessummaryreporttip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                    .Content("Report shows a summary of expenses by category. Select your date range within the report")
+            .Width(200)
+
+                )
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="k-button" id="openexpensesreport">Expenses report</button>
+            </td>
+            <td>
+                <div id="expensesreporttip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                .For("#expensesreporttip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                    .Content("Report shows all the expenses that have been made and to who. Select your date range within the report")
+            .Width(200)
+
+                )
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="k-button" id="openordersvatreport" value="Orders VAT Report">Orders VAT report</button> 
+            </td>
+            <td>
+                <div id="ordersvatreporttip">
+                    <div class="k-button">?
+                    </div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                    .For("#ordersvatreporttip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                    .Content("Orders VAT report")
+            .Width(200)
+
+                )
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="k-button" id="opensalesreport" value="Sales Report">Sales Report</button>
+            </td>
+            <td>
+                <div id="salesreporttip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                            .For("#salesreporttip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                    .Content("Orders VAT report")
+            .Width(200)
+
+                )
+
+            </td>
+        </tr>
+    </table>
+    @(Html.Kendo().Window()
+    .Name("salessummary")
+    .Title("Sales summary")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "SalesSummary"),
+        new { practiceId = ViewBag.Practice.Id, inputdate = DateTime.Now.Date },
+        new { height = 540, width = 700, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Width(720)
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("financialsummary")
+    .Title("Financial summary")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "FinancialSummary"),
+        new { practiceId = ViewBag.Practice.Id, start = DateTime.Now.Date, end = DateTime.Now.Date.AddDays(1) },
+        new { height = 540, width = 700, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Width(720)
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("transactionreport")
+    .Title("Transaction report")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "TransactionExport"),
+        new { practiceId = ViewBag.Practice.Id, start = new DateTime(2014, 1, 1), end = new DateTime(2015, 1, 1) },
+        new { height = 540, width = 830, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Width(850)
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("pendingnhsvouchers")
+    .Title("Pending NHS vouchers")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "NHSVouchers"),
+        new { practiceId = ViewBag.Practice.Id, Start = new DateTime(2014, 1, 1), End = new DateTime(2015, 1, 1) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("expensessummaryreport")
+    .Title("Expenses Summary report")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "ExpensesSummary"),
+        new { practiceId = ViewBag.Practice.Id, start = new DateTime(2014, 1, 1), end = new DateTime(2015, 1, 1) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("expensesreport")
+    .Title("Expenses report")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "Expenses"),
+        new { practiceId = ViewBag.Practice.Id, start = new DateTime(2014, 1, 1), end = new DateTime(2015, 1, 1) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("ordersvatreport")
+    .Title("Orders VAT Report")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "OrdersVATReport"),
+        new { practiceId = ViewBag.Practice.Id, start = new DateTime(2014, 1, 1), end = new DateTime(2015, 1, 1) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+                .Draggable()
+                .Resizable()
+                .Modal(true)
+                .Visible(false)
+                .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("salesreport")
+    .Title("Sales Report")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "SalesReport"),
+        new { practiceId = ViewBag.Practice.Id, start = new DateTime(2014, 1, 1), end = new DateTime(2015, 1, 1) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+                            .Draggable()
+                            .Resizable()
+                            .Modal(true)
+                            .Visible(false)
+                            .Actions(actions => actions.Close())
+    )
+    <br />
+
+    <script>
+        $(document).ready(function () {
+            $("#opensalessummary").bind("click", function () {
+                $("#salessummary").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#openfinancialsummary").bind("click", function () {
+                $("#financialsummary").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#opentransactionreport").bind("click", function () {
+                $("#transactionreport").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#openpendingnhsvouchers").bind("click", function () {
+                $("#pendingnhsvouchers").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#openexpensessummaryreport").bind("click", function () {
+                $("#expensessummaryreport").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#openexpensesreport").bind("click", function () {
+                $("#expensesreport").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#openordersvatreport").bind("click", function () {
+                $("#ordersvatreport").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#opensalesreport").bind("click", function () {
+                $("#salesreport").data("kendoWindow").center().open();
+            });
+        });
+
+        function change() {
+            $("#tooltip").data("kendoTooltip").show($("#target" + this.value()));
+        };
+    </script>

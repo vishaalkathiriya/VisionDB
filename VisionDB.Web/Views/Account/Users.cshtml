@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Users";
+}
+
+<h2>Users</h2>
+
+@(Html.Kendo().Grid((List<VisionDB.Models.ApplicationUserViewModel>)Model)
+      .Name("ProductsFound")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Hidden(true);
+          columns.Bound(p => p.UserName).Title("User");
+          columns.Bound(p => p.RolesToString).Title("Roles");
+          columns.Template(x => { }).ClientTemplate(
+                "<a class='k-button' href='" +
+                    Url.Action("Edit", "Account") +
+                    "/#= Id #'" +
+                ">View details</a>"
+            ).Width(145);
+      })
+        //.Pageable() //todo: fix paging.
+          .Sortable() // todo: fix sorting.
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model => model.Id(p => p.Id))
+              .Read(read => read.Action("Edit", "Account"))
+    )
+)

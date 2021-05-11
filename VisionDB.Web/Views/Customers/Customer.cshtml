@@ -1,0 +1,604 @@
+﻿@using VisionDB.Helper
+@model VisionDB.Models.Customer
+
+@{
+    ViewBag.Title = "Patient";
+}
+
+<h2><img src="~/Content/Images/patientFound48.png" alt="patientFound" /> @Model.CustomerToString</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+
+        <table>
+            <tr>
+                <td>
+                    @Html.Label("Medical conditions")
+                </td>
+                <td colspan="4" class="red-text">
+                    @ViewBag.MedicalConditionsCSV
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Label("Tags")
+                </td>
+                <td colspan="4">
+                    @ViewBag.CustomerTagsCSV
+                </td>
+            </tr>
+            @if(Model.practice.ShowDomiciliaryFields && (Model.CareHome != null || Model.ShelteredAccommodation != null))
+            {
+                <tr>
+                    <td>
+                        @(Model.CareHome != null ? Html.LabelFor(model => model.CareHome) : Html.LabelFor(model => model.ShelteredAccommodation))
+                    </td>
+                    <td>
+                        @(Model.CareHome != null ? @Html.DisplayFor(model => model.CareHome) : @Html.DisplayFor(model => model.ShelteredAccommodation))
+                    </td>
+                    <td></td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td width="180px">
+                    @Html.Label("Patient number")
+                </td>
+                <td width="250px">
+                    @if (Model.Number != null)
+                    {
+                        @Html.DisplayTextFor(model => model.Number)
+                    }
+                </td>
+                <td width="10px"></td>
+                <td width="180px">
+                    <strong>Hobbies / sports</strong>
+                </td>
+                <td>
+                    @if (Model.CLFitHobbiesSports != null)
+                    {
+
+                        @Html.DisplayTextFor(model => model.CLFitHobbiesSports)
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Title</strong>
+                </td>
+                <td>
+                    @if (Model.Title != null)
+                    {
+                        @Html.DisplayTextFor(model => model.Title)
+                    }
+                </td>
+                <td></td>
+                <td>
+                    <strong>Occupation</strong>
+                </td>
+                <td>
+                    @if (Model.Occupation != null)
+                    {
+
+                        @Html.DisplayTextFor(model => model.Occupation)
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Forename(s)</strong>
+                </td>
+                <td>
+                    @if (Model.Firstnames != null)
+                    {
+                        @Html.DisplayTextFor(model => model.Firstnames)
+                    }
+                    else
+                    {
+                        <text>Not entered</text>
+                    }
+                </td>
+                <td></td>
+                <td>
+                    @Html.LabelFor(model => model.NextDueDateEyeExam)
+                </td>
+                <td>
+                    @if (Model.NextDueDateEyeExam.HasValue)
+                    {
+                        @Model.NextDueDateEyeExam.Value.ToShortDateString()
+                    }
+                    else
+                    {
+                        <text>Unavailable</text>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Surname</strong>
+                </td>
+                <td>
+                    @if (Model.Surname != null)
+                    {
+
+                        @Html.DisplayTextFor(model => model.Surname)
+                    }
+                    else
+                    {
+                        <text>Not entered</text>
+                    }
+                </td>
+                <td></td>
+                <td>
+                    @Html.LabelFor(model => model.PreviousEyeExamDate)
+                </td>
+                <td>
+                    @if (Model.PreviousEyeExamDate.HasValue)
+                    {
+                        @Model.PreviousEyeExamDate.Value.ToShortDateString()
+                    }
+                    else
+                    {
+                        <text>Unavailable</text>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Telephone</strong>
+                </td>
+                <td>
+                    @if (Model.Telephone != null && Model.Telephone.Length > 0)
+                    {
+                        @Html.DisplayTextFor(model => model.Telephone)
+                    }
+                </td>
+                <td></td>
+                <td>
+                    @Html.LabelFor(model => model.NextDueDateContactLensExam)
+                </td>
+                <td>
+                    @if (Model.NextDueDateContactLensExam.HasValue)
+                    {
+                        @Model.NextDueDateContactLensExam.Value.ToShortDateString()
+                    }
+                    else
+                    {
+                        <text>Not applicable</text>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>SMS number</strong>
+                </td>
+                <td>
+                    @if (Model.SMSNumber != null && Model.SMSNumber.Length > 0)
+                    {
+                        @Html.DisplayTextFor(model => model.SMSNumber)
+                    }
+                </td>
+                <td></td>
+                <td>
+                    @Html.LabelFor(model => model.PreviousContactLensExamDate)
+                </td>
+                <td>
+                    @if (Model.PreviousContactLensExamDate.HasValue)
+                    {
+                        @Model.PreviousContactLensExamDate.Value.ToShortDateString()
+                    }
+                    else
+                    {
+                        <text>Not applicable</text>
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Email</strong>
+                </td>
+                <td>
+                    @if (Model.Email != null)
+                    {
+
+                        @Html.DisplayTextFor(model => model.Email)
+                    }
+                </td>
+                <td></td>
+                <td>@Html.LabelFor(model => model.ContactOptions)</td>
+                <td>
+                    @Html.DisplayFor(model => model.ContactOptions)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Address</strong>
+                </td>
+                <td rowspan="3">
+                    @if (Model.Address != null)
+                    {
+                        @Html.DisplayTextFor(model => model.Address)
+                    }
+                    @if (Model.Postcode != null)
+                    {
+                        @Html.DisplayTextFor(model => model.Postcode)
+                    }
+                </td>
+                <td></td>
+                <td>
+                    <strong>NI number</strong>
+                </td>
+                <td>
+                    @if (Model.NINo != null)
+                    {
+                        @Html.DisplayTextFor(model => model.NINo)
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <strong>NHS number</strong>
+                </td>
+                <td>
+                    @if (Model.NHSNo != null)
+                    {
+                        @Html.DisplayTextFor(model => model.NHSNo)
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Date of birth</strong>
+                </td>
+                <td>
+                    @if (Model.DOB.HasValue)
+                    {
+                        @Model.DOB.Value.ToShortDateString()
+                        <text>(</text>@Model.AgeText<text>)</text>
+
+                    }
+                    else
+                    {
+                        <text>Not entered</text>
+                    }
+                </td>
+                <td></td>
+                <td><strong>Balance</strong></td>
+                <td>
+                    @{if (ViewBag.CustomerBalanceIncVAT > 0)
+                    {
+                        <h10 class="red-text">£@Math.Round(ViewBag.CustomerBalanceIncVAT, 2) Inc VAT</h10>
+                    }
+                    else
+                    {
+                        <h10>£@Math.Round(ViewBag.CustomerBalanceIncVAT, 2) Inc VAT</h10>
+                    }
+                    }
+                </td>
+            </tr>
+            @if(Model.practice.company.MultiSite)
+            {
+            <tr>
+                <td>
+                    <strong>
+                        Practice
+                    </strong>
+                </td>
+                <td colspan="4">
+                    @Model.practice.Name
+                </td>
+            </tr>
+            }
+            <tr>
+                <td>
+                    <strong>GP details</strong>
+                </td>
+                <td colspan="4">
+                    @if (Model.GPpracticename != null || Model.Doctor != null)
+                    {
+                        @(Model.GPpracticename != null ? Model.GPpracticename + " " : "")
+                        @(Model.Doctor != null ? Model.Doctor + " " : "")
+                        @(Model.GPpracticeaddress != null ? Model.GPpracticeaddress + " " : "")
+                        @(Model.GPpracticepostcode != null ? Model.GPpracticepostcode + " " : "")
+                        @(Model.GPpracticephone != null ? Model.GPpracticephone + " " : "")
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Comments)
+                </td>
+                <td colspan="4">
+                    @Html.DisplayWithBreaksFor(model => model.Comments)
+                </td>
+            </tr>
+        </table>
+
+        <br />
+        <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Customers", new { id = Model.Id })'">Edit patient details</button>
+        &nbsp;
+        <button class="k-button" type="button" value="ManageOrders" onclick="location.href='@Url.Action("CustomerOrders", "Inventory", new { id = Model.Id })'">Open orders</button>
+        &nbsp;
+        @if (Model.practice.ShowCallButtons)
+        { 
+            if (Model.Telephone != null)
+            {
+                <text>
+                    <button type="button" aria-multiline="true" class="k-button" onclick="location.href='skype:@VisionDB.Helper.TelephoneHelper.GetSkypeNumber(Model.Telephone)?call'">Call phone - Skype</button>
+                    &nbsp;
+                    <button type="button" class="k-button" onclick="location.href='tel:@Model.Telephone'">Call phone - dialer</button>
+                    &nbsp;
+                </text>
+            }
+        }
+        @if (Model.SMSNumber != null && Model.SMSNumber.Length > 0)
+        {
+            if (Model.practice.ShowCallButtons)
+            { 
+                <button type="button" aria-multiline="true" class="k-button" onclick="location.href='skype:@VisionDB.Helper.TelephoneHelper.GetSkypeNumber(Model.SMSNumber)?call'">Call mobile - Skype </button>
+                @:&nbsp;
+                <button type="button" class="k-button" onclick="location.href='tel:@Model.SMSNumber'">Call mobile - dialer</button>
+                @:&nbsp;
+            }
+            <button class="k-button" type="button" value="NewSMS" onclick="location.href='@Url.Action("NewSMS", "Messages")'">Send SMS</button>
+            @:&nbsp;
+        }
+        @if (Model.Email != null && Model.Email.Length > 0)
+        {
+            <button class="k-button" type="button" value="NewSMS" onclick="location.href='@Url.Action("NewEmail", "Messages")'">Send email</button>
+        }
+
+        <br /><br />
+        <p>
+            <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Add", "Appointments", new { id = Model.Id })'">Add appointment</button> &nbsp;
+            @if (Session["user"] != null
+                && (((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Optician)
+                || ((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Locum)))
+            {
+                <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("AddEyeExam", "EyeExams")'">Add eye exam</button> @:&nbsp;
+                <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("AddContactLensExam", "EyeExams")'">Add contact lens exam</button> @:&nbsp;
+            }
+            <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Add", "Invoices", new { id = Model.Id, ReturnTo = "customer" })'">Add sale / dispense</button> &nbsp;
+            <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Add", "Notes", new { CustomerId = Model.Id })'">Add note</button> &nbsp;
+            <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Add", "Attachments")'">Add attachment</button> &nbsp;
+        </p>
+    </div>
+}
+<br />
+@(Html.Kendo().PanelBar()
+        .Name("eyeExams")
+        .ExpandMode(PanelBarExpandMode.Multiple)
+        .Items(panelbar =>
+          {
+              panelbar.Add().Text("GOS Forms")
+                  .Visible(Model.practice.ShowGOSForms)
+                  .Content(@<text>
+                        <br />
+                        @Html.ActionLink("GOS 1 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS1Front" }, new { target = "_blank" })
+                        &nbsp;
+                        @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS1Back" }, new { target = "_blank" })
+                        &nbsp; | &nbsp;
+                        @Html.ActionLink("GOS 2 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS2Front" }, new { target = "_blank" }) <h10 class="red-text">*</h10>
+                        &nbsp; | &nbsp;
+                        @Html.ActionLink("GOS 3 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS3Front" }, new { target = "_blank" })
+                        &nbsp;
+                        @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS3Back" }, new { target = "_blank" }) <h10 class="red-text">*</h10>
+                        &nbsp; | &nbsp;
+                        @Html.ActionLink("GOS 4 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS4Front" }, new { target = "_blank" })
+                        &nbsp;
+                        @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS4Back" }, new { target = "_blank" }) <h10 class="red-text">*</h10>
+                        &nbsp; | &nbsp;
+                        @Html.ActionLink("GOS 5 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS5Front" }, new { target = "_blank" })
+                        &nbsp;
+                        @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS5Back" }, new { target = "_blank" })
+                        &nbsp; | &nbsp;
+                        @Html.ActionLink("GOS 6 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS6Front" }, new { target = "_blank" })
+                        &nbsp;
+                        @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "PatientGOS6Back" }, new { target = "_blank" })
+                        <br />
+                        <h10 class="red-text">*</h10> This GOS form can be printed from an eye exam record with the prescription information pre-filled. Scroll down to see which eye exams are available.
+                        <br />
+                        <br />
+                </text>);
+              panelbar.Add().Text("Last Eye Exam Results")
+                  .Visible((bool)(ViewBag.LastEyeExam != null))
+                  .Content(@<text>
+                    <br />
+                    <h4>Last Eye Exam</h4>
+                    <table>
+                        <tr>
+                            <th width="25px" height="50px"></th>
+                            <th width="100px">Sph D</th>
+                            <th width="100px">Cyl D</th>
+                            <th width="100px">Axis D</th>
+                            <th width="100px">Prism D H</th>
+                            <th width="100px">Base D H</th>
+                            <th width="100px">Prism D V</th>
+                            <th width="100px">Base D V</th>
+                            <th width="100px">I Add</th>
+                        </tr>
+                        <tr>
+                            <th class="rotation" rowspan="2">RIGHT</th>
+                            <td height="50px"><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.RSphericalDist)</div>@*rsphd*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.RCylDist)</div>@*rcyld*@</td>
+                            <td><div class="k-textbox small">@ViewBag.LastEyeExam.RAxisDist</div>@*raxisd*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.RPrismDistH)</div>@*rprismdh*@</td>
+                            <td><div class="k-textbox medium">@ViewBag.LastEyeExam.RBaseDistH</div>@*rbasedh*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.RPrismDistV)</div>@*rprismdv*@</td>
+                            <td><div class="k-textbox medium">@ViewBag.LastEyeExam.RBaseDistV</div>@*rbasedv*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.IAddRight)</div>@*riadd*@</td>
+                        </tr>
+                        <tr>
+                            <th height="50px">Sph N</th>
+                            <th>Cyl N</th>
+                            <th>Axis N</th>
+                            <th>Prism N H</th>
+                            <th>Base N H</th>
+                            <th>Prism N V</th>
+                            <th>Base N V</th>
+                            <th>N Add</th>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.RSphericalNear)</div>@*rsphn*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.RCylNear)</div>@*rcyln*@</td>
+                            <td><div class="k-textbox small">@ViewBag.LastEyeExam.RAxisNear</div>@*raxisn*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.RPrismNearH)</div>@*rprismnh*@</td>
+                            <td><div class="k-textbox medium">@ViewBag.LastEyeExam.RBaseNearH</div>@*rbasenh*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.RPrismNearV)</div>@*rprismnv*@</td>
+                            <td><div class="k-textbox medium">@ViewBag.LastEyeExam.RBaseNearV</div>@*rbasenv*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.NAddRight)</div>@*rnadd*@</td>
+                        </tr>
+                        <tr>
+                            <td colspan="9"><hr /></td>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <th>Sph D</th>
+                            <th>Cyl D</th>
+                            <th>Axis D</th>
+                            <th>Prism D H</th>
+                            <th>Base D V</th>
+                            <th>Prism D V</th>
+                            <th>Base D H</th>
+                            <th>I Add</th>
+                        </tr>
+                        <tr>
+                            <th class="rotation" rowspan="2">LEFT</th>
+                            <td height="50px"><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.LSphericalDist)</div>@*lsphd*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.LCylDist)</div>@*lcyld*@</td>
+                            <td><div class="k-textbox small">@ViewBag.LastEyeExam.LAxisDist</div>@*laxisd*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.LPrismDistH)</div>@*lprismdh*@</td>
+                            <td><div class="k-textbox medium">@ViewBag.LastEyeExam.LBaseDistV</div>@*lbasedv*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.LPrismDistV)</div>@*lprismdv*@</td>
+                            <td><div class="k-textbox medium">@ViewBag.LastEyeExam.LBaseDistH</div>@*lbasedh*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.IAddLeft)</div>@*liadd*@</td>
+                        </tr>
+                        <tr>
+                            <th height="50px">Sph N</th>
+                            <th>Cyl N</th>
+                            <th>Axis N</th>
+                            <th>Prism N H</th>
+                            <th>Base N V</th>
+                            <th>Prism N V</th>
+                            <th>Base N H</th>
+                            <th>N Add</th>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.LSphericalNear)</div>@*lsphn*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.LCylNear)</div>@*lcyln*@</td>
+                            <td><div class="k-textbox small">@ViewBag.LastEyeExam.LAxisNear</div>@*laxisn*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.LPrismNearH)</div>@*lprismnh*@</td>
+                            <td><div class="k-textbox medium">@ViewBag.LastEyeExam.LBaseNearV</div>@*lbasenv*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.LPrismNearV)</div>@*lprismnv*@</td>
+                            <td><div class="k-textbox medium">@ViewBag.LastEyeExam.LBaseNearH</div>@*lbasenh*@</td>
+                            <td><div class="k-textbox small">@NumericHelper.GetSignedResult(ViewBag.LastEyeExam.NAddLeft)</div>@*lnadd*@</td>
+                        </tr>
+                    </table>
+                    <br />
+                    <br />
+                </text>);
+          })
+)
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.JournalViewModel>()
+      .Name("Journal")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_ReadJournalEntries", "Customers", new { Id = Model.Id }))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.Description);
+          columns.Bound(j => j.EntryDate).Title("Entry Date and Time").Format("{0:dd/MM/yyyy HH:mm}");
+          columns.Bound(j => j.entryType).Title("Entry Type");
+          columns.Template(x => { }).ClientTemplate(
+      "<a class='k-button' href='" +
+          Url.Action("OpenJournalEntry", "Customers") +
+          "/#= Id #'" +
+      ">View details</a>"
+  ).Width(130);
+      })
+      .ClientRowTemplate("<tr bgcolor='#: Colour#'>"
+      + "<td>#: Description#</td>"
+      + "<td>#: EntryDateToString#</td>"
+      + "<td>#: EntryTypeToString#</td>"
+      + "<td><a class='k-button' href='" +
+          Url.Action("OpenJournalEntry", "Customers") +
+          "/#= Id #'" +
+          ">View details</a></td>"
+      + "</tr>")
+      .Sortable()
+      .Pageable()
+      .Filterable()
+)
+
+<br />
+<button class="delete-button k-button" value="Delete">Delete patient</button> &nbsp;
+<button class="k-button" type="button" value="Customers" onclick="location.href='@Url.Action("Search", "Customers")'">Back to patient search</button>
+
+<script id="delete-confirmation" type="text/x-kendo-template">
+    <p class="delete-message">Are you sure that you want to delete @Model.CustomerToString?</p>
+
+    <button class="delete-confirm k-button">Delete</button> &nbsp;
+    <a href="#" class="delete-cancel k-button">Cancel</a>
+</script>
+
+<script>
+    $(".delete-button").click(function (e) {
+        e.preventDefault();
+
+        var kendoWindow = $("<div />").kendoWindow({
+            title: "Confirm",
+            resizable: false,
+            modal: true
+        });
+
+        kendoWindow.data("kendoWindow")
+            .content($("#delete-confirmation").html())
+            .center().open();
+
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+                .click(function () {
+                    if ($(this).hasClass("delete-confirm")) {
+                        window.location.replace('/Customers/Delete/@Model.Id.ToString()');
+                    }
+
+                    kendoWindow.data("kendoWindow").close();
+                })
+                .end()
+    });
+</script>
+
+<script>
+    function categoriesChange() {
+        var value = this.value(),
+		 	 grid = $("#grid").data("kendoGrid");
+
+        if (value) {
+            grid.dataSource.filter({ field: "CategoryID", operator: "eq", value: parseInt(value) });
+        } else {
+            grid.dataSource.filter({});
+        }
+    }
+</script>

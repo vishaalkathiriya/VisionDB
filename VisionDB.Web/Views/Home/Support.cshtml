@@ -1,0 +1,202 @@
+@{
+    ViewBag.Title = "Support";
+}
+<h2>@ViewBag.Title</h2>
+<div class="alert-warning">@TempData["Warning"]</div>
+
+@{if (Session["user"] != null)
+{
+    <h4>For support contact us on <abbr title="Phone">@System.Web.Configuration.WebConfigurationManager.AppSettings["SupportTel"].ToString()</abbr> or via chat with support code @(((VisionDB.Models.ApplicationUser)Session["user"]).SupportCode)</h4>
+    <address>
+        Click Software Limited<br />
+        Fort Dunlop, Fort Parkway, Birmingham, B24 9FE
+        <br />
+        <a href="mailto:support@visiondb.uk?subject=SupportCode@(((VisionDB.Models.ApplicationUser)Session["user"]).SupportCode)">support@visiondb.uk</a>
+    </address>
+}
+else
+{
+    <address>
+        Click Software Limited<br />
+        Fort Dunlop, Fort Parkway, Birmingham, B24 9FE<br />
+        <abbr title="Phone">@System.Web.Configuration.WebConfigurationManager.AppSettings["SupportTel"].ToString()</abbr>
+        <br />
+        <a href="mailto:info@visiondb.co.uk">info@visiondb.co.uk</a>
+    </address>
+}
+}
+
+<div>
+    <h4>What's new</h4>
+    <ul>
+        <li>Added details eye exam report.</li>
+        <li>General bug fixes.</li>
+        <li>Filtering by appointment type, member of staff undertaking appointment and appointment status.</li>
+        <li>Search for patients across multiple practices by enabling the multi-site option under company settings.</li>
+        <li>Calendar bug fix.</li>
+        <li>Added postcode lookup.</li>
+        <li>Updated NHS voucher values for April 2015.</li>
+        <li>Added knowledge base.</li>
+        <li>Added expenses summary report.</li>
+        <li>Added the ability to save external prescriptions.</li>
+        <li>Recall and reports bug fixes.</li>
+        <li>Speed improvements (by caching of invoice totals).</li>
+        <li>Fixed bug with recall date ranges.</li>
+        <li>Added Repair / Replacement product type and Sight Test product type. These can be used for reporting purposes.</li>
+        <li>Fixed bug with saving products.</li>
+        <li>When a recall fails to send, you can now see the reason for this in the recalls section.</li>
+        <li>Added patient list export under reports</li>
+        <li>Updated to recall system</li>
+        <li>Additional reports</li>
+        <li>Bug fixes.</li>
+        <li>Ability to select the eye exam for a dispense.</li>
+        <li>Allow admins to change invoice date and date of individual invoice lines.</li>
+        <li>Search by care home or sheltered accomodation if set up for domiciliary use.</li>
+        <li>Bug fixes.</li>
+        <li>Improved calendar on tablets.</li>
+        <li>Major update to recalls. Recalls can now be automatically generated.</li>
+        <li>Option to prevent dragging of appointments under user setup.</li>
+        <li>Allow calendar height to be specified under user setup.</li>
+        <li>Added ability to show practice notes on the dashboard. There is an option in the setup to enable this.</li>
+        <li>You can now hide the call buttons by unticking the 'Show call buttons' option in setup.</li>
+        <li>Added the ability to specify a product code when doing a dispense. This is only available when you enable the 'Show domiciliary fields' option through setup.</li>
+        <li>You can now allocate the member of staff that will take an appointment.</li>
+        <li>Ability to create document templates for recalls and marketing.</li>
+        <li>You can now create custom appointment types and select them when adding an appointment.</li>
+        <li>There's now a button to add a new eye exam from the calendar. To use, simply select the appointment and click the 'New Eye Exam' button.</li>
+        <li>Appointments in the calendar are now coloured by their status.</li>
+        <li>Revised patient screen.</li>
+        <li>Added VAT rate to expenses.</li>
+        <li>Ability to record multiple IOPs.</li>
+        <li>You can now view / manage an individual patient's orders from their record.</li>
+        <li>Revised patient summary.</li>
+        <li>Updated navigation bar colour scheme. Menu options are now white and invert when hovered over.</li>
+        <li>Added selector for eye exam view in practice screen.</li>
+        <li>Added expenses report.</li>
+        <li>You can now have your eye exams automatically select the same time as the appointment. This is done using the 'Default eye exam time to patients appointment time' option under settings.</li>
+        <li>Added the ability to print sales and dispense record from sale screen.</li>
+        <li>Added the product type Professional Fee.</li>
+        <li>Added additional goods in statuses.</li>
+        <li>Fix: issue saving multiple appointments.</li>
+        <li>You can now search for a patient when adding a calendar appointment. There is no need to go into the patient's record first.</li>
+        <li>Values for axis can now be specified to 2 decimal places.</li>
+        <li>Lab orders report added.</li>
+        <li>Added Tint product type.</li>
+        <li>Fix: services such as eye exams should not have an order status.</li>
+        <li>Allow editing PD and height from dispensing screen.</li>
+        <li>Added height to eye exam.</li>
+        <li>You can now manage your users yourself from the admin screen.</li>
+        <li>Fixed menu bar resizing issues.</li>
+        <li>Ability to choose alternative eye exam screens. This can be done from the practice set-up screen.</li>
+        <li>Fix: error opening ad-hoc sales.</li>
+        <li>Added Care Homes as a tag type.</li>
+        <li>Added telephone area code. This is useful when you exclude the area code in the patients telephone number but still need to be able to dial the full number via Skype.</li>
+        <li>You can now enter the telephone area code for the practice. This is used to dial numbers were the are code has been removed from the number. For example if the number is 123 4567 the full number in Birmingham would be 0121 123 4567.</li>
+        <li>You can now choose to see the patient DOB when searching for patients instead of the age. The option is in the practice setup section.</li>
+        <li>Improved patient DOB search. You can now use a 2 digit year for the DOB. For example, both 25/12/1980 and 25/12/80 will work.</li>
+        <li>Updates to GOS forms.</li>
+        <li>You can now specify if a product has been dispensed. For example, the first set of contact lenses after an eye test would be dispensed. Subsequent pairs are reordered. This is useful if you have a VAT schema that has special exemptions for dispensed products.</li>
+        <li>Added background support for individual practice VAT schemes. For example, you may agree with HMRC that VAT is payable on first 40% of sale value.</li>
+        <li>GOS forms can now be printed from the patient page.</li>
+        <li>You can now group your patients with tags. For example, if a patient liked designer frames, you can add a tag called 'Designer Frames' and select this option.</li>
+        <li>Added dispensing section to show outstanding dispenses.</li>
+        <li>Renamed 'invoices' section 'sales / dispensing'</li>
+        <li>Allow last test date to be amended from the patient details page. Previously, this was only amended when an eye exam was entered.</li>
+        <li>You can now specify an appointment's status from Arrived, No Show, Rebooked and Cancelled.</li>
+        <li>The recalls section now displays the number of times a patient has been recalled.</li>
+        <li>Added ability to specify any benefits that patient is entitled to.</li>
+        <li>Automatically generate patient numbers.</li>
+        <li>Revised customer summary to show seperate dates for eye exams and contact lens exams.</li>
+        <li>Fixed issue with sending text messages.</li>
+        <li>Added patient notes field.</li>
+        @*<li>Added validation to prevent frames and lenses being added to ad hoc orders.</li>*@
+        <li>Added expenses section for recording outgoing payments for bills etc.</li>
+        @*<li>Appointment shows up in a different colour when the patient has arrived and checked in.</li>*@
+        <li>Added ability check in a patient for their appointment.</li>
+        <li>Minor amendments to pages for viewing SMS and Email details.</li>
+        <li>Improvements to set up screens.</li>
+        <li>Improvements to payment reconciliation section.</li>
+        <li>Fixed issue with recalls.</li>
+        <li>Improved BVD, PD and PD Near field validation.</li>
+        <li>Fixed issue with selecting default optician.</li>
+        <li>Fixed issue with text messages.</li>
+        <li>Calendar improvements.</li>
+        <li>Added day of week to calendar and changed times to 24 hour format.</li>
+        <li>Resolved intermittent time out issue.</li>
+        <li>Resolved issue with incorrect practice balance and daily takings.</li>
+        <li>Added ad hoc sales to financial summary and transaction report.</li>
+        <li>Updated financial summary report to show type of payment made. E.g. cheque, card, PDQ.</li>
+        <li>Minor interface tweaks on eye exam page.</li>
+        <li>Added functionality to send appointment reminders from the calendar.</li>
+        <li>Minor revisions to pop up box used to add / edit lines on the invoice / sale.</li>
+        <li>Added Lens Type / Name, BC (BOZR) and TD to contact lens exam.</li>
+        <li>Fixed issue with incorrect invoice balances.</li>
+        <li>Added ability to choose method used for objective tests from Retinoscopy or Autorefactor.</li>
+        <li>Added lens type drop down list to add / edit product pages. This drop down list allows existing lens types to be selected or a new lens type to be added.</li>
+        <li>Added GOC number and signature line on prescription print out.</li>
+        <li>Added occupation drop down list to add / edit patient pages. This drop down list allows existing occupation to be selected or a new occupation to be added.</li>
+        <li>Added manufacturer drop down list to add / edit product pages. This drop down list allows existing manufacturers to be selected or a new manufacturer to be added.</li>
+        <li>Added additional IOPs under the eye exam.</li>
+        <li>Added button to copy examination results from right eye to left for eye and contact lens exams.</li>
+        <li>Added medications and allergies section to patient record, eye exam and contact lens exam pages.</li>
+        <li>Added history and symptoms section to patient record, eye exam and contact lens exam pages.</li>
+        <li>Revised page for editing customers.</li>
+        <li>Improved patient search. You can now search by first name and surname adding a space in between. For example to find John Smith you can type 'John Smith' or 'joh smi'. This is useful for common names such as Ahmed, Singh and Smith.</li>
+        <li>Revised contact lens examination page.</li>
+        <li>Fixed issue with adding eye examination after amending appointment.</li>
+        <li>Fixed issue with SMS and Email messaging from customer page.</li>
+        <li>Added the ability to add a discount for the entire invoice.</li>
+        <li>Increased size of product search box and added price to it.</li>
+        <li>Added Patient Advice, Product Recommendations text boxes and Referral Sent tick box on eye exam page.</li>
+        <li>Added ability to specify SMS sender name.</li>
+        <li>Added ability to see outstanding orders and book stock in.</li>
+        <li>Added order status.</li>
+        <li>Added ability to send invoice as an email.</li>
+        <li>Added recall letter preview.</li>
+        <li>Fixed intermittent error when adding eye exam to a patient.</li>
+        <li>Added the ability to add a discount to a sale.</li>
+        <li>Patients with medical conditions such as glaucoma and diabetes are highlighted in red.</li>
+        <li>Added GP details to patient summary.</li>
+        <li>Added sunglasses product type.</li>
+        <li>Skype calling from customer page.</li>
+        <li>Added cost price to transaction report.</li>
+        <li>Added 'Go to patient' button on calendar.</li>
+        <li>Added warning when changes not saved on pages.</li>
+        <li>Added eye exam recall frequency to edit exam page to allow this to be amended easily if required.</li>
+        <li>Fixed issue with date formatting on calendar and default appointment length not being applied to new appointments.</li>
+        <li>Added Add Appointment and Edit Selected Appointment button to calendar.</li>
+        <li>Reports can now be previewed without having to download them.</li>
+        <li>Added additional validation to eye exam fields.</li>
+        <li>Added ability to get help via chat on the bottom of this page.</li>
+        <li>Product search results limited to 30 products for improved performance.</li>
+        <li>Added cost price and frequently used tick box to product page.</li>
+        <li>Updated eye exam.</li>
+        <li>Added report to export NHS claims to a spreadsheet.</li>
+        <li>Added ability to reconcile or flag payments.</li>
+        <li>Added invoice number.</li>
+        <li>Added the ability to amend recall frequency when performing an eye exam or contact lens exam.</li>
+        <li>Added outstanding balance on patient page; outstanding balance for practice and daily takings on reports page.</li>
+        <li>Updated dispensing record.</li>
+        <li>Added colour and product description to product.</li>
+        <li>Allow frames, lenses and coatings to be grouped together for dispensing.</li>
+        <li>Improved access to support.</li>
+        <li>Revised eye exam pages.</li>
+        <li>Resolved issue with product price not automatically loading when product selected on invoice line.</li>
+        <li>Revised eye exam page. Intraocular pressure average automatically calculated.</li>
+        <li>Added report - Daily Financial Summary</li>
+        <li>Added GOS forms 1 to 6.</li>
+        <li>Added fields for GOS forms: School/College/University, Primary Care Trust and List Number.</li>
+        <li>Calendar improvements.</li>
+        <li>Added options to amend practice's work start / end time.</li>
+        <li>Revised add patient page and fixed issue with dates.</li>
+        <li>Added option for choosing how best to contact patient. Either by telephone, SMS, email or letter.</li>
+        <li>Add product button on invoice screens is now add line and includes payments and discount codes.</li>
+        <li>Added invoice notes.</li>
+        <li>Added the ability to add ad hoc invoices.</li>
+        <li>Duplicate appointments issue fix.</li>
+        <li>Clicking on View Details for a patient appointment now takes you to the calendar.</li>
+        <li>Added functionality to add and edit invoices.</li>
+        <li>Calendar now shows patient name instead of appointment title.</li>
+        <li>Gauge showing current week's appointments.</li>
+    </ul>
+</div>

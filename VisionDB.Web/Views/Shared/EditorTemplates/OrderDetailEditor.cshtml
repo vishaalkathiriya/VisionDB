@@ -1,0 +1,153 @@
+﻿@model VisionDB.Models.InvoiceDetailViewModel
+<script>
+    function onSelect(e) {
+        var product = this.dataItem(e.item.index());
+        var unitPrice = $("#UnitPrice").data("kendoNumericTextBox");
+        unitPrice.value(product.Price);
+        if (product.Description != null) {
+            document.getElementById("Description").value = product.Description;
+        }
+        else {
+            document.getElementById("Description").value = "";
+        }
+        if (document.getElementById("Code") != null) {
+            if (product.Code != null) {
+                document.getElementById("Code").value = product.Code;
+            }
+            else {
+                document.getElementById("Code").value = "";
+            }
+        }
+        unitPrice.trigger('change');
+        var quantity = $("#Quantity").data("kendoNumericTextBox");
+        quantity.value(1);
+        quantity.trigger('change');
+        var spectacleNumber = $("#SpectacleNumber").data("kendoNumericTextBox");
+        var discountPercentage = $("#DiscountPercentage").data("kendoNumericTextBox");
+        if (product.ProductTypeEnum == 4 || product.ProductTypeEnum == 5 || product.ProductTypeEnum == 6) {
+            $("#discount-label").hide();
+            $("#discount-value").hide();
+            $("#quantity-label").hide();
+            $("#quantity-value").hide();
+            $("#spectacle-number-label").hide();
+            $("#spectacle-number-value").hide();
+            $("#price-label").text("Value");
+            $("#code-label").hide();
+            $("#Code").hide();
+        }
+        else
+        {
+            $("#discount-label").show();
+            $("#discount-value").show();
+            $("#quantity-label").show();
+            $("#quantity-value").show();
+            $("#spectacle-number-label").show();
+            $("#spectacle-number-value").show();
+            $("#price-label").text("Price");
+            $("#code-label").show();
+            $("#Code").show();
+        }
+    };
+    function onAdditionalData() {
+        return {
+            Search: $("#product").data("kendoComboBox").text()
+        };
+    }
+</script>
+<table>
+    <tr>
+        <td height="50px">&nbsp;&nbsp;&nbsp;</td>
+        <td>Product / Payment</td>
+        <td>
+            @(Html.Kendo().ComboBox()
+                .Name("product") // Name of the widget should be the same as the name of the property
+                .DataValueField("Id") // The value of the dropdown is taken from the Id property
+                .DataTextField("ProductToStringIncPrice")
+                .Filter(FilterType.Contains)
+                //.Placeholder("search for product")
+                //.Suggest(true)
+                //.BindTo((List<VisionDB.Models.Product>)ViewBag.Products)
+                        //.AutoBind(false)
+                  //.MinLength(3)
+                  .DataSource(source =>
+                  {
+                      source.Read(read =>
+                      {
+                          read.Action("GetProducts", "Inventory")
+                          .Data("onAdditionalData");
+                      })
+                      .ServerFiltering(true);
+                  })
+                .Events(events => events.Select("onSelect"))
+                .HtmlAttributes(new { style = "width:500px" })
+            )
+        </td>
+    </tr>
+    @if (ViewBag.ShowDomiciliaryFields)
+    {
+        <tr>
+            <td height="50px"></td>
+            <td><div id="code-label">Code</div></td>
+            <td>
+                @Html.TextBoxFor(od => od.Code, new { @class = "k-textbox large", @id = "Code" })
+            </td>
+        </tr>
+    }
+    <tr>
+        <td height="50px"></td>
+        <td><div id="price-label">Price</div></td>
+        <td>
+            @Html.Kendo().NumericTextBoxFor(od => od.UnitPrice).Name("UnitPrice").Min(0).Step(1.00m).HtmlAttributes(new { @class = "kendo-numeric-small" })
+        </td>
+    </tr>
+    <tr>
+        <td height="50px"></td>
+        <td><div id="discount-label">Discount</div></td>
+        <td>
+            <div id="discount-value">@Html.Kendo().NumericTextBoxFor(od => od.DiscountPercentage).Min(0).Max(100).Step(10).Format("0").Value(0).HtmlAttributes(new { @class = "kendo-numeric-small" }) %</div>
+        </td>
+    </tr>
+    <tr>
+        <td height="50px"></td>
+        <td><div id="quantity-label">Quantity</div></td>
+        <td>
+            <div id="quantity-value">@Html.Kendo().NumericTextBoxFor(od => od.Quantity).Min(1).Step(1).Format("0").HtmlAttributes(new { @class = "kendo-numeric-small" })</div>
+        </td>
+    </tr>
+    <tr>
+        <td height="50px"></td>
+        <td><div id="spectacle-number-label">Spectacle set</div></td>
+        <td>
+            <div id="spectacle-number-value">@Html.Kendo().NumericTextBoxFor(od => od.SpectacleNumber).Min(1).Step(1).Format("0").HtmlAttributes(new { @class = "kendo-numeric-small" })</div>
+        </td>
+    </tr>
+    <tr>
+        <td height="50px"></td>
+        <td><div id="dispensed-label">Dispensed</div></td>
+        <td>
+            <div id="dispensed-value">@Html.CheckBoxFor(od => od.Dispensed)</div>
+        </td>
+    </tr>
+    <tr>
+        <td height="50px"></td>
+        <td>Description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>
+            @Html.TextAreaFor(od => od.Description, 7, 1, new { @class = "k-textbox large", @id = "Description" })
+        </td>
+    </tr>
+    @if (Session["user"] != null && ((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Admin))
+    {
+        <tr>
+            <td height="50px"></td>
+            <td><div id="code-label">Date and time</div></td>
+            <td>
+                <input name="Added" type="text" required data-type="date" data-role="datetimepicker" data-bind="value: Added,invisible: isAllDay" data-format="dd/MM/yyyy HH:mm" />
+                <input name="Added" type="text" required data-type="date" data-role="datepicker" data-bind="value: Added,visible: isAllDay" />
+            </td>
+        </tr>
+    }
+    else
+    {
+        @Html.HiddenFor(model => model.Added)
+    }
+</table>

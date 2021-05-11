@@ -1,0 +1,148 @@
+﻿@model VisionDB.Models.Expense
+
+@{
+    ViewBag.Title = "Edit Expense";
+}
+
+<h2>Edit Expense</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExpenseDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().DatePickerFor(model => model.ExpenseDate).Value(Model.ExpenseDate)
+                @Html.ValidationMessageFor(model => model.ExpenseDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Payee, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Payee, new { htmlAttributes = new { @class = "k-textbox large" } })
+                @Html.ValidationMessageFor(model => model.Payee, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Cost, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().NumericTextBoxFor(model => model.Cost).HtmlAttributes(new { @class = "kendo-numeric-medium" }).Min(0).Step(1)
+                @Html.ValidationMessageFor(model => model.Cost, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.VATRate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().NumericTextBoxFor(model => model.VATRate).HtmlAttributes(new { @class = "kendo-numeric-medium" }).Min(0).Max(100).Step(1).Format("#") %
+                @Html.ValidationMessageFor(model => model.VATRate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, 7, 1, new { @class = "k-textbox large" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().ComboBoxFor(model => model.Category).BindTo(ViewBag.Categories).HtmlAttributes(new { @class = "kendo-dropdown-large" }).Suggest(true)
+                @Html.ValidationMessageFor(model => model.Category, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.StatusEnum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().DropDownListFor(model => model.StatusEnum).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.ReconciliationStatus.None)).HtmlAttributes(new { @class = "kendo-dropdown-medium" }).Value(Model.StatusEnum.ToString())
+                @Html.ValidationMessageFor(model => model.StatusEnum, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <input type="submit" value="Save" class="k-button" /> @:&nbsp;
+    <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button> @:&nbsp;
+    <button class="delete-button k-button" value="Delete">Delete</button> 
+
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+
+    <script id="delete-confirmation" type="text/x-kendo-template">
+        <p class="delete-message">Are you sure that you want to delete this expense?</p>
+
+        <button class="delete-confirm k-button">Delete</button> &nbsp;
+        <a href="#" class="delete-cancel k-button">Cancel</a>
+    </script>
+}
+<script>
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/Expenses/Expenses');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/Expenses/Expenses');
+        }
+    });
+
+    $(".delete-button").click(function (e) {
+        e.preventDefault();
+
+        var kendoWindow = $("<div />").kendoWindow({
+            title: "Confirm",
+            resizable: false,
+            modal: true
+        });
+
+        kendoWindow.data("kendoWindow")
+            .content($("#delete-confirmation").html())
+            .center().open();
+
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+                .click(function () {
+                    if ($(this).hasClass("delete-confirm")) {
+                        window.location.replace('/Expenses/Delete/@Model.Id.ToString()');
+                    }
+
+                    kendoWindow.data("kendoWindow").close();
+                })
+                .end()
+    });
+</script>

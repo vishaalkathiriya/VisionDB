@@ -1,0 +1,455 @@
+﻿@model VisionDB.Models.Product
+@{
+    ViewBag.Title = "Add product";
+}
+
+<h2>Add a new Stock Product</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+
+    <fieldset>
+      
+            <table>
+                <tr>
+                    <td>
+
+                        <div>
+                            @* @Html.LabelFor(model => model.ProductTypeEnum) *@
+                            @Html.Label("Type Of Product")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.Kendo().DropDownListFor(model => model.ProductTypeEnum).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Product.ProductTypeList.None)).HtmlAttributes(new { @class = "kendo-dropdown-medium" })
+                            @Html.ValidationMessageFor(model => model.ProductTypeEnum)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @*  @Html.LabelFor(model => model.Name) *@
+                            @Html.Label("Product Name")
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            @Html.TextBoxFor(model => model.Name, new { maxlength = 50, @class = "k-textbox large", size = 25 })
+                            @Html.ValidationMessageFor(model => model.Name)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip">
+                            <div id="target1" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter a valid name for your product")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.LabelFor(model => model.Code)
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.TextBoxFor(model => model.Code, new { maxlength = 25, @class = "k-textbox large", size = 25 })
+                            @Html.ValidationMessageFor(model => model.Code)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip2">
+                            <div id="target2" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip2")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter a stock code for your product")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("Recommended Retail Price Incl VAT")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.Kendo().NumericTextBoxFor(model => model.Price).HtmlAttributes(new { @class = "kendo-numeric-medium" }).Min(0).Step(1)
+                            @Html.ValidationMessageFor(model => model.Price)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip3">
+                            <div id="target3" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip3")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter the retail price that you will be selling the product for")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("What is the VAT Rate?")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.Kendo().NumericTextBoxFor(model => model.VATRate).HtmlAttributes(new { @class = "kendo-numeric-small" }).Min(0).Max(100).Step(1).Format("#") %
+                            @Html.ValidationMessageFor(model => model.VATRate)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip4">
+                            <div id="target4" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip4")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter the VAT rate you will use when selling the product")
+            .Width(300)
+
+                        )
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("Add a Product Description")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.TextAreaFor(model => model.Description, 7, 1, new { @class = "k-textbox large" })
+                            @Html.ValidationMessageFor(model => model.Description)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip5">
+                            <div id="target5" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip5")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter a description for the product")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("Supplier Reference Number")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.TextBoxFor(model => model.ReferenceNumber, new { maxlength = 50, @class = "k-textbox large", size = 25 })
+                            @Html.ValidationMessageFor(model => model.ReferenceNumber)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip6">
+                            <div id="target6" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip6")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter the supplier reference number for this product")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        <div>
+                            @Html.LabelFor(model => model.Manufacturer)
+                        </div>
+                    </td>
+                    <td>
+
+                        <div>
+
+                            @Html.Kendo().ComboBoxFor(model => model.Manufacturer).BindTo(ViewBag.Manufacturers).HtmlAttributes(new { @class = "kendo-dropdown-large" }).Suggest(true)
+                            @Html.ValidationMessageFor(model => model.Manufacturer)
+
+                        </div>
+
+                    </td>
+                    <td>
+                        <div id="tooltip7">
+                            <div id="target7" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip7")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Select the name of the manufacturer")
+            .Width(300)
+
+                        )
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("Lens Type")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.Kendo().ComboBoxFor(model => model.LensType).BindTo(ViewBag.LensTypes).HtmlAttributes(new { @class = "kendo-dropdown-large" }).Suggest(true)
+                            @Html.ValidationMessageFor(model => model.LensType)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip8">
+                            <div id="target8" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip8")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter a lens type for your product if needed")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("Product Colour")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.TextBoxFor(model => model.Colour, new { maxlength = 25, @class = "k-textbox large", size = 25 })
+                            @Html.ValidationMessageFor(model => model.Colour)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip9">
+                            <div id="target9" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip9")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter the colour of the product if needed")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("Starting Stock Level")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.TextBox("Stocklevel", "", new { maxlength = 25, @class = "k-textbox large", size = 25 })
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip10">
+                            <div id="target10" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip10")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Enter the stock level you are adding")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("Supplier Cost Price")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            @Html.Kendo().NumericTextBoxFor(model => model.CostPrice).HtmlAttributes(new { @class = "kendo-numeric-medium" }).Min(0).Step(1)
+                            @Html.ValidationMessageFor(model => model.CostPrice)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip11">
+                            <div id="target11" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip11")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("The cost price for the product")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div>
+                            @Html.Label("Is product a frequently used item?")
+                        </div>
+                    </td>
+                    <td>
+                        <div>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            @Html.CheckBoxFor(model => model.FrequentlyUsed)
+                            @Html.ValidationMessageFor(model => model.FrequentlyUsed)
+                        </div>
+                    </td>
+                    <td>
+                        <div id="tooltip12">
+                            <div id="target12" class="k-button">
+                                <strong>?</strong>&nbsp;
+                            </div>
+                        </div>
+                        @(Html.Kendo().Tooltip()
+            .For("#tooltip12")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Tick this box if it is an item you use regualrly, these items will go to the top of the product search")
+            .Width(300)
+
+                        )
+                    </td>
+                </tr>
+            </table>
+
+    </fieldset>
+    <br />
+    <p>
+        <input type="submit" value="Add" class="k-button" /> &nbsp;
+        <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+    </p>
+
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+<script>
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/Inventory/Search');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/Inventory/Search');
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    function change() {
+        $("#tooltip").data("kendoTooltip").show($("#target" + this.value()));
+    }
+</script>

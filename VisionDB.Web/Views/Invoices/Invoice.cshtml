@@ -1,0 +1,306 @@
+﻿@using MvcReportViewer
+@using VisionDB.Helper
+@model VisionDB.Models.Invoice
+@{if (ViewBag.Customer != null)
+    {
+        ViewBag.Title = "Sale / dispense for " + ViewBag.Customer.ToString();
+        <text><h2>Sale / dispense for @ViewBag.Customer.ToString()</h2></text>
+    }
+    else
+    {
+        ViewBag.Title = "Ad hoc sale";
+        <text><h2>Counter Sale</h2></text>
+        <div>
+            Counter Sales are for when someone buys items over the counter and not related to a patient. If a patient purchases stock then please add purchase through patient record
+        </div>
+        <br />
+    }
+}
+<br />
+<table>
+    <tr>
+        <td><img src="~/Content/Images/print-48.png" alt="Print" /></td>
+        <td width="20px"></td>
+        <td>
+            <h10 class="btn-link" id="openinvoice">View Sale / Dispense</h10>
+            &nbsp; | &nbsp;
+            @Html.ActionLink("Print Preview", "ExportToPDF", new { id = Model.Id, SSRSReportName = "Invoice" }, new { target = "_blank" })
+            @if (ViewBag.Customer != null && ViewBag.Customer.Email != null && ViewBag.Customer.Email.Length > 0)
+            {
+                @:&nbsp; | &nbsp; @Html.ActionLink("Email", "EmailInvoice", new { id = Model.Id })
+            }
+            @{if (ViewBag.Customer != null)
+            {
+                    <br />
+                    <h10 class="btn-link" id="opendispensingrecord">View Dispensing Record</h10>
+                    @:&nbsp; | &nbsp; @Html.ActionLink("Print Preview", "ExportToPDF", new { id = Model.Id, SSRSReportName = "DispensingRecord" }, new { target = "_blank" })
+            }
+            }
+        </td>
+    </tr>
+</table>
+<br />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <fieldset>
+        Invoice Number: @Model.InvoiceNumber
+        <br />
+        Invoice Date: @Model.InvoiceDate.ToShortDateString() @Model.InvoiceDate.ToShortTimeString()
+        @{if (Model.DispenseEyeExam != null)
+            {
+                <br />
+                @:Eye test: @Model.DispenseEyeExam.ToStringEyeExam
+        }
+        }
+        @{if (ViewBag.Customer != null)
+            {
+                <br />
+                <br />
+                <table>
+                    <tr>
+                        <th width="25px"></th>
+                        <th width="100px">PD</th>
+                        <th width="100px">Near PD</th>
+                        <th width="100px">Height</th>
+                    </tr>
+                    <tr>
+                        <th height="50px">R</th>
+                        <td>
+                            <div class="k-textbox small">@NumericHelper.GetResult(ViewBag.PDRight)</div>
+                        </td>
+                        <td>
+                            <div class="k-textbox small">@NumericHelper.GetResult(ViewBag.PDRightNear)</div>
+                        </td>
+                        <td>
+                            <div class="k-textbox small">@NumericHelper.GetResult(ViewBag.RHeight)</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th height="50px">L</th>
+                        <td>
+                            <div class="k-textbox small">@NumericHelper.GetResult(ViewBag.PDLeft)</div>
+                        </td>
+                        <td>
+                            <div class="k-textbox small">@NumericHelper.GetResult(ViewBag.PDLeftNear)</div>
+                        </td>
+                        <td>
+                            <div class="k-textbox small">@NumericHelper.GetResult(ViewBag.LHeight)</div>
+                        </td>
+                    </tr>
+                </table>
+            }
+        }
+        <br />
+        <br />
+        @(Html.Kendo().Grid((IEnumerable<VisionDB.Models.InvoiceDetailViewModel>)ViewBag.InvoiceDetails)
+        .Name("InvoiceDetails")
+        .Columns(columns =>
+        {
+            columns.Bound(id => id.Id).Hidden(true);
+            columns.Bound(id => id.FullProductName).Title("Product");
+            columns.Bound(id => id.UnitPriceToString).Title("Price Inc VAT").Width(80);
+            columns.Bound(id => id.Quantity).Title("Quantity").Width(80);
+            columns.Bound(id => id.SpectacleNumber).Title("Spectacle Set").Width(80);
+            columns.Bound(id => id.Status).Title("Status").Width(220);
+        })
+        //.Pageable() //todo: fix paging.
+        .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model => model.Id(p => p.Id))
+              .Read(read => read.Action("EditInvoiceDetail", "Invoices"))
+              )
+        )
+    </fieldset>
+    <br />
+    @:Discount @Math.Round(Model.DiscountPercentage, 0)%
+            <br />
+            <br />
+            <text>Notes</text>
+            <br />
+            @Model.Notes
+            if (Model.Notes != null)
+            {
+                <br />
+            }
+            <br />
+            <text>Total: £</text>@Math.Round(Model.TotalIncVAT, 2) <text>Inc VAT</text>
+            <br />
+            <br />
+            <text>Balance: £</text>@Math.Round(Model.BalanceIncVAT, 2) <text>Inc VAT</text>
+            <br />
+            <br />
+            @:How will order be sent? @Model.MethodSentByEnum.ToString()
+            <br />
+            <br />
+            @:Status: @Model.DispenseStatus.ToString().Replace('_', ' ') &nbsp;
+    if (Model.DispenseStatus == VisionDB.Models.Enums.InvoiceStatus.Awaiting_Collection_Or_Dispatch && Model.MethodSentByEnum == VisionDB.Models.Enums.MethodSentBy.Collection)
+            {
+                <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("MarkAsSent", "Invoices", new { id = Model.Id })'">Order has been collected</button>
+            }
+            else if (Model.DispenseStatus == VisionDB.Models.Enums.InvoiceStatus.Awaiting_Collection_Or_Dispatch && Model.MethodSentByEnum == VisionDB.Models.Enums.MethodSentBy.Dispatch)
+            {
+                <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("MarkAsSent", "Invoices", new { id = Model.Id })'">Order has been dispatched</button>
+            }
+            <br />
+            <br />
+            <p>
+                <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Invoices", new { id = Model.Id })'">Edit</button> &nbsp;
+                <button class="delete-button k-button" value="Delete">Delete</button> &nbsp;
+                @{if (Request["ReturnTo"] != null && Request["ReturnTo"] == "customer")
+                    {
+                        <button class="k-button" type="button" value="Cancel" onclick="location.href='@Url.Action("Customer", "Customers", new { id = Model.customer.Id })'">Back to patient</button>
+                    }
+                    else
+                    {
+                        <button class="k-button" type="button" value="Cancel" onclick="location.href='@Url.Action("Dispensing", "Invoices")'">Dispensing</button>
+                    }
+                }
+                <!-- -------------------------------------------------- -->
+                <!-- DRC INFOTECH -->
+                <!-- WILL BE VISIBLE IF INVOICE CONTAINS REFUNDABLE PRODUCT -->
+                <!-- -------------------------------------------------- -->
+                &nbsp;
+                @if (ViewBag.IsRefundableInvoice == true)
+                {
+                    <button id="btn-refund" type="button" class="k-button" value="Refund">Refund</button>
+                }
+            </p>
+
+            <script id="delete-confirmation" type="text/x-kendo-template">
+                <p class="delete-message">Are you sure?</p>
+                <button class="delete-confirm k-button">Delete</button> &nbsp;
+                <a href="#" class="delete-cancel k-button">Cancel</a>
+            </script>
+
+            <div id="refund-window">
+                <form id="frmRefund">
+                    <p>
+                        <text>Total Refundable Amount: £</text>@Math.Round(Model.TotalIncVAT, 2)
+                        <text>Inc VAT</text>
+                    </p>
+                    <p>
+                        <label for="txt-refund-amount">Refund Amount: </label>
+                        <input type="number" required id="txt-refund-amount" name="txt-refund-amount" class="k-textbox" />
+                        <button id="btn-refund-save" class="k-button" type="submit" value="Save">Save</button>
+                    </p>
+                </form>
+            </div>
+
+                    }
+@(Html.Kendo().Window()
+        .Name("invoice")
+    .Title("Invoice")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(Model.practice.Id, "Invoice"),
+        new { invoiceId = Model.Id },
+        new { height = 600, width = 640, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+)
+@(Html.Kendo().Window()
+    .Name("dispensingrecord")
+    .Title("Dispensing Record")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(Model.practice.Id, "DispensingRecord"),
+        new { invoiceId = Model.Id },
+        new { height = 600, width = 640, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+)
+<script>
+    $(function(){
+        $(".delete-button").click(function (e) {
+            e.preventDefault();
+
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#delete-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".delete-confirm,.delete-cancel")
+                .click(function () {
+                    if ($(this).hasClass("delete-confirm")) {
+                        window.location.replace('/Invoices/Delete/@Model.Id.ToString()');
+                    }
+                    kendoWindow.data("kendoWindow").close();
+                })
+                .end()
+        });
+
+        $("#openinvoice").bind("click", function () {
+            $("#invoice").data("kendoWindow").center().open();
+        });
+
+        $("#opendispensingrecord").bind("click", function () {
+            $("#dispensingrecord").data("kendoWindow").center().open();
+        });
+
+        //DRC INFOTECH
+        //HANDLES CLICK EVENT OF REFUND BUTTON
+        var maxRefundAmount = @Math.Round(Model.TotalIncVAT, 2);
+
+        var kendoWindow = $("#refund-window").kendoWindow({
+            title: "Process Refund",
+            draggable: true,
+            resizable: true,
+            modal: true,
+            width: "400px",
+            height: "200px",
+            actions: ["Pin", "Minimize", "Maximize", "Close"],
+            visible: false
+        });
+
+        $('#btn-refund').on('click', function (e) {
+            e.preventDefault();
+
+            $("#frmRefund").validate({
+                rules: {
+                    "txt-refund-amount": {
+                        required: true,
+                        maxlength: maxRefundAmount,
+                        number: true
+                    }
+                },
+                messages: {
+                    "txt-refund-amount": {
+                        required: "Please enter refund amount",
+                        max: "Please enter valid refund amount",
+                        number: "Please enter valid refund amount"
+                    }
+                }
+            });
+
+
+
+            kendoWindow.data("kendoWindow").center().open();
+
+            kendoWindow.find("#btn-refund-save").on('click', function () {
+                var refundAmount = $('#txt-refund-amount').val();
+                if (refundAmount <= 0 || refundAmount > maxRefundAmount) {
+                    $("#refund-window").append("<p class='text-danger'>Please enter valid refund amount</p>");
+                    return false;
+                }
+                else {
+                    $("#refund-window").find(".text-danger").remove();
+                    //return true;
+                    window.location.replace('/Invoices/ProcessRefund?id=@Model.Id.ToString()&amount=' + refundAmount);
+                }
+            });
+        });
+    });
+</script>

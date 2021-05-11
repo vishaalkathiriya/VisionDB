@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
+<div class="alert-warning">@TempData["Warning"]</div>
+<h2>Dashboard</h2>
+@if (ViewBag.company.SMSStockLevel < 10)
+{
+    <h3 class="alert-danger">Text messages remaining: @ViewBag.company.SMSStockLevel</h3>
+}
+else if (ViewBag.company.SMSStockLevel < 100)
+{
+    <h3 class="alert-warning">Text messages remaining: @ViewBag.company.SMSStockLevel</h3>
+}
+
+<table>
+    <tr>
+        <td width="420px">
+            <h3>Today's appointments</h3>
+
+            @{if ((int)ViewBag.TodaysPendingAppointmentCount == 0 && (int)ViewBag.TodaysAttendedAppointmentCount == 0 && (int)ViewBag.TodaysMissedAppointmentCount == 0)
+            {
+                <text>No appointments today</text>
+            }
+            else
+            {
+                <text>
+                    <div class="chart-wrapper">
+                        @(Html.Kendo().Chart()
+                .Name("todaysAppointments")
+        .Legend(legend => legend
+            .Visible(false)
+        )
+        .Series(series =>
+        {
+            series.Pie(new dynamic[] {
+                new {category="Pending",value=(int)ViewBag.TodaysPendingAppointmentCount,color="#9de219"},
+                new {category="Attended",value=(int)ViewBag.TodaysAttendedAppointmentCount,color="#90cc38"},
+                new {category="Missed",value=(int)ViewBag.TodaysMissedAppointmentCount,color="#068c35"}
+            })
+            .Labels(labels => labels
+                .Template("#= category #")
+                .Background("transparent")
+                .Visible(true)
+                .Position(ChartPieLabelsPosition.OutsideEnd)
+            )
+            .StartAngle(110);
+        })
+        .Tooltip(tooltip => tooltip
+            .Visible(true)
+            .Format("{0}")
+        )
+                        )
+
+                    </div>
+                </text>
+            }
+            }
+
+
+        </td>
+        <td width="420px">
+            <h3>This week's appointments</h3>
+            @{if ((int)ViewBag.WeeksPendingAppointmentCount == 0 && (int)ViewBag.WeeksAttendedAppointmentCount == 0 && (int)ViewBag.WeeksMissedAppointmentCount == 0)
+            {
+                <text>No appointments this week</text>
+            }
+            else
+            {
+                <text>
+                    <div class="chart-wrapper">
+                        @(Html.Kendo().Chart()
+                .Name("pastWeeksAppointments")
+        .Legend(legend => legend
+            .Visible(false)
+        )
+        .Series(series =>
+        {
+            series.Pie(new dynamic[] {
+                new {category="Pending",value=(int)ViewBag.WeeksPendingAppointmentCount,color="#9de219"},
+                new {category="Attended",value=(int)ViewBag.WeeksAttendedAppointmentCount,color="#90cc38"},
+                new {category="Missed",value=(int)ViewBag.WeeksMissedAppointmentCount,color="#068c35"}
+            })
+            .Labels(labels => labels
+                .Template("#= category #")
+                .Background("transparent")
+                .Visible(true)
+                .Position(ChartPieLabelsPosition.OutsideEnd)
+            )
+            .StartAngle(110);
+        })
+        .Tooltip(tooltip => tooltip
+            .Visible(true)
+            .Format("{0}")
+        )
+                        )
+                    </div></text>
+            }
+            }
+        </td>
+    </tr>
+</table>
+@if (@ViewBag.NextAppointment != null)
+{
+    <text>Next appointment:</text> @ViewBag.NextAppointment
+}
+@if (ViewBag.Practice.ShowPracticeNotesOnDashboard)
+{
+    <hr />
+    <h3>Notes</h3>
+    <br />
+    <button class="k-button" type="button" value="DocumentTemplate" onclick="location.href='@Url.Action("Add", "Notes")'">Add note</button>
+    <div class="red-text">To add a note for a patient, you must go into their record first.</div>
+    <br />
+    @(Html.Kendo().Grid<VisionDB.Models.NoteViewModel>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_Read", "Notes"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.Description);
+          columns.Template(x => { }).ClientTemplate(
+              "<a class='k-button' href='" +
+              Url.Action("Note", "Notes") +
+              "/#= Id #'" +
+              ">View details</a>"
+              ).Width(130);
+      })
+      .Sortable()
+      .Pageable()
+    )
+}

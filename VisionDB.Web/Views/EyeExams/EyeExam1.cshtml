@@ -1,0 +1,956 @@
+﻿@using MvcReportViewer
+@using VisionDB.Helper
+@model VisionDB.Models.EyeExam
+@{
+    ViewBag.Title = "Eye Exam";
+}
+
+<h3>Eye Exam for @Model.customer.ToString() - @string.Concat(@Model.TestDateAndTime.DayOfWeek.ToString(), " ", @Model.TestDateAndTime.ToShortDateString(), " ", @Model.TestDateAndTime.ToShortTimeString())</h3>
+
+@using (Html.BeginForm())
+{
+    <br />
+    <table>
+        <tr>
+            <td><img src="~/Content/Images/print-48.png" alt="Print" /></td>
+            <td width="20px"></td>
+            <td>
+                <h10 class="btn-link" id="openprescription">Prescription</h10>
+                <br />
+                @{if (Model.customer.practice.ShowGOSForms)
+                {
+                    @:Print Forms: &nbsp;
+                    @Html.ActionLink("GOS 1 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS1Front" }, new { target = "_blank" })
+                    @:&nbsp;
+                    @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS1Back" }, new { target = "_blank" })
+                    @:&nbsp; | &nbsp;
+                    @Html.ActionLink("GOS 2 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS2Front" }, new { target = "_blank" })
+                    @:&nbsp; | &nbsp;
+                    @Html.ActionLink("GOS 3 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS3Front" }, new { target = "_blank" })
+                    @:&nbsp;
+                    @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS3Back" }, new { target = "_blank" })
+                    @:&nbsp; | &nbsp;
+                    @Html.ActionLink("GOS 4 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS4Front" }, new { target = "_blank" })
+                    @:&nbsp;
+                    @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS4Back" }, new { target = "_blank" })
+                    @:&nbsp; | &nbsp;
+                    @Html.ActionLink("GOS 5 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS5Front" }, new { target = "_blank" })
+                    @:&nbsp;
+                    @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS5Back" }, new { target = "_blank" })
+                    @:&nbsp; | &nbsp;
+                    @Html.ActionLink("GOS 6 Front", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS6Front" }, new { target = "_blank" })
+                    @:&nbsp;
+                    @Html.ActionLink("Back", "GOSFormExport", new { id = Model.Id, GOSForm = "GOS6Back" }, new { target = "_blank" })
+                }
+                }
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+    <text>Optician </text><div class="k-textbox large">@Html.DisplayTextFor(model => model.Optician.UserToString)</div>
+    <br />
+    <br />
+    <div>
+        <br />
+        <h4>Prescription Issued</h4>
+        <br />
+        <table>
+            <tr>
+                <th width="25px" height="50px"></th>
+                <th width="100px">Sph D</th>
+                <th width="100px">Cyl D</th>
+                <th width="100px">Axis D</th>
+                <th width="100px">Prism D H</th>
+                <th width="100px">Prism D V</th>
+                <th width="100px">Base D H</th>
+                <th width="100px">Base D V</th>
+                <th width="100px">I Add</th>
+            </tr>
+            <tr>
+                <th class="rotation" rowspan="2">RIGHT</th>
+                <td height="50px"><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RSphericalDist)</div>@*rsphd*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RCylDist)</div>@*rcyld*@</td>
+                <td><div class="k-textbox small">@Model.RAxisDist</div>@*raxisd*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RPrismDistH)</div>@*rprismdh*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RPrismDistV)</div>@*rprismdv*@</td>
+                <td><div class="k-textbox medium">@Model.RBaseDistH</div>@*rbasedh*@</td>
+                <td><div class="k-textbox medium">@Model.RBaseDistV</div>@*rbasedv*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.IAddRight)</div>@*riadd*@</td>
+            </tr>
+            <tr>
+                <th height="50px">Sph N</th>
+                <th>Cyl N</th>
+                <th>Axis N</th>
+                <th>Prism N H</th>
+                <th>Prism N V</th>
+                <th>Base N H</th>
+                <th>Base N V</th>
+                <th>N Add</th>
+            </tr>
+            <tr>
+                <td height="50px"></td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RSphericalNear)</div>@*rsphn*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RCylNear)</div>@*rcyln*@</td>
+                <td><div class="k-textbox small">@Model.RAxisNear</div>@*raxisn*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RPrismNearH)</div>@*rprismnh*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RPrismNearV)</div>@*rprismnv*@</td>
+                <td><div class="k-textbox medium">@Model.RBaseNearH</div>@*rbasenh*@</td>
+                <td><div class="k-textbox medium">@Model.RBaseNearV</div>@*rbasenv*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.NAddRight)</div>@*rnadd*@</td>
+            </tr>
+            <tr>
+                <td colspan="9"><hr /></td>
+            </tr>
+            <tr>
+                <td height="50px"></td>
+                <th>Sph D</th>
+                <th>Cyl D</th>
+                <th>Axis D</th>
+                <th>Prism D H</th>
+                <th>Prism D V</th>
+                <th>Base D H</th>
+                <th>Base D V</th>
+                <th>I Add</th>
+            </tr>
+            <tr>
+                <th class="rotation" rowspan="2">LEFT</th>
+                <td height="50px"><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.LSphericalDist)</div>@*lsphd*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.LCylDist)</div>@*lcyld*@</td>
+                <td><div class="k-textbox small">@Model.LAxisDist</div>@*laxisd*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.LPrismDistH)</div>@*lprismdh*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.LPrismDistV)</div>@*lprismdv*@</td>
+                <td><div class="k-textbox medium">@Model.LBaseDistH</div>@*lbasedh*@</td>
+                <td><div class="k-textbox medium">@Model.LBaseDistV</div>@*lbasedv*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.IAddLeft)</div>@*liadd*@</td>
+            </tr>
+            <tr>
+                <th height="50px">Sph N</th>
+                <th>Cyl N</th>
+                <th>Axis N</th>
+                <th>Prism N H</th>
+                <th>Prism N V</th>
+                <th>Base N H</th>
+                <th>Base N V</th>
+                <th>N Add</th>
+            </tr>
+            <tr>
+                <td height="50px"></td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.LSphericalNear)</div>@*lsphn*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.LCylNear)</div>@*lcyln*@</td>
+                <td><div class="k-textbox small">@Model.LAxisNear</div>@*laxisn*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.LPrismNearH)</div>@*lprismnh*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.LPrismNearV)</div>@*lprismnv*@</td>
+                <td><div class="k-textbox medium">@Model.LBaseNearH</div>@*lbasenh*@</td>
+                <td><div class="k-textbox medium">@Model.LBaseNearV</div>@*lbasenv*@</td>
+                <td><div class="k-textbox small">@NumericHelper.GetSignedResult(Model.NAddLeft)</div>@*lnadd*@</td>
+            </tr>
+        </table>
+        <br />
+        @(Html.Kendo().PanelBar()
+        .Name("eyeExams")
+        .ExpandMode(PanelBarExpandMode.Multiple)
+        .Items(panelbar =>
+          {
+              panelbar.Add().Text("Clinical Record")
+                  .Content(@<text>
+                    <table id="EyeExam">
+                        <tr>
+                            <td>
+                                <h4>Objective</h4>
+                                Method <div class="k-textbox medium-field">@Model.ObjectiveMethodEnum.ToString()</div>
+                                <br />
+                                <br />
+                                <table>
+                                    <tr>
+                                        <th width="25px"></th>
+                                        <th width="80px">D Vision</th>
+                                        <th width="80px">N Vision</th>
+                                        <th width="100px">Sph</th>
+                                        <th width="100px">Cyl</th>
+                                        <th width="100px">Axis</th>
+                                    </tr>
+                                    <tr>
+                                        <th height="50px">R</th>
+                                        <td>
+                                            <div class="k-textbox small">@Model.RetDvisionR</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.RetNvisionR</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RetSphereR)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RetCylR)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.RetAxisR</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th height="50px">L</th>
+                                        <td>
+                                            <div class="k-textbox small">@Model.RetDvisionL</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.RetNvisionL</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RetSphereL)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.RetCylL)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.RetAxisL</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <h4>Subjective</h4>
+                                <br />
+                                <table>
+                                    <tr>
+                                        <th width="25px"></th>
+                                        <th width="80px">D Vision</th>
+                                        <th width="80px">N Vision</th>
+                                        <th width="100px">Sph</th>
+                                        <th width="100px">Cyl</th>
+                                        <th width="100px">Axis</th>
+                                        <th width="100px">Prism Dist</th>
+                                        <th width="100px">VA</th>
+                                        <th width="100px">Bin VA</th>
+                                        <th width="100px">I. Add</th>
+                                        <th width="100px">N. Add</th>
+                                        <th width="100px">N. VA</th>
+                                        <th width="100px">Bin N. VA</th>
+                                        <th width="100px">Prism Near</th>
+                                    </tr>
+                                    <tr>
+                                        <th height="50px">R</th>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubRVisionD</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubRVisionN</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubRSph)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubRCyl)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubRAxis</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubRPrismD)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubRVA</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubRBinVA</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubRIAdd)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubRNAdd)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubRNVA</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubRBinNVA</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubRPrismN)</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th height="50px">L</th>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubLVisionD</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubLVisionN</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubLSph)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubLCyl)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubLAxis</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubLPrismD)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubLVA</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubLBinVA</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubLIAdd)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubLNAdd)</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubLNVA</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.SubLBinNVA</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@NumericHelper.GetSignedResult(Model.SubLPrismN)</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <br />
+                                <table>
+                                    <tr>
+                                        <th width="25px"></th>
+                                        <th width="100px">BVD</th>
+                                        <th width="100px">PD</th>
+                                        <th width="100px">Near PD</th>
+                                        <th width="100px">Height</th>
+                                    </tr>
+                                    <tr>
+                                        <th height="50px">R</th>
+                                        <td>
+                                            <div class="k-textbox small">@Model.BVDRight</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.PDRight</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.PDRightNear</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.RHeight</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th height="50px">L</th>
+                                        <td>
+                                            <div class="k-textbox small">@Model.BVDLeft</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.PDLeft</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.PDLeftNear</div>
+                                        </td>
+                                        <td>
+                                            <div class="k-textbox small">@Model.LHeight</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>@Html.Label("Notes")</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox extra-large">@Html.DisplayWithBreaksFor(model => model.Notes)</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+              panelbar.Add().Text("Additional Tests")
+                    .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <th width="170px">OMB</th>
+                            <th>RX</th>
+                        </tr>
+                        <tr>
+                            <th>Phoria D.</th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.PhoriaD</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Phoria N.</th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.PhoriaN</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <table>
+                        <tr>
+                            <th width="170px"></th>
+                            <th width="350px">Distance</th>
+                            <th>Near</th>
+                        </tr>
+                        <tr>
+                            <th>
+                                Cover Test
+                            </th>
+
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.CoverTestDistance</div>
+                            </td>
+
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.CoverTestNear</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Motility
+                            </th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.MotilityDistance</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.MotilityNear</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Pupils RAPD</th>
+                            <td>
+                                <div class="k-textbox medium">@Model.PupilRAPD.ToString()</div>
+                            </td>
+                            <td></td>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                Convergence
+                            </th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.ConvergenceDistance</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.ConvergenceNear</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Muscle Balance
+                            </th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.MuscleBalanceFDDistance</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.MuscleBalanceFDNear</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Amp of Accommodation
+                            </th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.AccommodationDistance</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.AccommodationNear</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Confrontation
+                            </th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.ConfrontationLeft</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.ConfrontationRight</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Keratometry
+                            </th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.KeratometryDistance</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.KeratometryNear</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <table>
+                        <tr>
+                            <th width="170px"></th>
+                            <th width="350px">Right</th>
+                            <th>Left</th>
+                        </tr>
+                        <tr>
+                            <th>Visual Fields</th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.VisualFieldsR</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.VisualFields</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Amsler</th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.AmslerR</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.Amsler</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Colour Vision</th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.ColourVisionR</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.ColourVision</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Stereo Vision</th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.StereoVisionR</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.StereoVision</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Other</th>
+                            <td colspan="2">
+                                <div class="k-textbox large">@Html.DisplayWithBreaksFor(model => model.Other)</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    </text>);
+              panelbar.Add().Text("IOP & Drugs")
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <th rowspan="3" width="100px">IOP</th>
+                            <th width="80px" height="20px"></th>
+                            <th width="80px">1</th>
+                            <th width="80px">2</th>
+                            <th width="80px">3</th>
+                            <th width="80px">4</th>
+                            <th width="80px">5</th>
+                            <th width="80px">Average</th>
+                        </tr>
+                        <tr>
+                            <th height="50px">Right</th>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPR1</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPR2</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPR3</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPR4</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPR5</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPRAvg</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th height="50px">Left</th>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPL1</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPL2</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPL3</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPL4</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPL5</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox small">@Model.IOPLAvg</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <table>
+                        <tr>
+
+                            <th height="20px">Dilated</th>
+                            <th colspan="4">Drug Used</th>
+                        </tr>
+                        <tr>
+                            <td width="100px" height="50px">
+                                <div class="k-textbox medium">@Model.Dialated.ToString()</div>
+                            </td>
+                            <td colspan="4">
+                                <div class="k-textbox large-singleline">@Model.DrugUsed</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th height="20px"></th>
+                            <th width="300px">Time Instilled</th>
+                            <th width="300px">Drug Batch</th>
+                            <th width="300px">Drug Expiry</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.TimeDrugUsed</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.DrugBatch</div>
+                            </td>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.DrugExpiry</div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+              panelbar.Add().Text("External Eye")
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <th>Right</th>
+                            <th></th>
+                            <th>Left</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.lidslashesright</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Lids/Lashes<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.lidslashesleft</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.ConjunctivaRight</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Conjunctiva<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.ConjunctivaLeft</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.cornearight</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Cornea<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.cornealeft</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.acright</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp;  A/C<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.acleft</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.vitreousright</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Vitreous<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.vitreousleft</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.IrisRight</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Iris<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.IrisLeft</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.pupilsright</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Pupil Size<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.pupilsleft</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <table>
+                        <tr>
+                            <th width="100">Anisocoria</th>
+                            <td>
+                                <div class="k-textbox medium">@Model.anisocoria</div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+              panelbar.Add().Text("Ophthalmoscopy")
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <td colspan="3">
+                                <strong>Method Used</strong>
+                                <br />
+                                <div class="k-textbox extra-large">@Html.DisplayWithBreaksFor(model => model.OphthalmoscopyMethodUsed)</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <th>Right</th>
+                            <th></th>
+                            <th>Left</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyRDisc</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Disc<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyLDisc</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyRNRR</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; NRR<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyLNRR</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyRCDRatio</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; C/D Ratio<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyLCDRatio</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyRVessels</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp;  Vessels<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyLVessels</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyRPeriphery</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Periphery<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyLPeriphery</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyRMacula</div>
+                            </td>
+                            <th width="100"><br /><br />&nbsp; Macula<br /><br /></th>
+                            <td>
+                                <div class="k-textbox large-singleline">@Model.OphthalmoscopyLMacula</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <strong>Description</strong>
+                                <br />
+                                <div class="k-textbox extra-large">@Html.DisplayWithBreaksFor(model => model.OphthalmoscopyDescription)</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+              panelbar.Add().Text("Symptoms and History")
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <td width="150px" height="100px">
+                                @Html.LabelFor(model => model.MEDS)
+                            </td>
+                            <td width="260px">
+                                <div class="k-textbox medium-field">@Html.DisplayWithBreaksFor(model => model.MEDS)</div>
+                            </td>
+                            <td width="160px">
+                                @Html.LabelFor(model => model.Allergies)
+                            </td>
+                            <td width="260px">
+                                <div class="k-textbox medium-field">@Html.DisplayWithBreaksFor(model => model.Allergies)</div>
+                            </td>
+                            <td width="160px"></td>
+                            <td width="260px"></td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.SymptomsAndHistory)
+                            </td>
+                            <td>
+                                <div class="k-textbox medium-field">@Html.DisplayWithBreaksFor(model => model.SymptomsAndHistory)</div>
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.RFV)
+                            </td>
+                            <td>
+                                <div class="k-textbox medium-field">@Html.DisplayWithBreaksFor(model => model.RFV)</div>
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.GH)
+                            </td>
+                            <td>
+                                <div class="k-textbox medium-field">@Html.DisplayWithBreaksFor(model => model.GH)</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.POH)
+                            </td>
+                            <td>
+                                <div class="k-textbox medium-field">@Html.DisplayWithBreaksFor(model => model.POH)</div>
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.FH)
+                            </td>
+                            <td>
+                                <div class="k-textbox medium-field">@Html.DisplayWithBreaksFor(model => model.FH)</div>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+          })
+        )
+        <br />
+    </div>
+    <table>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.PatientAdvice)
+                <br />
+                <div class="k-textbox extra-large">@Html.DisplayWithBreaksFor(model => model.PatientAdvice)</div>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.ProductRecommendations)
+                <br />
+                <div class="k-textbox extra-large">@Html.DisplayWithBreaksFor(model => model.ProductRecommendations)</div>
+            </td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                @Html.CheckBoxFor(model => model.ReferralSent, new { @disabled = "disabled" }) &nbsp; @Html.LabelFor(model => model.ReferralSent)
+            </td>
+        </tr>
+    </table>
+    <br />
+    <p>
+        @if (Session["user"] != null 
+            && (((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Optician)
+            || ((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Locum)))          
+        {
+            <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("EditEyeExam1", "EyeExams", new { id = Model.Id })'">Edit Details</button> @:&nbsp;
+            <button class="delete-button k-button" value="Delete">Delete</button> @:&nbsp;
+        }
+        <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Customer", "Customers", new { id = Model.customer.Id })'">Back to patient</button>
+    </p>
+
+    <script id="delete-confirmation" type="text/x-kendo-template">
+        <p class="delete-message">Are you sure?</p>
+
+        <button class="delete-confirm k-button">Delete</button> &nbsp;
+        <a href="#" class="delete-cancel k-button">Cancel</a>
+    </script>
+}
+
+@(Html.Kendo().Window()
+        .Name("prescription")
+    .Title("Prescription")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(Model.customer.practice.Id, "EyeExamPrescription"),
+        new { EyeExamId = Model.Id },
+        new { height = 600, width = 620, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+)
+
+<script>
+    $(".delete-button").click(function (e) {
+        e.preventDefault();
+
+        var kendoWindow = $("<div />").kendoWindow({
+            title: "Confirm",
+            resizable: false,
+            modal: true
+        });
+
+        kendoWindow.data("kendoWindow")
+            .content($("#delete-confirmation").html())
+            .center().open();
+
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+                .click(function () {
+                    if ($(this).hasClass("delete-confirm")) {
+                        window.location.replace('/EyeExams/Delete/@Model.Id.ToString()');
+                    }
+
+                    kendoWindow.data("kendoWindow").close();
+                })
+                .end()
+    });
+
+    $(document).ready(function () {
+        $("#openprescription").bind("click", function () {
+            $("#prescription").data("kendoWindow").center().open();
+        });
+    });
+
+</script>

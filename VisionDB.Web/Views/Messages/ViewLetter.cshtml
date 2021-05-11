@@ -1,0 +1,24 @@
+﻿@using VisionDB.Helper
+@model VisionDB.Models.Message
+@{
+    ViewBag.Title = "Letter to " + @ViewBag.Customer.ToString();
+}
+
+<h3>Letter to @ViewBag.Customer.ToString()</h3>
+<br />
+@Html.DisplayName("Address")
+<br />
+<div class="k-textbox extra-large">@Html.DisplayWithBreaksFor(model => model.ToAddressNumber)</div>
+<br />
+<hr />
+@Html.Raw(Model.MessageText)
+<hr />
+<button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("LetterExport", "Messages", new { id = Model.Id, ReportName = "RecallLetter" })'">Print</button> &nbsp; 
+@if (Model.RecipientId != Guid.Empty)
+{
+    <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Customer", "Customers", new { id = Model.RecipientId })'">Back to patient</button>
+}
+else
+{
+    <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Search", "Customers")'">Back</button>
+}

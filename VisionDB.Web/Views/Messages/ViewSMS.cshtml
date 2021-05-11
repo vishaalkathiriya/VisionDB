@@ -1,0 +1,26 @@
+﻿@using VisionDB.Helper
+@model VisionDB.Models.Message
+@{
+    ViewBag.Title = "SMS to " + @ViewBag.Customer.ToString();
+}
+
+<h3>SMS to @ViewBag.Customer.ToString()</h3>
+<br />
+@Html.DisplayName("SMS Number")
+<br />
+<div class="k-textbox extra-large">@ViewBag.Customer.SMSNumber</div>
+<br />
+<br />
+@Html.DisplayNameFor(model => model.MessageText)
+<br />
+<div class="k-textbox extra-large">@Html.DisplayWithBreaksFor(model => model.MessageText)</div>
+<br />
+<br />
+@if (Model.RecipientId != Guid.Empty)
+{ 
+    <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Customer", "Customers", new { id = Model.RecipientId })'">Back to patient</button>
+}
+else
+{
+    <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Search", "Customers")'">Back</button>
+}

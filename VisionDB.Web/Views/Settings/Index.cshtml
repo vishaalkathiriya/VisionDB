@@ -1,0 +1,10 @@
+﻿@model VisionDB.Models.Setting
+@{
+    ViewBag.Title = "Settings";
+}
+
+<h2>Settings</h2>
+<br />
+<br />
+<button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Settings")'">Edit</button> &nbsp; 
+<button class="k-button" type="button" value="Cancel" onclick="location.href='@Url.Action("Index", "Admin")'">Cancel</button>

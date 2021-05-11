@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "Goods In";
+}
+
+<h2><img src="~/Content/Images/goodsIn48.png" alt="Goods In" /> Order Stock / Stock Received</h2>
+@using (Html.BeginForm("GoodsIn", "Inventory", FormMethod.Post, null))
+{
+    <table>
+        <tr>
+        <td><strong>Update status&nbsp;</strong></td>
+        <td><strong>Select&nbsp;</strong></td>
+        </tr>
+        <tr>
+            <td>Include not ordered &nbsp;</td>
+            <td>@Html.CheckBox("IncludeNotOrdered") &nbsp; </td>
+        </tr>
+        <tr>
+            <td>Include ordered &nbsp;</td>
+            <td>@Html.CheckBox("IncludeOrdered") &nbsp; </td>
+        </tr>
+        <tr>
+            <td>Include received &nbsp;</td>
+            <td>@Html.CheckBox("IncludeReceived") &nbsp; </td>
+        </tr>
+        <tr>
+            <td>Include patient notified &nbsp;</td>
+            <td>@Html.CheckBox("IncludeNotified") &nbsp; </td>
+        </tr>
+    </table>
+    <br />
+
+    <input id="btnUpdate" type="submit" value="Refresh" class="k-button" /> 
+    <button class="k-button" type="button" value="Dispense" onclick="location.href='@Url.Action("Dispensing", "Invoices")'">Dispensing</button> 
+    <button class="k-button" type="button" value="Reconcile" onclick="location.href='@Url.Action("Reconcile", "Invoices")'">Reconcile Payments / Vouchers</button>
+}
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.InvoiceDetailViewModel>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_Read", "Inventory", new { IncludeNotOrdered = (bool)ViewBag.IncludeNotOrdered, IncludeOrdered = (bool)ViewBag.IncludeOrdered, IncludeReceived = (bool)ViewBag.IncludeReceived, IncludeNotified = (bool)ViewBag.IncludeNotified }))
+          .Update(update => update.Action("_Update", "Inventory").Data("additionalData"))
+          .Events(events => events.Sync("sync_handler"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).ClientTemplate("<input type=\"checkbox\" />").Title("Select");
+          columns.Bound(j => j.Added).Title("Ordered").Format("{0:dd/MM/yyyy HH:mm}");
+          columns.Bound(j => j.FullProductName).Title("Product");
+          columns.Bound(j => j.Quantity).Title("Quantity");
+          columns.Bound(j => j.InvoiceNumber).Title("Invoice No");
+          columns.Bound(j => j.CustomerName).Title("Customer");
+          columns.Bound(j => j.Status).Title("Status");
+      })
+      .ClientRowTemplate("<tr bgcolor='#: Colour#'>"
+          + "<td><input type=\"checkbox\" /></td>"
+          + "<td>#: AddedToString#</td>"
+          + "<td>#: FullProductName#</td>"
+          + "<td>#: Quantity#</td>"
+          + "<td>#: InvoiceNumber#</td>"
+          + "<td>#: CustomerName#</td>"
+          + "<td>#: Status#</td>"
+          + "</tr>")
+          .Sortable()
+          .Pageable()
+)
+<br />
+<table>
+    <tr>
+        <td>
+            <strong>Status Update &nbsp;</strong>
+        </td>
+        <td>
+            @(Html.Kendo().DropDownList()
+              .Name("InvoiceDetailStatus")
+              .DataTextField("Text")
+              .DataValueField("Value")
+              .HtmlAttributes(new { @class = "kendo-dropdown-large" })
+              .BindTo(new List<SelectListItem>() {
+                  new SelectListItem() {
+                      Text = "Not Ordered",
+                      Value = "0"
+                  },
+                  new SelectListItem() {
+                      Text = "Ordered",
+                      Value = "1"
+                  },
+                  new SelectListItem() {
+                      Text = "Received",
+                      Value = "2"
+                  },
+                  new SelectListItem() {
+                      Text = "Notified",
+                      Value = "6"
+                  },
+                  new SelectListItem() {
+                      Text = "Awaiting Collection or Dispatch",
+                      Value = "5"
+                  }
+              })
+              .Value("1")
+            )
+        </td>
+        <td>&nbsp; &nbsp; <input type="submit" value="Update Stock Status" class="k-button" id="apply2" /></td>
+        <td>
+            <div id="updatestatustip2">
+                <div class="k-button">?</div>
+            </div>
+            @(Html.Kendo().Tooltip()
+            .For("#updatestatustip2")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                    .Content("To update the status of an item, select it's line, choose the status you wish to change to and click 'Update Stock Status'")
+            .Width(200)
+            )
+            <script type="text/javascript">
+                function change() {
+                    $("#tooltip").data("kendoTooltip").show($("#target" + this.value()));
+                }
+            </script>
+        </td>
+    </tr>
+</table>
+<br />
+<script>
+    $(document).ready(function () {
+        $("#apply").click(function () {
+            var grid = $("#Grid").data("kendoGrid");
+
+            //find the selected models
+            grid.tbody
+            .find(":checked")
+            .closest("tr")
+            .each(function () {
+                grid.dataItem(this).dirty = true;
+            });
+
+
+                        //send dirty records to server
+            grid.dataSource.sync();
+        });
+
+        $("#apply2").click(function () {
+            var grid = $("#Grid").data("kendoGrid");
+
+            //find the selected models
+            grid.tbody
+            .find(":checked")
+            .closest("tr")
+            .each(function () {
+                grid.dataItem(this).dirty = true;
+            });
+
+
+            //send dirty records to server
+            grid.dataSource.sync();
+        });
+    });
+
+    function sync_handler(e) {
+        this.read();
+    }
+
+    function additionalData() {
+        return {
+            InvoiceDetailStatus: $("#InvoiceDetailStatus").val()
+        };
+    }
+</script>

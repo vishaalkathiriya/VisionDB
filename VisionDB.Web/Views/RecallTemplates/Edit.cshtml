@@ -1,0 +1,117 @@
+﻿@model VisionDB.Models.RecallTemplate
+
+@{
+    ViewBag.Title = "Edit " + Model.Name + " template";
+}
+
+<h2>Edit @Model.Name template</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.AntiForgeryToken()
+        @Html.LabelFor(model => model.Name) &nbsp;
+        @Html.TextBoxFor(model => model.Name, new { @class = "k-textbox large" })
+        @Html.ValidationMessageFor(model => model.Name)
+        <br />
+        <br />
+        @(Html.Kendo().Grid((IEnumerable<VisionDB.Models.RecallDocumentViewModel>)ViewBag.RecallDocuments)
+          .Name("RecallDocumentViewModels")
+          .Columns(columns =>
+          {
+              columns.Bound(id => id.Id).Hidden(true);
+              columns.Bound(id => id.documentTemplate);
+              columns.Bound(id => id.WhenToSend);
+              columns.Bound(id => id.TemplateMethodToString);
+              columns.Command(command => { command.Edit(); command.Destroy(); }).Width(172);
+          })
+          .ToolBar(toolbar => toolbar.Create().Text("Add"))
+              .Sortable()
+              .Editable(editable => editable.Mode(Kendo.Mvc.UI.GridEditMode.PopUp).TemplateName("RecallTemplate"))
+              .DataSource(dataSource => dataSource
+                  .Ajax()
+                  .Model(model => model.Id(p => p.Id))
+                  .Read(read => read.Action("ReadRecallDocuments", "RecallTemplates"))
+                  .Create(create => create.Action("AddRecallDocument", "RecallTemplates"))
+                  .Update(update => update.Action("UpdateRecallDocument", "RecallTemplates"))
+                  .Destroy(destroy => destroy.Action("DeleteRecallDocument", "RecallTemplates"))
+                  )
+        )
+        <br />
+    </div>
+    <input type="submit" value="Save" class="k-button" /> @:&nbsp;
+    <button class="delete-button k-button" value="Delete">Delete</button> @:&nbsp;
+    <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+
+    <script id="delete-confirmation" type="text/x-kendo-template">
+        <p class="delete-message">Are you sure?</p>
+
+        <button class="delete-confirm k-button">Delete</button> &nbsp;
+        <a href="#" class="delete-cancel k-button">Cancel</a>
+    </script>
+    
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+
+<script>
+    $(".delete-button").click(function (e) {
+        e.preventDefault();
+
+        var kendoWindow = $("<div />").kendoWindow({
+            title: "Confirm",
+            resizable: false,
+            modal: true
+        });
+
+        kendoWindow.data("kendoWindow")
+            .content($("#delete-confirmation").html())
+            .center().open();
+
+        kendoWindow
+            .find(".delete-confirm,.delete-cancel")
+                .click(function () {
+                    if ($(this).hasClass("delete-confirm")) {
+                        window.location.replace('/RecallTemplates/Delete/@Model.Id.ToString()');
+                    }
+
+                    kendoWindow.data("kendoWindow").close();
+                })
+                .end()
+    });
+
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/RecallTemplates');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/RecallTemplates');
+        }
+    });
+</script>

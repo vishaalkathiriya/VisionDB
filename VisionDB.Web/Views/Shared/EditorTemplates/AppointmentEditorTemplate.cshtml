@@ -1,0 +1,223 @@
+﻿@model VisionDB.Models.Schedule
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.js" type="text/javascript"></script>
+
+<script>
+    function onStatusSelect(e) {
+        var dataItem = this.dataItem(e.item.index());
+        if (dataItem.Value == 2) {
+            document.getElementById("cancellation-label").innerHTML = "Please specify cancellation reason";
+        }
+        else {
+            document.getElementById("cancellation-label").innerHTML = "";
+        }
+    }
+
+    function onAdditionalData() {
+        return {
+            Search: $("\\#customer").data("kendoComboBox").text()
+        };
+    }
+
+    var _defaultAppointmentLength = 30;
+    function AppointmentTypeSelected(e) {
+        var dataItem = this.dataItem(e.item.index());
+        _defaultAppointmentLength = dataItem.DefaultAppointmentLength;
+        SetStartEndDateTime(_defaultAppointmentLength);
+    }
+
+    function SetStartEndDateTime(_offset) {
+        var _startDate = moment($('input.start-datetime').val(), "DD/MM/YYYY HH:mm");
+        var _endDate = _startDate;
+        if (_offset) {
+            _endDate = moment(_endDate).add(_offset, 'm');
+        }
+
+        var dateTimePicker = $('input.end-datetime').data('kendoDateTimePicker');
+        var timePicker = $('input.end-datetime').data('kendoTimePicker');
+        if (dateTimePicker) {
+            dateTimePicker.value(_endDate._d);
+        }
+        if (timePicker) {
+            timePicker.value(_endDate._d);
+        }
+    }
+
+    $(function () {
+        $('input.start-datetime').on('change', function (e) {
+            SetStartEndDateTime(_defaultAppointmentLength);
+        });
+    });
+</script>
+
+<div>
+    <div>
+        &nbsp; &nbsp; Appointment Type
+        <div>
+            &nbsp; &nbsp;
+            @(Html.Kendo().DropDownListFor(a => a.appointmentType)
+                .DataValueField("Id")
+                .DataTextField("Name")
+                .Value(Model.appointmentType)
+                .DataSource(source =>
+                {
+                    source.Read(read =>
+                    {
+                        read.Action("GetAppointmentTypes", "AppointmentTypes");
+                    })
+                    .ServerFiltering(true);
+                })
+                .HtmlAttributes(new { style = "width:400px" })
+                .Events(e =>
+                {
+                    e.Select("AppointmentTypeSelected");
+                })
+            )
+        </div>
+    </div>
+</div>
+<br />
+<div>
+    <div>
+        &nbsp; &nbsp; Start
+        &nbsp; <input name="start" type="text" class="start-datetime" required data-type="date" data-role="datetimepicker" data-bind="value: start, invisible: isAllDay" data-format="dd/MM/yyyy HH:mm" />
+        <input name="start" type="text" class="start-datetime" required data-type="date" data-role="datepicker" data-bind="value: start, visible: isAllDay" data-format="dd/MM/yyyy" />
+        &nbsp; &nbsp; End
+        &nbsp; <input name="end" type="text" class="end-datetime" required data-type="date" data-role="timepicker" data-bind="value: end, invisible: isAllDay" data-format="HH:mm" />
+        <input name="end" type="text" class="end-datetime" required data-type="date" data-role="datepicker" data-bind="value: end, visible: isAllDay" data-format="dd/MM/yyyy" />
+    </div>
+</div>
+<br />
+<div>
+    <div>
+        &nbsp; &nbsp; Appointment for
+        <div>
+            &nbsp; &nbsp;
+            @{if (ViewBag.Customer != null)
+            {
+                <text>
+                    @(ViewBag.Customer.ToString())
+                </text>
+            }
+            else
+            {
+                <text>
+                    @(Html.Kendo().ComboBoxFor(a => a.customer)
+                    .DataValueField("Id")
+                    .DataTextField("Name")
+                    .Value(Model.customer)
+                    .Filter(FilterType.Contains)
+                    .DataSource(source =>
+                    {
+                        source.Read(read =>
+                        {
+                            read.Action("GetCustomers", "Customers")
+                            .Data("onAdditionalData");
+                        })
+                        .ServerFiltering(true);
+                    })
+                    .HtmlAttributes(new { style = "width:400px" })
+                    )
+                </text>
+            }
+            }
+        </div>
+    </div>
+</div>
+<br />
+<div>
+    <div>
+        &nbsp; &nbsp; Notes
+        <div>
+            &nbsp; &nbsp; <input class="k-textbox large" data-bind="value: description" /> &nbsp; <h10 class="red-text" id="cancellation-label"></h10>
+        </div>
+    </div>
+</div>
+<br />
+<div>
+    <div>
+        &nbsp; &nbsp; Appointment Status
+        <div>
+            &nbsp; &nbsp; @(Html.Kendo().DropDownList()
+              .Name("StatusEnum")
+              .DataTextField("Text")
+              .DataValueField("Value")
+              .BindTo(new List<SelectListItem>() {
+                  new SelectListItem() {
+                      Text = "None",
+                      Value = "0"
+                  },
+                  new SelectListItem() {
+                      Text = "Arrived",
+                      Value = "1"
+                  },
+                  new SelectListItem() {
+                      Text = "Cancelled",
+                      Value = "2"
+                  },
+                  new SelectListItem() {
+                      Text = "Rebooked",
+                      Value = "3"
+                  },
+                  new SelectListItem() {
+                      Text = "No Show",
+                      Value = "4"
+                  }
+              })
+              .Events(e =>
+              {
+                  e.Select("onStatusSelect");
+              })
+              .Value(Model.StatusEnum.ToString())
+            )
+        </div>
+    </div>
+</div>
+<br />
+<div>
+    <div>
+        &nbsp; &nbsp; Staff member
+        <div>
+            &nbsp; &nbsp;
+            @(Html.Kendo().DropDownListFor(a => a.StaffMember)
+                .DataValueField("Id")
+                .DataTextField("UserToString")
+                .Value(Model.StaffMember)
+                .DataSource(source =>
+                {
+                    source.Read(read =>
+                    {
+                        read.Action("GetApplicationUsers", "Account");
+                    })
+                    .ServerFiltering(true);
+                })
+                .HtmlAttributes(new { style = "width:400px" })
+            )
+        </div>
+    </div>
+</div>
+@*<br />
+    <div>
+        <div>
+            &nbsp; &nbsp; Room
+            <div>
+                &nbsp; &nbsp;
+                @(Html.Kendo().DropDownList()
+                .Name("room")
+                .DataTextField("Text")
+                .DataValueField("Value")
+                .BindTo(new List<SelectListItem>() {
+                    new SelectListItem() {
+                        Text = "Room 1",
+                        Value = "1"
+                    },
+                    new SelectListItem() {
+                        Text = "Room 2",
+                        Value = "2"
+                    }
+                })
+                .Value("1")
+                )
+            </div>
+        </div>
+    </div>*@

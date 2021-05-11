@@ -1,0 +1,160 @@
+﻿@{
+    ViewBag.Title = "Reconcile Payments / Vouchers";
+}
+
+<h2>Reconcile Payments / Vouchers</h2>
+
+<br />
+@using (Html.BeginForm("Reconcile", "Invoices", FormMethod.Post, null))
+{
+    <text>Start</text>
+    @(Html.Kendo().DatePicker()
+    .Name("Start")
+    .Value(ViewBag.Start)
+    )
+    <text>&nbsp; End</text>
+    @(Html.Kendo().DatePicker()
+    .Name("End")
+    .Value(ViewBag.End)
+    )
+    <br /><br />
+    <table>
+        <tr>
+            <td>
+                <strong>
+                    Choose Status
+                </strong>
+            </td>
+            <td>
+                <strong>
+                    Select
+                </strong>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Include pending &nbsp;
+            </td>
+            <td>@Html.CheckBox("IncludePending") &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                Include flagged &nbsp;
+            </td>
+            <td>@Html.CheckBox("IncludeFlagged") &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                Include reconciled &nbsp;
+            </td>
+            <td>@Html.CheckBox("IncludeReconciled") &nbsp;</td>
+        </tr>
+    </table>
+    <br />
+    <table>
+        <tr>
+            <td><input id="btnUpdate" type="submit" value="Refresh" class="k-button" /> &nbsp;</td>
+            <td><button class="k-button" type="button" value="Dispensing" onclick="location.href='@Url.Action("Dispensing", "Invoices")'">Dispensing</button> &nbsp;</td>
+            <td><button class="k-button" type="button" value="GoodsIn" onclick="location.href='@Url.Action("GoodsIn", "Inventory")'">Order Stock / Stock Received</button> &nbsp;</td>
+        </tr>
+    </table>
+   
+       
+        
+}
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.InvoiceDetailViewModel>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_Read", "Invoices", new { Start = (DateTime)ViewBag.Start, End = (DateTime)ViewBag.End, IncludePending = (bool)ViewBag.IncludePending, IncludeFlagged = (bool)ViewBag.IncludeFlagged, IncludeReconciled = (bool)ViewBag.IncludeReconciled }))
+          .Update(update => update.Action("_Update", "Invoices").Data("additionalData"))
+          .Events(events => events.Sync("sync_handler"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).ClientTemplate("<input type=\"checkbox\" />").Title("");
+          columns.Bound(j => j.AddedToString).Title("Payment Date").Format("{0:dd/MM/yyyy HH:mm}");
+          columns.Bound(j => j.ReconciliationStatus).Title("Status");
+          columns.Bound(j => j.InvoiceNumber).Title("Invoice No");
+          columns.Bound(j => j.FullProductName).Title("Product");
+          columns.Bound(j => j.CustomerName).Title("Customer");
+          columns.Bound(j => j.UnitPriceToStringAbsolute).Title("Value");
+          columns.Template(x => { }).ClientTemplate(
+      "<a class='k-button' href='" +
+          Url.Action("Invoice", "Invoices") +
+          "/#= InvoiceId #'" +
+      ">View Invoice</a>"
+  ).Width(132);
+      })
+      .ClientRowTemplate("<tr bgcolor='#: Colour#'>"
+          + "<td><input type=\"checkbox\" /></td>"
+          + "<td>#: AddedToString#</td>"
+          + "<td>#: ReconciliationStatus#</td>"
+          + "<td>#: InvoiceNumber#</td>"
+          + "<td>#: FullProductName#</td>"
+          + "<td>#: CustomerName#</td>"
+          + "<td>#: UnitPriceToStringAbsolute#</td>"
+              + "<td><a class='k-button' href='" +
+              Url.Action("Invoice", "Invoices") +
+              "/#= InvoiceId #'" +
+          ">View Invoice</a></td>"
+      + "</tr>")
+        //.Sortable() //todo: fix sorting
+        //.Pageable() //todo: fix paging.
+        //.Groupable() //todo: fix grouping.
+)
+<br />
+@(Html.Kendo().DropDownList()
+              .Name("ReconciliationStatus")
+          .DataTextField("Text")
+          .DataValueField("Value")
+          .BindTo(new List<SelectListItem>() {
+              new SelectListItem() {
+                  Text = "Pending",
+                  Value = "1"
+              },
+              new SelectListItem() {
+                  Text = "Reconciled",
+                  Value = "2"
+              },
+              new SelectListItem() {
+                  Text = "Flagged",
+                  Value = "3"
+              }
+          })
+          .Value("1")
+)
+&nbsp; <input type="submit" value="Apply" class="k-button" id="apply" />
+<br />
+<br />
+<script>
+    $(document).ready(function () {
+        $("#apply").click(function () {
+            var grid = $("#Grid").data("kendoGrid");
+
+            //find the selected models
+            grid.tbody
+            .find(":checked")
+            .closest("tr")
+            .each(function () {
+                grid.dataItem(this).dirty = true;
+            });
+
+            //send dirty records to server
+            grid.dataSource.sync();
+        });
+    });
+
+    function sync_handler(e) {
+        this.read();
+    }
+
+    function additionalData() {
+        return {
+            ReconciliationStatus: $("#ReconciliationStatus").val()
+        };
+    }
+</script>

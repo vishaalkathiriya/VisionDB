@@ -1,0 +1,32 @@
+﻿@using VisionDB.Helper
+@model VisionDB.Models.Message
+@{
+    ViewBag.Title = "Email to " + @ViewBag.Customer.ToString();
+}
+
+<h3>Email to @ViewBag.Customer.ToString()</h3>
+<br />
+@Html.DisplayName("Email address")
+<br />
+<div class="k-textbox extra-large">@ViewBag.Customer.Email</div>
+<br />
+<br />
+@Html.DisplayNameFor(model => model.Subject)
+<br />
+<div class="k-textbox extra-large">@Model.Subject</div>
+<br />
+<br />
+@Html.DisplayNameFor(model => model.MessageText):
+<br />
+<hr />
+@Html.Raw(Model.MessageText)
+<hr />
+<br />
+@if (Model.RecipientId != Guid.Empty)
+{
+    <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Customer", "Customers", new { id = Model.RecipientId })'">Back to patient</button>
+}
+else
+{
+    <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Search", "Customers")'">Back</button>
+}

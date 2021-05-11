@@ -1,0 +1,11 @@
+﻿@using MvcReportViewer
+@{
+    ViewBag.Title = "Company and Practice List";
+}
+
+<h2>Company and Practice List</h2>
+
+<br />
+<br />
+@Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath("CompanyAndPracticeList"),
+        new { height = 600, width = 830, style = "border: none" })

@@ -1,0 +1,176 @@
+﻿@model VisionDB.Models.ApplicationUser
+@{
+    ViewBag.Title = "Edit user " + Model.UserName;
+}
+
+<h2>Edit user @Model.UserName</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.SupportCode)
+        @Html.HiddenFor(model => model.practiceId)
+        @Html.HiddenFor(model => model.PasswordHash)
+        @Html.HiddenFor(model => model.SecurityStamp)
+        @Html.HiddenFor(model => model.DefaultHomePageEnum)
+        @Html.HiddenFor(model => model.Hidden)
+        <div>
+            @Html.Label("User name")
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.UserName, new { @class = "k-textbox large" })
+            @Html.ValidationMessageFor(model => model.UserName)
+        </div>
+        <br />
+        <div>
+            @Html.LabelFor(model => model.Title)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.Title, new { @class = "k-textbox medium" })
+            @Html.ValidationMessageFor(model => model.Title)
+        </div>
+        <br />
+        <div>
+            @Html.LabelFor(model => model.Firstnames)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.Firstnames, new { @class = "k-textbox large" })
+            @Html.ValidationMessageFor(model => model.Firstnames)
+        </div>
+        <br />
+        <div>
+            @Html.LabelFor(model => model.Surname)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.Surname, new { @class = "k-textbox large" })
+            @Html.ValidationMessageFor(model => model.Surname)
+        </div>
+        <br />
+        <div>
+            @Html.LabelFor(model => model.Email)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.Email, new { @class = "k-textbox large" })
+            @Html.ValidationMessageFor(model => model.Email)
+        </div>
+        <br />
+        <div>
+            @Html.Label("Telephone")
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "k-textbox medium-field" })
+            @Html.ValidationMessageFor(model => model.PhoneNumber)
+        </div>
+        <br />
+        <div>
+            @Html.LabelFor(model => model.GOCNumber)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.GOCNumber, new { @class = "k-textbox large" })
+            @Html.ValidationMessageFor(model => model.GOCNumber)
+        </div>
+        <br />
+        <div>
+            @Html.LabelFor(model => model.ListNumber)
+        </div>
+        <div>
+            @Html.TextBoxFor(model => model.ListNumber, new { @class = "k-textbox medium-field" })
+            @Html.ValidationMessageFor(model => model.ListNumber)
+        </div>
+        @*
+        <div>
+            @Html.Label("Practice")
+        </div>
+        <div>
+            @Html.Kendo().DropDownList().Name("SelectedPractice").HtmlAttributes(new { @class = "kendo-dropdown-large" }).BindTo(ViewBag.Practices).DataTextField("Name").DataValueField("Id")
+            @Html.ValidationMessage("SelectedPractice")
+        </div>
+        <br />
+        *@
+        <br />
+        <div>
+            @if(Model.Id == ((VisionDB.Models.ApplicationUser)Session["user"]).Id)
+            {
+                @Html.CheckBox("Admin", new { @disabled = "disabled" }) @:&nbsp; @Html.Label("Admin") &nbsp; You cannot remove your own Admin role
+            }
+            else
+            {
+                @Html.CheckBox("Admin") @:&nbsp; @Html.Label("Admin") &nbsp;
+            }
+            @Html.ValidationMessage("Admin")
+        </div>
+        <div>
+            @Html.CheckBox("Optician") &nbsp; @Html.Label("Optician") &nbsp;
+            @Html.ValidationMessage("Optician")
+        </div>
+        <div>
+            @Html.CheckBox("Receptionist") &nbsp; @Html.Label("Receptionist") &nbsp;
+            @Html.ValidationMessage("Receptionist")
+        </div>
+        <div>
+            @Html.CheckBox("Locum") &nbsp; @Html.Label("Locum") &nbsp;
+            @Html.ValidationMessage("Locum")
+        </div>
+        <div>
+            @Html.CheckBox("Product_Manager") &nbsp; @Html.Label("Product Manager") &nbsp;
+            @Html.ValidationMessage("Product_Manager")
+        </div>
+        <br />
+        <div>
+            @Html.CheckBoxFor(model => model.PreventDraggingAppointments) &nbsp; @Html.LabelFor(model => model.PreventDraggingAppointments) &nbsp;
+        </div>
+        <div>
+            @Html.CheckBoxFor(model => model.AutomaticallyResizeCalendar) &nbsp; @Html.LabelFor(model => model.AutomaticallyResizeCalendar) &nbsp;        
+        </div>
+        <br />
+        <p>
+            <input type="submit" value="Save" class="k-button" /> &nbsp;
+            <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+        </p>
+    </fieldset>
+
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+
+<script>
+
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/Account/Users');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/Account/Users');
+        }
+    });
+</script>

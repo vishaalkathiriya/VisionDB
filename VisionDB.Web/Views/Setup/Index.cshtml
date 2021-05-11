@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = ViewBag.Practice.Name;
+}
+
+<h2>@ViewBag.Practice.Name</h2>
+
+<table>
+    <tr>
+        <td width="100px">Practice ref</td>
+        <td>
+            <div class="k-textbox large">@ViewBag.Practice.PracticeRef</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td>
+            <div class="k-textbox large">@ViewBag.Practice.Address</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Postcode</td>
+        <td>
+            <div class="k-textbox large">@ViewBag.Practice.Postcode</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Tel</td>
+        <td>
+            <div class="k-textbox large-singleline">@(ViewBag.Practice.Tel != null ? ViewBag.Practice.Tel : "")</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Fax</td>
+        <td>
+            <div class="k-textbox large-singleline">@(ViewBag.Practice.Fax != null ? ViewBag.Practice.Fax : "")</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>
+            <div class="k-textbox large-singleline">@(ViewBag.Practice.Email != null ? ViewBag.Practice.Email : "")</div>
+        </td>
+    </tr>
+</table>
+<br />
+<p>
+    <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Practices", new { id = ((VisionDB.Models.Practice)ViewBag.Practice).Id })'">Edit practice details</button>
+</p>
+
+<hr />
+
+<h2>@ViewBag.Company.Name</h2>
+<table>
+    <tr>
+        <td width="100px">Company ref</td>
+        <td>
+            <div class="k-textbox large">@ViewBag.Company.CompanyRef</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td>
+            <div class="k-textbox large">@ViewBag.Company.Address</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Postcode</td>
+        <td>
+            <div class="k-textbox large">@ViewBag.Company.Postcode</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Tel</td>
+        <td>
+            <div class="k-textbox large-singleline">@(ViewBag.Company.Tel != null ? ViewBag.Company.Tel : "")</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Fax</td>
+        <td>
+            <div class="k-textbox large-singleline">@(ViewBag.Company.Fax != null ? ViewBag.Company.Fax : "")</div>
+        </td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>
+            <div class="k-textbox large-singleline">@(ViewBag.Company.Email != null ? ViewBag.Company.Email : "")</div>
+        </td>
+    </tr>
+</table>
+<br />
+<p>
+    <button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Edit", "Companies", new { id = ((VisionDB.Models.Practice)ViewBag.Practice).Id })'">Edit company details</button>
+</p>
+<br />
+Text messages remaining: <div class="k-textbox small">@ViewBag.Company.SMSStockLevel</div>
+<button class="k-button" type="button" value="Support" onclick="location.href='@Url.Action("Support", "Home")'">Contact VisionDB to buy more</button>
+<br />
+<br />
+<button class="k-button" type="button" value="Tags" onclick="location.href='@Url.Action("Index", "Tags")'">Tags</button>
+<br />
+<br />
+<button class="k-button" type="button" value="AppointmentTypes" onclick="location.href='@Url.Action("Index", "AppointmentTypes")'">Appointment types</button> &nbsp;
+<br />
+<br />
+<button class="k-button" type="button" value="DocumentTemplates" onclick="location.href='@Url.Action("Index", "DocumentTemplates")'">Document templates</button> &nbsp; For recalls and marketing. 
+<br />
+<br />
+<button class="k-button" type="button" value="RecallTemplates" onclick="location.href='@Url.Action("Index", "RecallTemplates")'">Recall templates</button> &nbsp; 
+<br />
+<br />
+<button class="k-button" type="button" value="Users" onclick="location.href='@Url.Action("Users", "Account")'">Manage users</button>
+<br />
+<br />
+<button class="k-button" type="button" value="CalibrationTemplate" onclick="location.href='@Url.Action("CalibrationPage", "Setup")'">Calibration page</button> &nbsp; This is used to align GOS forms. Print this on a GOS form, scan it and send it to VisionDB to enable us to align your GOS forms correctly.

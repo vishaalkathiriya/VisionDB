@@ -1,0 +1,14 @@
+﻿@using MvcReportViewer
+@{
+    ViewBag.Title = "Recall Letters";
+}
+
+<h2>Recall Letters</h2>
+@Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "RecallLetters"),
+        new { practiceId = ViewBag.Practice.Id },
+        new { height = 400, width = 700, style = "border: none" }) 
+<br />
+<br />
+<button class="k-button" type="button" value="print" onclick="location.href='@Url.Action("ExportToPDF", "Reports", new { ReportName = "RecallLetters" })'">Print</button> &nbsp;
+<button class="k-button" type="button" value="recallletters" onclick="location.href='@Url.Action("RecallLettersSent", "Recalls")'">Recall letters have been sent</button> &nbsp; 
+<button class="k-button" type="button" value="back" onclick="location.href='@Url.Action("Recall", "Recalls")'">Back</button> 

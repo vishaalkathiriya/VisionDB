@@ -1,0 +1,11 @@
+﻿@using MvcReportViewer
+@{
+    ViewBag.Title = "Audit Log";
+}
+
+<h2>Audit Log</h2>
+Last 2000 entries
+<br />
+<br />
+@Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath("AuditLog"),
+        new { height = 600, width = 830, style = "border: none" })

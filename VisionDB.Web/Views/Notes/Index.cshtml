@@ -1,0 +1,32 @@
+﻿@model IEnumerable<VisionDB.Models.DocumentTemplateViewModel>
+
+@{
+    ViewBag.Title = "Notes";
+}
+
+<h2>Notes</h2>
+<br />
+<button class="k-button" type="button" value="DocumentTemplate" onclick="location.href='@Url.Action("Add", "Notes")'">Add note</button> 
+<div class="red-text">To add a note for a patient, you must go into their record first.</div>
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.NoteViewModel>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_Read", "Notes"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.Description);
+          columns.Template(x => { }).ClientTemplate(
+              "<a class='k-button' href='" +
+              Url.Action("Note", "Notes") +
+              "/#= Id #'" +
+              ">View details</a>"
+              ).Width(130);
+      })
+      .Sortable()
+)

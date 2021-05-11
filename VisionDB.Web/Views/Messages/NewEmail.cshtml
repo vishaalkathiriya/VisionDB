@@ -1,0 +1,78 @@
+﻿@using VisionDB.Helper
+@model VisionDB.Models.Message
+@{
+    ViewBag.Title = "New email to " + @ViewBag.Customer.ToString();
+}
+
+<h3>New email to @ViewBag.Customer.ToString()</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <br />
+        @Html.Label("Email address")
+        <br />
+        <div class="k-textbox extra-large">@ViewBag.Customer.Email</div>
+        <br />
+        <br />
+        @Html.Label("Subject")
+        <br />
+        @Html.TextBoxFor(model => model.Subject, new { @class = "k-textbox extra-large" })
+        @Html.ValidationMessageFor(model => model.Subject)
+        <br />
+        <br />
+        @Html.Label("Message")
+        <br />
+        @Html.TextAreaFor(model => model.MessageText, 7, 1, new { @class = "k-textbox extra-large" })
+        @Html.ValidationMessageFor(model => model.MessageText)
+</fieldset>
+    <br />
+    <p>
+        <input class="k-button" type="submit" value="Send" /> &nbsp;
+        <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+    </p>
+
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+
+<script>
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/Customers/Customer/@ViewBag.Customer.Id.ToString()');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/Customers/Customer/@ViewBag.Customer.Id.ToString()');
+        }
+
+    });
+
+</script>

@@ -1,0 +1,3 @@
+E:\Abrar\VisionDB\VisionDB.Daemon\obj\Debug\VisionDB.Daemon.csprojResolveAssemblyReference.cache
+E:\Abrar\VisionDB\VisionDB.Daemon\obj\Debug\VisionDB.Daemon.ProjectInstaller.resources
+E:\Abrar\VisionDB\VisionDB.Daemon\obj\Debug\VisionDB.Daemon.csproj.GenerateResource.Cache

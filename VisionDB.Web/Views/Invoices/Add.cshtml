@@ -1,0 +1,253 @@
+﻿@model VisionDB.Models.Invoice
+@{if (ViewBag.Customer != null)
+    {
+      ViewBag.Title = "Add sale / dispense for " + ViewBag.Customer.ToString();
+      <text><h2>Add sale / dispense for @ViewBag.Customer.ToString()</h2></text>
+    }
+    else
+    {
+      ViewBag.Title = "Add ad hoc sale";
+      <text><h2>Add ad hoc sale</h2></text>
+    }
+}
+
+<br />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset>
+        Invoice Number: @ViewBag.NextInvoiceNumber
+        <br />
+        @{if (Session["user"] != null && ((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Admin))
+            {
+                <br />
+                @:Invoice Date: @Html.Kendo().DateTimePickerFor(model => model.InvoiceDate).Value(DateTime.Now)
+            }
+            else
+            {
+                @:Invoice Date: @Model.InvoiceDate.ToShortDateString() @Model.InvoiceDate.ToShortTimeString()
+                @Html.HiddenFor(model => model.InvoiceDate)
+            }
+        }
+        @{if (ViewBag.Customer != null)
+        {
+            <br />
+            <br />
+            <div class="selected-optician">
+                Eye exam: @Html.Kendo().DropDownList().Name("SelectedEyeExam").BindTo((List<VisionDB.Models.EyeExamViewModel>)ViewBag.EyeExams).DataTextField("ToStringEyeExam").DataValueField("Id")
+            </div>
+        }
+        }
+
+
+        @{if (ViewBag.Customer != null && ViewBag.HasLastEyeExam == true)
+        {
+            <br />
+            <table>
+                <tr>
+                    <td width="50px"></td>
+                    <td width="100px">PD</td>
+                    <td width="100px">Near PD</td>
+                    <td width="100px">Height</td>
+                </tr>
+                <tr>
+                    <td height="50px">Right</td>
+                    <td>
+                        @Html.Kendo().NumericTextBox().Name("PDRight").Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" }).Value(ViewBag.PDRight)
+                        @Html.ValidationMessage("PDRight")
+                    </td>
+                    <td>
+                        @Html.Kendo().NumericTextBox().Name("PDRightNear").Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" }).Value(ViewBag.PDRightNear)
+                        @Html.ValidationMessage("PDRightNear")
+                    </td>
+                    <td>
+                        @Html.Kendo().NumericTextBox().Name("RHeight").Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" }).Value(ViewBag.RHeight)
+                        @Html.ValidationMessage("RHeight")
+                    </td>
+                </tr>
+                <tr>
+                    <td height="50px">Left</td>
+                    <td>
+                        @Html.Kendo().NumericTextBox().Name("PDLeft").Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" }).Value(ViewBag.PDLeft)
+                        @Html.ValidationMessage("PDLeft")
+                    </td>
+                    <td>
+                        @Html.Kendo().NumericTextBox().Name("PDLeftNear").Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" }).Value(ViewBag.PDLeftNear)
+                        @Html.ValidationMessage("PDLeftNear")
+                    </td>
+                    <td>
+                        @Html.Kendo().NumericTextBox().Name("LHeight").Step(0.25f).Min(0).HtmlAttributes(new { @class = "kendo-numeric-small" }).Value(ViewBag.LHeight)
+                        @Html.ValidationMessage("LHeight")
+                    </td>
+                </tr>
+            </table>
+        }
+        }
+        <br />
+        <br />
+        @(Html.Kendo().Grid((IEnumerable<VisionDB.Models.InvoiceDetailViewModel>)Model)
+          .Name("InvoiceDetails")
+          .Columns(columns =>
+          {
+              columns.Bound(id => id.Id).Hidden(true);
+              columns.Bound(id => id.FullProductName).Title("Product");
+              columns.Bound(id => id.UnitPrice).Title("Price Inc VAT").Width(80);
+              columns.Bound(id => id.Quantity).Title("Quantity").Width(80);
+              columns.Bound(id => id.SpectacleNumber).Title("Spectacle Set").Width(80);
+              columns.Command(command => { command.Edit(); command.Destroy(); }).Width(172);
+          })
+          .ToolBar(toolbar => toolbar.Create().Text("Add product"))
+          //.ToolBar(toolbar => toolbar.Custom().Text("Add payment")) //todo: implement add payment
+            //.Pageable() //todo: fix paging.
+              .Sortable() // todo: fix sorting.
+              .Events(events => events.DataBound("onDataBound"))
+              .Editable(editable => editable.Mode(Kendo.Mvc.UI.GridEditMode.PopUp).TemplateName("OrderDetailEditor"))
+              .DataSource(dataSource => dataSource
+                  .Ajax()
+                  .Model(model => model.Id(p => p.Id))
+                  .Read(read => read.Action("EditInvoiceDetail", "Invoices"))
+                  .Create(create => create.Action("AddInvoiceDetail", "Invoices"))
+                  .Update(update => update.Action("UpdateInvoiceDetail", "Invoices"))
+                  .Destroy(destroy => destroy.Action("DeleteInvoiceDetail", "Invoices"))
+                  )
+        )
+        <br />
+        Discount &nbsp; @Html.Kendo().NumericTextBoxFor(model => model.DiscountPercentage).Min(0).Max(100).Step(10).Format("#").Value(0).HtmlAttributes(new { @class = "kendo-numeric-small" }) %
+        <br />
+        <br />
+        Notes
+        <br />
+        @Html.TextAreaFor(model => model.Notes, 5, 1, new { @class = "k-textbox large" })
+        <br />
+        @{if (ViewBag.Customer != null)
+        {
+              <br />
+              @:NHS Voucher Grade
+              <br />
+              <text>@Html.Kendo().DropDownList().Name("NHSVoucher").BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.NHSVoucherGrade.None))</text>
+        }
+        }
+        <br />
+    </fieldset>
+    <br />
+    <br />
+    @*@:Total £<h10 id="saletotal"></h10> Inc VAT
+    <br />
+    <br />
+    @:Balance £<h10 id="salebalance"></h10> Inc VAT
+    <br />
+    <br />*@
+    @:How will order be sent? &nbsp; @Html.Kendo().DropDownListFor(model => model.MethodSentByEnum).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.MethodSentBy.Collection))
+    <br />
+    <br />
+    <p>
+        <input class="k-button" type="submit" value="Save" /> &nbsp; 
+        <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+    </p>
+    
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+    <p class="lose-changes-message">There are unsaved changes?</p>
+
+    <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+    <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        $("#InvoiceDetails").data().kendoGrid.options.editable.window.width = "650px";
+    });
+
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            var qs = getQueryStrings();
+                            var returnTo = qs["ReturnTo"];
+
+                            if (returnTo != null && returnTo == 'customer') {
+                                window.location.replace('/Customers/Customer/@(ViewBag.Customer != null ? ViewBag.Customer.Id : "")');
+                            }
+                            else {
+                                window.location.replace('/Invoices/Invoices');
+                            }
+
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            var qs = getQueryStrings();
+            var returnTo = qs["ReturnTo"];
+
+            if (returnTo != null && returnTo == 'customer') {
+                window.location.replace('/Customers/Customer/@(ViewBag.Customer != null ? ViewBag.Customer.Id : "")');
+            }
+            else {
+                window.location.replace('/Invoices/Invoices');
+            }
+        }
+    });
+
+    //gets query string. used to get return to
+    function getQueryStrings() {
+        var assoc = {};
+        var decode = function (s) { return decodeURIComponent(s.replace(/\+/g, " ")); };
+        var queryString = location.search.substring(1);
+        var keyValues = queryString.split('&');
+
+        for (var i in keyValues) {
+            var key = keyValues[i].split('=');
+            if (key.length > 1) {
+                assoc[decode(key[0])] = decode(key[1]);
+            }
+        }
+
+        return assoc;
+    }
+
+    function onDataBound(arg) {
+        var grid = $("#InvoiceDetails").data("kendoGrid");
+        grid.dataSource.read();
+        var row;
+        var total = 0.00;
+        var balance = 0.00;
+
+        var count = grid.dataSource.total();
+
+        for (var i = 0; i < count; i++) {
+            if (data != null && data.product != null) {
+                row = grid.tbody.find("tr:eq(" + i + ")");
+                var data = grid.dataItem(row);
+                if (!data.product.NegativeValue) {
+                    total += data.UnitPrice * (1 - (data.DiscountPercentage / 100)) * data.Quantity;
+                }
+                if (!data.product.NegativeValue) {
+                    balance += data.UnitPrice * (1 - (data.DiscountPercentage / 100)) * data.Quantity;
+                }
+                else {
+                    balance -= data.UnitPrice * (1 - (data.DiscountPercentage / 100));
+                }
+            }
+        }
+        $("#saletotal").text(Math.round(total * 100) / 100);
+        $("#salebalance").text(Math.round(balance * 100) / 100);
+    }
+</script>

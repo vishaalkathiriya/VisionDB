@@ -1,0 +1,209 @@
+﻿@using MvcReportViewer
+@model List<VisionDB.Models.Report>
+@{
+    ViewBag.Title = "Reports";
+}
+
+<h2><img src="~/Content/Images/report48.png" alt="Reports" /> Company Reports</h2>
+
+<table>
+    <tr>
+        <td>
+            @if (ViewBag.PracticeTodaysTakingsExcVAT != null)
+{
+    <button class="k-button" id="openpendingnhsvouchers">Pending NHS vouchers</button>
+}
+        </td>
+        <td>
+            <div id="pendingnhsvoucherstip">
+                <div class="k-button">?</div>
+            </div>
+            @(Html.Kendo().Tooltip()
+            .For("#pendingnhsvoucherstip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                    .Content("Report shows all the outstanding NHS vouchers that are set to status pending.")
+            .Width(200)
+
+            )
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button class="k-button" id="opendispensingrecords">Dispensing Records</button>
+        </td>
+        <td>
+            <div id="dispensingrecordstip">
+                <div class="k-button">?</div>
+            </div>
+            @(Html.Kendo().Tooltip()
+            .For("#dispensingrecordstip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                            .Content("Shows all the dispensing records for a given date range.Select the dates inside the report")
+            .Width(200)
+
+            )
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button class="k-button" id="openpatientGOS6frontdaterange">GOS 6 forms (front)</button>
+        </td>
+        <td>
+            <div id="patientGOS6frontdaterangetip">
+                <div class="k-button">?</div>
+            </div>
+            @(Html.Kendo().Tooltip()
+                    .For("#patientGOS6frontdaterange")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+                            .Content("GOS 6 forms for date range")
+            .Width(200)
+
+            )
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button class="k-button" id="openeyeexams">Eye exams list</button>
+        </td>
+        <td>
+            <div id="eyeexamstip">
+                <div class="k-button">?</div>
+            </div>
+            @(Html.Kendo().Tooltip()
+            .For("#eyeexams")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Eye exams list for date range")
+            .Width(200)
+
+            )
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button class="k-button" id="allpatients" type="button" value="print" onclick="location.href='@Url.Action("ExportToExcel", "Reports", new { ReportName = "AllPatients" })'">Patient list</button>
+        </td>
+        <td>
+            <div id="allpatientstip">
+                <div class="k-button">?</div>
+            </div>
+            @(Html.Kendo().Tooltip()
+            .For("#allpatients")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("Export all patients to Excel")
+            .Width(200)
+
+            )
+        </td>
+    </tr>
+    </table>
+    <br />
+
+    @(Html.Kendo().Window()
+    .Name("pendingnhsvouchers")
+    .Title("Pending NHS vouchers")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "NHSVouchers"),
+        new { practiceId = ViewBag.Practice.Id, Start = new DateTime(2014, 1, 1), End = new DateTime(2015, 1, 1) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("dispensingrecords")
+    .Title("Dispensing Records")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "DispensingRecords"),
+        new { practiceId = ViewBag.Practice.Id, start = VisionDB.Helper.DateHelper.GetFirstDateForWeek(), end = VisionDB.Helper.DateHelper.GetFirstDateForWeek().AddDays(7) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("patientGOS6frontdaterange")
+    .Title("PatientGOS6FrontDateRange")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "PatientGOS6FrontDateRange"),
+        new { practiceId = ViewBag.Practice.Id, start = VisionDB.Helper.DateHelper.GetFirstDateForWeek(), end = VisionDB.Helper.DateHelper.GetFirstDateForWeek().AddDays(7) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+                .Draggable()
+                .Resizable()
+                .Modal(true)
+                .Visible(false)
+                .Actions(actions => actions.Close())
+    )
+
+    @(Html.Kendo().Window()
+    .Name("eyeexams")
+    .Title("Eye exams list")
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, "EyeExams"),
+        new { practiceId = ViewBag.Practice.Id, start = VisionDB.Helper.DateHelper.GetFirstDateForWeek(), end = VisionDB.Helper.DateHelper.GetFirstDateForWeek().AddDays(7) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+                            .Draggable()
+                            .Resizable()
+                            .Modal(true)
+                            .Visible(false)
+                            .Actions(actions => actions.Close())
+    )
+
+    @foreach (var item in Model)
+    {
+        @Html.Partial("_ReportTile", item)
+    }
+
+    <script>
+        $(document).ready(function () {
+            $("#openpendingnhsvouchers").bind("click", function () {
+                $("#pendingnhsvouchers").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#opendispensingrecords").bind("click", function () {
+                $("#dispensingrecords").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#openpatientGOS6frontdaterange").bind("click", function () {
+                $("#patientGOS6frontdaterange").data("kendoWindow").center().open();
+            });
+        });
+
+        $(document).ready(function () {
+            $("#openeyeexams").bind("click", function () {
+                $("#eyeexams").data("kendoWindow").center().open();
+            });
+        });
+    </script>

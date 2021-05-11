@@ -1,0 +1,8 @@
+BEGIN TRANSACTION
+GO
+ALTER TABLE dbo.Inventory ADD
+	Added datetime NOT NULL CONSTRAINT DF_Inventory_Added DEFAULT getdate()
+GO
+ALTER TABLE dbo.Inventory SET (LOCK_ESCALATION = TABLE)
+GO
+COMMIT

@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Sales";
+}
+
+<h2>View All Sales</h2>
+<br /><br />
+<table>
+    <tr>
+        <td><button class="k-button" type="button" value="Add" onclick="location.href='@Url.Action("Add", "Invoices")'">Add Counter Sale</button></td>
+        <td><button class="k-button" type="button" value="Reconcile" onclick="location.href='@Url.Action("Reconcile", "Invoices")'">Reconcile Sales</button></td>
+        <td><button class="k-button" type="button" value="Dispense" onclick="location.href='@Url.Action("Dispensing", "Invoices")'">Dispensing</button></td>
+        <td><button class="k-button" type="button" value="GoodsIn" onclick="location.href='@Url.Action("GoodsIn", "Inventory")'">Goods In</button></td>
+    </tr>
+</table>
+<br />
+<br />
+@using (Html.BeginForm("Invoices", "Invoices", FormMethod.Post, null))
+{
+    <text>Start</text>
+    @(Html.Kendo().DatePicker()
+    .Name("Start")
+    .Value(ViewBag.Start)
+    )
+    <text>&nbsp; End</text>
+    @(Html.Kendo().DatePicker()
+    .Name("End")
+    .Value(ViewBag.End)
+    )
+    <text>&nbsp; <input id="btnUpdate" type="submit" value="Update" class="k-button" /></text>
+}
+<br />
+@(Html.Kendo().Grid((IEnumerable<VisionDB.Models.InvoiceViewModel>)ViewBag.Invoices)
+      .Name("Journal")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("OpenJournalEntry", "Customers"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.InvoiceDate).Title("Date and Time").Format("{0:dd/MM/yyyy HH:mm}");
+          columns.Bound(j => j.InvoiceNumber).Title("Invoice No");
+          columns.Bound(j => j.CustomerName);
+          columns.Bound(j => j.Summary).Title("Summary");
+          columns.Template(x => { }).ClientTemplate(
+      "<a class='k-button' href='" +
+          Url.Action("Invoice", "Invoices") +
+          "/#= Id #'" +
+      ">View details</a>"
+  ).Width(130);
+      })
+      .ClientRowTemplate("<tr bgcolor='#: Colour#'>"
+          + "<td>#: InvoiceDateToString#</td>"
+          + "<td>#: InvoiceNumber#</td>"
+          + "<td>#: CustomerName#</td>"
+          + "<td>#: Summary#</td>"
+      + "<td><a class='k-button' href='" +
+              Url.Action("Invoice", "Invoices") +
+              "/#= Id #'" +
+          ">View details</a></td>"
+      + "</tr>")      
+        //.Sortable() //todo: fix sorting
+        //.Pageable() //todo: fix paging.
+        //.Groupable() //todo: fix grouping.
+)

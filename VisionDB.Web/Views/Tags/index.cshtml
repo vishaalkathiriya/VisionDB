@@ -1,0 +1,32 @@
+﻿@model IEnumerable<VisionDB.Models.Tag>
+@{
+    ViewBag.Title = "Tags";
+}
+
+<h2>Tags</h2>
+<br />
+<button class="k-button" type="button" value="Add" onclick="location.href='@Url.Action("Add", "Tags")'">Add tag</button> 
+<br />
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.Tag>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_Read", "Tags"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.Name);
+          columns.Bound(j => j.TagTypeEnum).Title("Type");
+          columns.Template(x => { }).ClientTemplate(
+              "<a class='k-button' href='" +
+              Url.Action("Edit", "Tags") +
+              "/#= Id #'" +
+              ">View details</a>"
+              ).Width(130);
+      })
+        .Sortable() 
+)

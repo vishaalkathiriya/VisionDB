@@ -1,0 +1,7 @@
+-- ----------------------------
+-- Records of Practices
+-- ----------------------------
+INSERT INTO [dbo].[Practices] ([Id], [Name], [Address], [Postcode], [Tel], [Fax], [Email], [company_Id], [ExternalId], [CreatedByUser_Id], [CanSendMessages], [DefaultAppointmentLength], [WorkDayStart], [WorkDayEnd], [PrimaryCareTrustGOS], [PracticeNumber], [LastInvoiceNumber], [DefaultOptician_Id], [PracticeRef], [Added], [ShowGOSForms], [SMSSenderName], [SchedulerMinorTickCount], [SchedulerMajorTick], [LastPatientNumber], [VATAppliedToSalePercentage], [ContractorNumber], [ContractorName], [ShowDOBOnPatientSearch], [TelAreaPrefix], [EyeExamScreenDesign], [DefaultEyeExamTimeToPatientsAppointment], [ShowDomiciliaryFields], [ShowCallButtons], [ShowPracticeNotesOnDashboard], [EditPatientFromCalendar], [RecallDateCutOff], [MonthlyRate]) VALUES (N'E55B96DA-7EC5-464E-99B4-12AD89153225', N'Birmingham Optical', N'10 High St
+Birmingham', N'B12 2BC', N'01211234567', N'0837428942', N'birminghamoptical@visiondb.co.uk', N'8814C915-ABC4-4ACB-B2FB-424A7171FF9D', N'87097CD6-5C48-426B-8502-4B0616C7437E', N'C38C080E-9ABA-46CD-8CCB-1E3C1B9332FA', N'1', N'30', N'2015-01-04 09:00:00.000', N'2015-01-04 18:00:00.000', null, N'114', N'10182', N'c38c080e-9aba-46cd-8ccb-1e3c1b9332fa', N'E55B', N'2014-06-21 13:46:47.233', N'1', N'BhamOptcl', N'3', N'60', N'1021', N'37', N'Contractor number', N'Contractor name', N'0', N'0121', N'3', N'1', N'1', N'0', N'1', N'1', N'2014-08-01 00:00:00.000', N'.0000')
+GO
+GO

@@ -1,0 +1,30 @@
+﻿@using MvcReportViewer
+@model VisionDB.Models.Report
+
+<div>
+    <h10 class="btn-link" id="open@(Model.Name)">@Model.DisplayName</h10>
+</div>
+<br />
+
+@(Html.Kendo().Window()
+    .Name(Model.Name)
+    .Title(Model.DisplayName)
+    .Content(@<text>
+        @Html.MvcReportViewer(new VisionDB.Controllers.ReportsController().GetReportPath(((VisionDB.Models.Practice)ViewBag.Practice).Id, Model.Name),
+                 new { practiceId = ViewBag.Practice.Id, start = DateTime.Now.Date, end = DateTime.Now.Date.AddDays(1).AddMinutes(-1) },
+        new { height = 540, width = 1030, style = "border: none" })
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Modal(true)
+    .Visible(false)
+    .Actions(actions => actions.Close())
+)
+
+<script>
+    $(document).ready(function () {
+        $("#open@(Model.Name)").bind("click", function () {
+            $("#@Model.Name").data("kendoWindow").center().open();
+        });
+    });
+</script>

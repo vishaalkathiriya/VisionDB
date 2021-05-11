@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "Recalls";
+}
+
+<h2>Recalls</h2>
+<p>The following recalls are due. They have not been automatically processed because they do not have a recall template selected our could not be automatically sent.</p>
+@using (Html.BeginForm("Recall", "Recalls", new { msgTemplateId = ViewBag.Customers }, FormMethod.Post, null))
+{
+    <table>
+        <tr>
+            <td height="50px">
+                Between dates &nbsp;
+                @(Html.Kendo().DatePicker()
+                    .Name("Start")
+                    .Value(ViewBag.Start)
+                )
+                and
+                @(Html.Kendo().DatePicker()
+                    .Name("End")
+                    .Value(ViewBag.End)
+                )
+            </td>
+        </tr>
+        <tr>
+            <td height="50px">
+                Include recalls sent over @Html.TextBox("LastRecallDays", (string)ViewBag.LastRecallDays, new { @class = "k-textbox small" }) days ago.
+            </td>
+        </tr>
+        <tr>
+            <td height="50px">
+                Include customers who have no eye tests recorded &nbsp; @Html.CheckBox("IncludeUntested")
+            </td>
+        <tr>
+            <td height="50px">
+                Include eye test recalls &nbsp; @Html.CheckBox("IncludeEyeExams")
+            </td>
+        </tr>
+        <tr>
+            <td height="50px">
+                Include contact lens recalls &nbsp; @Html.CheckBox("IncludeContactLenRecalls")
+            </td>
+        </tr>
+    </table>
+    <br />
+    <input id="btnUpdate" type="submit" value="Refresh" class="k-button" />
+}
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.RecallViewModel>()
+          .Name("Grid")
+          .Columns(columns =>
+          {
+              columns.Bound(p => p.Id).ClientTemplate("<input type=\"checkbox\" />").Title("");
+              columns.Bound(p => p.CustomerName).Title("Customer");
+              columns.Bound(p => p.CustomerNumbers).Title("Contact number");
+              columns.Bound(p => p.CustomerEmail).Title("Email");
+              columns.Bound(p => p.CustomerAgeOrDOB).Title(ViewBag.AgeOrDOBTitle);
+              columns.Bound(p => p.AppointmentCategoryText).Title("Appointment type");
+              columns.Bound(p => p.Due).Format("{0:dd/MM/yyyy}");
+              columns.Bound(p => p.RecallCount).Title("Recalls sent");
+              columns.Bound(p => p.LastRecallDate).Title("Last recall sent").Format("{0:dd/MM/yyyy}");
+              columns.Bound(p => p.StatusMessage).Title("Last recall status");
+              columns.Bound(p => p.RecallTemplate).Title("Template");
+              columns.Template(x => { }).ClientTemplate(
+                "<a class='k-button' href='" +
+                    Url.Action("Customer", "Customers") +
+                    "/#= Id #'" +
+                ">View patient</a>"
+            ).Width(130);
+          })
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Read("_Read", "Recalls", new { LastRecallDays = (string)ViewBag.LastRecallDays, IncludeUntested = (bool)ViewBag.IncludeUntested, IncludeEyeExams = (bool)ViewBag.IncludeEyeExams, IncludeContactLenRecalls = (bool)ViewBag.IncludeContactLenRecalls, Start = (DateTime)ViewBag.Start, End = (DateTime)ViewBag.End })
+          .Update(update => update.Action("_Update", "Recalls").Data("additionalData"))
+          .Model(model => model.Id(p => p.Id))
+          .Events(events => events.Sync("sync_handler"))
+       )
+
+)
+<br />
+@(Html.Kendo().DropDownList()
+    .Name("DocumentTemplateOption")
+    .DataValueField("Id")
+    .DataTextField("Name")
+    .DataSource(source =>
+    {
+        source.Read(read =>
+        {
+            read.Action("GetTemplates", "DocumentTemplates");
+        });
+    })
+    .HtmlAttributes(new { style = "width:270px" })
+)
+&nbsp;
+<input type="submit" value="Generate recalls" class="k-button" id="generaterecalls" /> &nbsp;
+@if (ViewBag.RecallLetterCount > 0)
+{
+    <button id="recallletters" class="k-button" type="button" value="recallletters" onclick="location.href='@Url.Action("RecallLetters", "Recalls")'" style="visibility:visible">Print generated recall letters</button>
+}
+else
+{
+    <button id="recallletters" class="k-button" type="button" value="recallletters" onclick="location.href='@Url.Action("RecallLetters", "Recalls")'" style="visibility:hidden">Print generated recall letters</button>
+}
+<br />
+<br />
+
+<script>
+    $(document).ready(function () {
+        $("#generaterecalls").click(function () {
+            var grid = $("#Grid").data("kendoGrid");
+
+            //find the selected models
+            grid.tbody
+            .find(":checked")
+            .closest("tr")
+            .each(function () {
+                grid.dataItem(this).dirty = true;
+            });
+
+            //send dirty records to server
+            grid.dataSource.sync();
+
+            document.getElementById("recallletters").style.visibility="visible";
+        });
+    });
+
+    function sync_handler(e) {
+        this.read();
+    }
+
+    function additionalData() {
+        return {
+            DocumentTemplateOption: $("#DocumentTemplateOption").val()
+        };
+    }
+</script>

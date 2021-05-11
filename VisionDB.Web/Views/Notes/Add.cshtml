@@ -1,0 +1,76 @@
+﻿@model VisionDB.Models.Note
+
+@if(Model.customer != null)
+{
+    ViewBag.Title = "Add note for " + @Model.customer.ToString();
+    <h2>Add note for @Model.customer.ToString()</h2>
+}
+else
+{
+    ViewBag.Title = "Add note";
+    <h2>Add note</h2>
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset>
+        @Html.TextAreaFor(model => model.Description, 10, 1, new { @class = "k-textbox extra-large" })
+        @Html.ValidationMessageFor(model => model.Description)
+    </fieldset>
+    <br />
+    <p>
+        <input class="k-button" type="submit" value="Save" /> &nbsp;
+        <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+    </p>
+
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+
+<script>
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            if ('@(Model.customer)' != null) {
+                                window.location.replace('/Customers/Customer/@(Model.customer != null ? Model.customer.Id.ToString() : null)');
+                            }
+                            else {
+                                window.location.replace('/Notes');
+                            }
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else if ('@(Model.customer)' != null) {
+            window.location.replace('/Customers/Customer/@(Model.customer != null ? Model.customer.Id.ToString() : null)');
+        }
+        else {
+            window.location.replace('/Notes');
+        }
+    });
+</script>

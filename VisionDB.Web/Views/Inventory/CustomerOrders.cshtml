@@ -1,0 +1,141 @@
+﻿@model VisionDB.Models.Customer
+@{
+    ViewBag.Title = "Patient Orders";
+}
+
+<h2>Orders for @Model.CustomerToString</h2>
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.InvoiceDetailViewModel>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_GetCustomerOrders", "Inventory", new { Id = (Guid)Model.Id }))
+          .Update(update => update.Action("_Update", "Inventory").Data("additionalData"))
+          .Events(events => events.Sync("sync_handler"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).ClientTemplate("<input type=\"checkbox\" />").Title("Select");
+          columns.Bound(j => j.Added).Title("Ordered").Format("{0:dd/MM/yyyy HH:mm}");
+          columns.Bound(j => j.FullProductName).Title("Product");
+          columns.Bound(j => j.Quantity).Title("Quantity");
+          columns.Bound(j => j.InvoiceNumber).Title("Invoice No");
+          columns.Bound(j => j.Status).Title("Status");
+      })
+      .ClientRowTemplate("<tr bgcolor='#: Colour#'>"
+          + "<td><input type=\"checkbox\" /></td>"
+          + "<td>#: AddedToString#</td>"
+          + "<td>#: FullProductName#</td>"
+          + "<td>#: Quantity#</td>"
+          + "<td>#: InvoiceNumber#</td>"
+          + "<td>#: Status#</td>"
+          + "</tr>")
+        .Sortable()
+        //.Pageable() //todo: fix paging.
+        //.Groupable() //todo: fix grouping.
+)
+<br />
+
+<table>
+    <tr>
+        <td>
+            <strong>
+                Status Update &nbsp;
+            </strong>
+        </td>
+        <td>
+            @(Html.Kendo().DropDownList()
+            .Name("InvoiceDetailStatus")
+            .DataTextField("Text")
+            .DataValueField("Value")
+            .HtmlAttributes(new { @class = "kendo-dropdown-large" })
+            .BindTo(new List<SelectListItem>() {
+            new SelectListItem() {
+            Text = "Not Ordered",
+            Value = "0"
+            },
+            new SelectListItem() {
+            Text = "Ordered",
+            Value = "1"
+            },
+            new SelectListItem() {
+            Text = "Received",
+            Value = "2"
+            },
+            new SelectListItem() {
+            Text = "Awaiting Collection or Dispatch",
+            Value = "5"
+            }
+            })
+            .Value("1")
+            )
+            &nbsp;
+        </td>
+        
+        <td>
+            <div id="tooltip">
+                <div class="k-button">?</div>
+            </div>
+            @(Html.Kendo().Tooltip()
+            .For("#tooltip")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("To Update the status of an item, select the relevant line and choose the status you wish to change to in the box on the left and then click Apply Updates")
+            .Width(200)
+
+            )
+            <script>
+                function change() {
+                    $("#tooltip").data("kendoTooltip").show($("#target" + this.value()));
+                }
+            </script>
+        </td>
+        </tr>
+
+</table>
+<br/>
+
+<table>
+    <tr>
+        <td><input type="submit" value="Apply Updates" class="k-button" id="apply" /> </td>
+        <td><button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Customer", "Customers", new { id = Model.Id })'">Back To Patient</button></td>
+        <td><button class="k-button" type="button" value="Edit" onclick="location.href='@Url.Action("Add", "Notes")'">Add Note</button></td>
+    </tr>
+</table>
+
+
+
+<br />
+<br />
+<script>
+    $(document).ready(function () {
+        $("#apply").click(function () {
+            var grid = $("#Grid").data("kendoGrid");
+
+            //find the selected models
+            grid.tbody
+            .find(":checked")
+            .closest("tr")
+            .each(function () {
+                grid.dataItem(this).dirty = true;
+            });
+
+            //send dirty records to server
+            grid.dataSource.sync();
+        });
+    });
+
+    function sync_handler(e) {
+        this.read();
+    }
+
+    function additionalData() {
+        return {
+            InvoiceDetailStatus: $("#InvoiceDetailStatus").val()
+        };
+    }
+</script>

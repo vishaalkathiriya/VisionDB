@@ -1,0 +1,32 @@
+﻿@model IEnumerable<VisionDB.Models.RecallTemplate>
+
+@{
+    ViewBag.Title = "Recall templates";
+}
+
+<h2>Recall templates</h2>
+<br />
+<button class="k-button" type="button" value="RecallTemplate" onclick="location.href='@Url.Action("Add", "RecallTemplates")'">Add recall template</button>
+<br />
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.RecallTemplate>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_Read", "RecallTemplates"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.Name);
+          columns.Template(x => { }).ClientTemplate(
+              "<a class='k-button' href='" +
+              Url.Action("Edit", "RecallTemplates") +
+              "/#= Id #'" +
+              ">View details</a>"
+              ).Width(130);
+      })
+        .Sortable()
+)

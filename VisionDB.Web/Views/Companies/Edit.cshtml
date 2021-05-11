@@ -1,0 +1,70 @@
+﻿@model VisionDB.Models.Company
+@{
+    ViewBag.Title = @Model.Name;
+}
+
+<h2>@Model.Name</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.CreatedByUser)
+    <fieldset>
+        <table>
+            <tr>
+                <td width="150px">Company name</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Name, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td>
+                    @Html.TextAreaFor(model => model.Address, 7, 1, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Address)
+                </td>
+            </tr>
+            <tr>
+                <td>Postcode</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Postcode, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Postcode)
+                </td>
+            </tr>
+            <tr>
+                <td>Tel</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Tel, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Tel)
+                </td>
+            </tr>
+            <tr>
+                <td>Fax</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Fax, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Fax)
+                </td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>
+                    @Html.TextBoxFor(model => model.Email, new { @class = "k-textbox large" })
+                    @Html.ValidationMessageFor(model => model.Email)
+                </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(model => model.MultiSite)</td>
+                <td>
+                    @Html.CheckBoxFor(model => model.MultiSite)
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    <p>
+        <input class="k-button" type="submit" value="Save" />
+        <button class="k-button" type="button" value="Back" onclick="location.href='@Url.Action("Index", "Setup")'">Back</button>
+    </p>
+}

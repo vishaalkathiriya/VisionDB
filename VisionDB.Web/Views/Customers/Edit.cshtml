@@ -1,0 +1,683 @@
+﻿@model VisionDB.Models.Customer
+@{
+    ViewBag.Title = "Edit";
+    VisionDB.Models.Customer customer = Model;
+}
+<h2>Edit patient details for @Model.CustomerToString</h2>
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        @Html.HiddenFor(model => model.Id)
+        <p>
+            <input class="k-button" type="submit" value="Save" /> &nbsp;
+            <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+        </p>
+        <br />
+        <div id="customer">
+            @(Html.Kendo().PanelBar()
+        .Name("eyeExams")
+        .ExpandMode(PanelBarExpandMode.Multiple)
+        .Items(panelbar =>
+          {
+              panelbar.Add().Text("General").Expanded(true)
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        @if (Model.practice.ShowDomiciliaryFields)
+                        {
+                            <tr>
+                                <td height="50px">
+                                    @Html.LabelFor(model => model.CareHome)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.CareHome, new { @class = "k-textbox medium-field" })
+                                    @Html.ValidationMessageFor(model => model.CareHome)
+                                </td>
+                                <td>
+                                    @Html.LabelFor(model => model.ShelteredAccommodation)
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(model => model.ShelteredAccommodation, new { @class = "k-textbox medium-field" })
+                                    @Html.ValidationMessageFor(model => model.ShelteredAccommodation)
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                        <tr>
+                            <td width="160px" height="50px">
+                                @Html.LabelFor(model => model.Title)
+                            </td>
+                            <td width="260px">
+                                @Html.Kendo().ComboBoxFor(model => model.Title).BindTo(new List<string>() { "Mr", "Mrs", "Miss", "Ms", "Master", "Dr", "Prof" }).HtmlAttributes(new { @class = "kendo-dropdown-medium" }).Value(Model.Title == null ? "" : Model.Title)
+                                @Html.ValidationMessageFor(model => model.Title)
+                            </td>
+                            <td width="160px">
+                                @Html.LabelFor(model => model.Firstnames)
+                            </td>
+                            <td width="260px">
+                                @Html.TextBoxFor(model => model.Firstnames, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Firstnames)
+                            </td>
+                            <td width="160px">
+                                @Html.LabelFor(model => model.Surname)
+                            </td>
+                            <td width="260px">
+                                @Html.TextBoxFor(model => model.Surname, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Surname)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="50px">
+                                @Html.LabelFor(model => model.NHSPrivate)
+                            </td>
+                            <td>
+                                @Html.Kendo().DropDownListFor(model => model.NHSPrivate).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Customer.NHSPrivateList.Unknown)).HtmlAttributes(new { @class = "kendo-dropdown-medium" }).Value(Model.NHSPrivate.ToString())
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.DOB)
+                            </td>
+                            <td>
+                                @(Html.Kendo().DatePicker()
+                                .Name("DOB")
+                                .Value(Model.DOB)
+                                )
+                                @Html.ValidationMessageFor(model => model.DOB)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.PreviousSurname)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.PreviousSurname, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.PreviousSurname)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="50px">
+                                @Html.LabelFor(model => model.Number, "Patient No")
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.Number, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Number)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.NHSNo)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.NHSNo, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.NHSNo)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.NINo, "NI No")
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.NINo, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.NINo)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="50px">
+                                @Html.LabelFor(model => model.Address)
+                            </td>
+                            <td rowspan="2">
+                                @Html.TextAreaFor(model => model.Address, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Address)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.Telephone)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.Telephone, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Telephone)
+                            </td>
+                            <td>@Html.LabelFor(model => model.TelephoneReminders)</td>
+                            <td>@Html.CheckBoxFor(model => model.TelephoneReminders)</td>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <td>
+                                @Html.LabelFor(model => model.SMSNumber)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.SMSNumber, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.SMSNumber)
+                            </td>
+                            <td>@Html.LabelFor(model => model.SMSReminders)</td>
+                            <td>@Html.CheckBoxFor(model => model.SMSReminders)</td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.Postcode)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.Postcode, new { @class = "k-textbox medium-field" })
+                                <br />
+                                @(Html.Kendo().Button()
+                                .Name("btnLookup")
+                                .HtmlAttributes(new { type = "button" })
+                                .Content("Lookup"))
+                                @Html.ValidationMessageFor(model => model.Postcode)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.Email)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.Email, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Email)
+                            </td>
+                            <td>@Html.LabelFor(model => model.EmailReminders)</td>
+                            <td>@Html.CheckBoxFor(model => model.EmailReminders)</td>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>@Html.LabelFor(model => model.LetterReminders)</td>
+                            <td>@Html.CheckBoxFor(model => model.LetterReminders)</td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.Comments)
+                            </td>
+                            <td colspan="5">
+                                @Html.TextAreaFor(model => model.Comments, 5, 1, new { @class = "k-textbox extra-large" })
+                                @Html.ValidationMessageFor(model => model.Comments)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="50px">@Html.Label("Tags")</td>
+                            <td colspan="5">
+                                @(Html.Kendo().MultiSelect().Name("SelectedTags")
+                                .Placeholder("select tags...")
+                                .BindTo(ViewBag.Tags)
+                                .Value(ViewBag.SelectedTags)
+                                )
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+              panelbar.Add().Text("Medical Conditions / Lifestyle")
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <td height="50px">@Html.Label("Medical Conditions")</td>
+                            <td colspan="5">
+                                @(Html.Kendo().MultiSelect().Name("SelectedMedicalConditions")
+                                .Placeholder("select tags...")
+                                .BindTo(ViewBag.MedicalConditions)
+                                .Value(ViewBag.SelectedMedicalConditions)
+                                )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150px" height="50px">
+                                @Html.LabelFor(model => model.Occupation)
+                            </td>
+                            <td width="260px">
+                                @Html.Kendo().ComboBoxFor(model => model.Occupation).BindTo(ViewBag.Occupations).HtmlAttributes(new { @class = "kendo-dropdown-large" }).Suggest(true)
+                                @Html.ValidationMessageFor(model => model.Occupation)
+                            </td>
+                            <td width="160px">
+                                @Html.LabelFor(model => model.CLFitHobbiesSports, "Hobbies")
+                            </td>
+                            <td width="260px" rowspan="2">
+                                @Html.TextAreaFor(model => model.CLFitHobbiesSports, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.CLFitHobbiesSports)
+                            </td>
+                            <td width="160px"></td>
+                            <td width="260px"></td>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.MEDS)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.MEDS, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.MEDS)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.Allergies)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.Allergies, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Allergies)
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" height="50px">
+                                @Html.Label("Symptoms and History")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.SymptomsAndHistory)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.SymptomsAndHistory, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.SymptomsAndHistory)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.RFV)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.RFV, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.RFV)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.GH)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.GH, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.GH)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="100px">
+                                @Html.LabelFor(model => model.POH)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.POH, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.POH)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.FH)
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.FH, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.FH)
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+              panelbar.Add().Text("GP / GOS Form Details")
+                  .Content(@<text>
+                    <br />
+                    <table>
+                        <tr>
+                            <td width="140px" height="50px">
+                                @Html.LabelFor(model => model.GPpracticename, "Practice Name")
+                            </td>
+                            <td width="250px">
+                                @Html.TextBoxFor(model => model.GPpracticename, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.GPpracticename)
+                            </td>
+                            <td width="150px">
+                                @Html.LabelFor(model => model.Doctor)
+                            </td>
+                            <td width="260px">
+                                @Html.TextBoxFor(model => model.Doctor, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.Doctor)
+                            </td>
+                            <td width="160px"></td>
+                            <td width="260px"></td>
+                        </tr>
+                        <tr>
+                            <td height="50px">
+                                @Html.LabelFor(model => model.GPpracticeaddress)
+                            </td>
+                            <td rowspan="2">
+                                @Html.TextAreaFor(model => model.GPpracticeaddress, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.GPpracticeaddress)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.GPpracticephone)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.GPpracticephone, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.GPpracticephone)
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <td>
+                                @Html.LabelFor(model => model.GPpracticefax)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.GPpracticefax, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.GPpracticefax)
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="50px">
+                                @Html.LabelFor(model => model.GPpracticepostcode)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.GPpracticepostcode, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.GPpracticepostcode)
+                            </td>
+                            <td>
+                                @Html.LabelFor(model => model.GPpracticeemail)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.GPpracticeemail, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.GPpracticeemail)
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="50px">
+                                @Html.LabelFor(model => model.SchoolCollegeUniversity)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.SchoolCollegeUniversity, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.SchoolCollegeUniversity)
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="50px">
+                                @Html.LabelFor(model => model.SchoolCollegeUniversityAddress)
+                            </td>
+                            <td rowspan="2">
+                                @Html.TextAreaFor(model => model.SchoolCollegeUniversityAddress, 5, 1, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.SchoolCollegeUniversityAddress)
+                            </td>
+                            <td>@Html.LabelFor(model => model.Benefit)</td>
+                            <td>
+                                @Html.Kendo().ComboBoxFor(model => model.Benefit).BindTo(ViewBag.Benefits).HtmlAttributes(new { @class = "kendo-dropdown-large" }).Suggest(true)
+                                @Html.ValidationMessageFor(model => model.Benefit)
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="50px"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="50px">
+                                @Html.LabelFor(model => model.SchoolCollegeUniversityPostcode)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(model => model.SchoolCollegeUniversityPostcode, new { @class = "k-textbox medium-field" })
+                                @Html.ValidationMessageFor(model => model.SchoolCollegeUniversityPostcode)
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <br />
+                </text>);
+          })
+            )
+            <br />
+            <table>
+                <tr>
+                    <td height="50px">@Html.LabelFor(model => model.PreviousEyeExamDate) &nbsp;</td>
+                    <td>
+                        @(Html.Kendo().DatePickerFor(model => model.PreviousEyeExamDate)
+                        .Value(Model.PreviousEyeExamDate)
+                        )
+                        @Html.ValidationMessageFor(model => model.PreviousEyeExamDate) &nbsp; &nbsp;
+                    </td>
+                    <td>@Html.LabelFor(model => model.EyeExamFrequencyValue) &nbsp;</td>
+                    <td>
+                        @Html.TextBoxFor(model => model.EyeExamFrequencyValue, new { @class = "k-textbox small" })
+                        @Html.Kendo().DropDownListFor(model => model.EyeExamFrequencyUnit).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.FrequencyUnit.Years)).HtmlAttributes(new { @class = "kendo-dropdown-small" }).Value(Model.EyeExamFrequencyUnit.ToString())
+                        @Html.ValidationMessageFor(model => model.EyeExamFrequencyValue) &nbsp; &nbsp;
+                    </td>
+                    <td>@Html.LabelFor(model => model.NextDueDateEyeExam) &nbsp;</td>
+                    <td>
+                        @(Html.Kendo().DatePickerFor(model => model.NextDueDateEyeExam)
+                        .Value(Model.NextDueDateEyeExam)
+                        )
+                        @Html.ValidationMessageFor(model => model.NextDueDateEyeExam)
+                    </td>
+                </tr>
+                <tr>
+                    <td height="50px">@Html.LabelFor(model => model.eyeExamRecallTemplate) &nbsp;</td>
+                    <td colspan="5">
+                        @(Html.Kendo().DropDownList()
+                            .Name("EyeExamRecallTemplateOption")
+                            .DataValueField("Id")
+                            .DataTextField("Name")
+                            .Value(Model.eyeExamRecallTemplate != null ? Model.eyeExamRecallTemplate.Id.ToString() : "")
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("GetTemplates", "RecallTemplates");
+                                })
+                                .ServerFiltering(true);
+                            })
+                            .HtmlAttributes(new { style = "width:300px" })
+                        )
+                    </td>
+                </tr>
+                <tr>
+                    <td height="50px">@Html.LabelFor(model => model.PreviousContactLensExamDate) &nbsp;</td>
+                    <td>
+                        @(Html.Kendo().DatePickerFor(model => model.PreviousContactLensExamDate)
+                        .Value(Model.PreviousContactLensExamDate)
+                        )
+                        @Html.ValidationMessageFor(model => model.PreviousContactLensExamDate) &nbsp; &nbsp;
+                    </td>
+                    <td>@Html.LabelFor(model => model.ContactLensExamFrequencyValue) &nbsp;</td>
+                    <td>
+                        @Html.TextBoxFor(model => model.ContactLensExamFrequencyValue, new { @class = "k-textbox small" })
+                        @Html.Kendo().DropDownListFor(model => model.ContactLensExamFrequencyUnit).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.FrequencyUnit.Years)).HtmlAttributes(new { @class = "kendo-dropdown-small" }).Value(Model.ContactLensExamFrequencyUnit.ToString())
+                        @Html.ValidationMessageFor(model => model.ContactLensExamFrequencyValue) &nbsp; &nbsp;
+                    </td>
+                    <td>@Html.LabelFor(model => model.NextDueDateContactLensExam) &nbsp;</td>
+                    <td>
+                        @(Html.Kendo().DatePickerFor(model => model.NextDueDateContactLensExam)
+                        .Value(Model.NextDueDateContactLensExam)
+                        )
+                        @Html.ValidationMessageFor(model => model.NextDueDateContactLensExam)
+                    </td>
+                </tr>
+                <tr>
+                    <td height="50px">@Html.LabelFor(model => model.contactLensExamRecallTemplate) &nbsp;</td>
+                    <td colspan="5">
+                        @(Html.Kendo().DropDownList()
+                            .Name("ContactLensExamRecallTemplateOption")
+                            .DataValueField("Id")
+                            .DataTextField("Name")
+                            .Value(Model.contactLensExamRecallTemplate != null ? Model.contactLensExamRecallTemplate.Id.ToString() : "")
+                            .DataSource(source =>
+                            {
+                                source.Read(read =>
+                                {
+                                    read.Action("GetTemplates", "RecallTemplates");
+                                })
+                                .ServerFiltering(true);
+                            })
+                            .HtmlAttributes(new { style = "width:300px" })
+                        )
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </fieldset>
+    <br />
+    <p>
+        <input class="k-button" type="submit" value="Save" /> &nbsp;
+        <button id="cancel-footer" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+    </p>
+
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+@(Html.Kendo().Window()
+    .Name("window")
+    .Title("Lookup")
+    .Content(@<text>
+        <p>
+            <input type="text" id="txtPostcode" name="txtPostcode" value=" " class="k-textbox extra-large" />
+            @(Html.Kendo().Button()
+            .Name("btnSearchPostcode")
+            .HtmlAttributes(new { type = "button" })
+            .Content("Search"))
+        </p>
+        <p>
+            <table id="tblAddress" class="table table-bordered table-condensed table-hover">
+                <tbody></tbody>
+            </table>
+            <span id='errorMessage' class='text-danger'></span>
+        </p>
+    </text>)
+    .Draggable()
+    .Resizable()
+    .Width(600)
+    .Height(400)
+    .Actions(actions => actions.Pin().Minimize().Maximize().Close())
+    .Visible(false)
+)
+<script>
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/Customers/Customer/@Model.Id.ToString()');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/Customers/Customer/@Model.Id.ToString()');
+        }
+    });
+
+    $('#cancel-footer').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/Customers/Customer/@Model.Id.ToString()');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/Customers/Customer/@Model.Id.ToString()');
+        }
+    });
+
+    //#region DRC
+    $(document).ready(function () {
+        $("#btnLookup").bind("click", function () {
+            var window = $("#window").data("kendoWindow").open();
+            window.center();
+            $('#txtPostcode').val("");
+            $('#tblAddress > tbody').html("");
+        });
+
+        $("#txtPostcode, #Postcode").on('keypress', function (e) {
+            if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90) || (e.keyCode >= 97 && e.keyCode <= 122) && $(this).val().length <= 6)
+                return true;
+            else
+                return false;
+        });
+
+        $('#txtPostcode').on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                $('#btnSearchPostcode').trigger('click');
+            }
+        });
+
+        $('#btnSearchPostcode').on('click', function () {
+            $.ajax({
+                url: "/Customers/GetAddresses?Search=" + $("#txtPostcode").val(),
+                type: "GET",
+                dataType: "json",
+                traditional: true,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.length > 0) {
+                        $('#errorMessage').text("");
+                        var html = "";
+                        $(data).each(function (index, value) {
+                            html = html + "<tr><td>" + value.Text + "</td><td><input class='k-button btnAddress' type='button' value='Select' /></td></tr>";
+                        });
+                        $('#tblAddress > tbody').html(html);
+                    }
+                    else {
+                        $('#tblAddress > tbody').html("");
+                        $('#errorMessage').text("Not any address found for given postcode!");
+                    }
+                },
+                error: function () {
+                    $('#errorMessage').text("An error has occured!");
+                }
+            });
+        });
+
+        $(document).on("click", ".btnAddress", function () {
+            var addressArray = $(this).closest('tr').find('td:not(:empty):first').text().split(',');
+            $('#Postcode').val(addressArray.shift());
+            $('#Address').val(addressArray.join(','));
+            $("#window").data("kendoWindow").close();
+        });
+
+    });
+    //#endregion
+</script>
+
+<style type="text/css">
+    #btnLookup {
+        margin-top: 10px !important;
+    }
+</style>

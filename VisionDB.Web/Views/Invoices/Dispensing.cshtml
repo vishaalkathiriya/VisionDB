@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Dispensing";
+}
+
+<h2><img src="~/Content/Images/glasses.png" alt="Dispensing" /> Dispensing</h2>
+<div>
+
+    Track your dispensing orders when they need to be ordered and when they are ready to be dispatched via this screen. When you have ordered stock and are informing patients, please use the order stock button below</div>
+<br />
+@using (Html.BeginForm("Dispensing", "Invoices", FormMethod.Post, null))
+{
+    <table>
+        <tr>
+            <th></th>
+            <th>Include&nbsp;</th>
+        </tr>
+        <tr>
+            <td>Not ordered &nbsp;</td>
+            <td>@Html.CheckBox("IncludeNotOrdered") &nbsp;</td>
+        </tr>
+        <tr>
+            <td>Awaiting goods to come in &nbsp;</td>
+            <td>@Html.CheckBox("IncludeAwaitingGoods") &nbsp;</td>
+        </tr>
+        <tr>
+            <td>Awaiting dispatch or collection &nbsp;</td>
+            <td>@Html.CheckBox("IncludeAwaitingDispatchOrCollection") &nbsp;</td>
+        </tr>
+        <tr>
+            <td>Awaiting payment &nbsp;</td>
+            <td>@Html.CheckBox("IncludeAwaitingPayment") &nbsp;</td>
+        </tr>
+        <tr>
+            <td>Counter sales &nbsp;</td>
+            <td>@Html.CheckBox("IncludeAdhoc") &nbsp;</td>
+        </tr>
+        <tr>
+            <td>Complete &nbsp;</td>
+            <td>@Html.CheckBox("IncludeComplete") &nbsp;</td>
+        </tr>
+
+        </table>
+    <br />    
+    <table>
+        <tr>
+            <td>Between dates &nbsp; </td>
+            <td>
+                @(Html.Kendo().DatePicker()
+                    .Name("Start")
+                    .Value(ViewBag.Start)
+                )
+                and  
+                @(Html.Kendo().DatePicker()
+                    .Name("End")
+                    .Value(ViewBag.End)
+                )
+            </td>
+        </tr>
+    </table>
+    <br />
+    <table>
+        <tr>
+            <td><input id="btnUpdate" type="submit" value="Refresh" class="k-button" /> &nbsp;</td>
+
+            <td><button class="k-button" type="button" value="Add" onclick="location.href='@Url.Action("Add", "Invoices")'">Add Counter Sale</button> &nbsp;</td>
+            <td><button class="k-button" type="button" value="GoodsIn" onclick="location.href='@Url.Action("GoodsIn", "Inventory")'">Order Stock / Stock Received</button></td>
+            <td>
+                <div id="tooltip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                .For("#tooltip")
+                .Filter("div")
+                .Position(TooltipPosition.Right)
+                .AutoHide(false)
+                .ShowOn(TooltipShowOnEvent.Click)
+                .Content("The 'Order Stock / Stock Received' button will show you all the stock that needs to be ordered or to change the status of an item e.g. change an item from ordered to arrived")
+                .Width(200)
+                )
+                <script>
+                    function change() {
+                        $("#tooltip").data("kendoTooltip").show($("#target" + this.value()));
+                    }
+                </script>
+            </td>
+            <td>&nbsp; <button class="k-button" type="button" value="Reconcile" onclick="location.href='@Url.Action("Reconcile", "Invoices")'">Reconcile Payments / Vouchers</button> &nbsp;</td>
+        </tr>
+    </table>
+}
+<br />
+@(Html.Kendo().Grid((IEnumerable<VisionDB.Models.InvoiceViewModel>)ViewBag.Invoices)
+      .Name("Journal")
+                 
+
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.InvoiceDate).Title("Date and Time").Format("{0:dd/MM/yyyy HH:mm}");
+          columns.Bound(j => j.InvoiceNumber).Title("Invoice No");
+          columns.Bound(j => j.CustomerName);
+          columns.Bound(j => j.Summary).Title("Summary");
+          columns.Bound(j => j.DispenseStatusToString).Title("Order Status");
+          columns.Template(x => { }).ClientTemplate(
+      "<a class='k-button' href='" +
+          Url.Action("Invoice", "Invoices") +
+          "/#= Id #'" +
+      ">View Invoice</a>"
+  ).Width(132);
+      })
+
+
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model => model.Id(j => j.Id))
+                  .Read(read => read.Action("OpenJournalEntry", "Customers"))
+                     )
+            //.Filterable()
+            //.Sortable()
+            //.ColumnMenu()      
+      .ClientRowTemplate("<tr bgcolor='#: DispenseColour#'>"
+          + "<td>#: InvoiceDateToString#</td>"
+          + "<td>#: InvoiceNumber#</td>"
+          + "<td>#: CustomerName#</td>"
+          + "<td>#: Summary#</td>"
+          + "<td>#: DispenseStatusToString#</td>"
+      + "<td><a class='k-button' href='" +
+              Url.Action("Invoice", "Invoices") +
+              "/#= Id #'" +
+          ">View Invoice</a></td>"
+      + "</tr>")
+        //.Sortable() 
+        //.Pageable() //todo: fix paging.
+        //.Groupable() //todo: fix grouping.
+)

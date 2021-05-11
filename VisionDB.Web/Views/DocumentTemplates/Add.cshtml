@@ -1,0 +1,92 @@
+﻿@model VisionDB.Models.DocumentTemplate
+
+@{
+    ViewBag.Title = "Add template";
+}
+
+<h2>Add template</h2>
+<br />
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.AntiForgeryToken()
+        @Html.LabelFor(model => model.Name) &nbsp; 
+        @Html.TextBoxFor(model => model.Name, new { @class = "k-textbox large" })
+        @Html.ValidationMessageFor(model => model.Name)
+        <br />
+        <br />
+        @Html.LabelFor(model => model.TemplateTypeEnum) &nbsp; 
+        @Html.Kendo().DropDownListFor(model => model.TemplateTypeEnum).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.TemplateType.Recalls)).HtmlAttributes(new { @class = "kendo-dropdown-medium" })
+        <br />
+        <br />
+        @Html.LabelFor(model => model.TemplateMethodEnum) &nbsp;
+        @Html.Kendo().DropDownListFor(model => model.TemplateMethodEnum).BindTo(VisionDB.Helper.EnumHelper.ToSelectList(VisionDB.Models.Enums.MessageMethod.Letter)).HtmlAttributes(new { @class = "kendo-dropdown-medium" })
+        <br />
+        <br />
+        Create the template, using the following placeholders: <br />
+        [patient_name] patient name including title, e.g. Mr John Smith <br />
+        [patient_address] patient address including post code <br />
+        [patient_number] patient's number if entered <br />
+        [eye_exam_due_date] date that the patient's eye exam is due <br />
+        [eye_exam_last_test_date] date that the patient's eye exam was last taken <br />
+        [contact_lens_exam_due_date] date that the patient's eye exam is due <br />
+        [contact_lens_exam_last_test_date] date that the patient's eye exam was last taken <br /> 
+        [practice_name] your practice's name <br />
+        [practice_address] your practice address <br />
+        [practice_telephone] your practice's telephone number <br />
+        [practice_email] your practice's email address <br /> 
+        <br />
+        @Html.Kendo().EditorFor(model => model.TemplateHtml)
+        @Html.ValidationMessageFor(model => model.TemplateHtml)
+        <br />
+    </div>
+    <input type="submit" value="Save" class="k-button" /> @:&nbsp;
+    <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button> @:&nbsp;
+
+    <script id="delete-confirmation" type="text/x-kendo-template">
+        <p class="delete-message">Are you sure?</p>
+
+        <button class="delete-confirm k-button">Delete</button> &nbsp;
+        <a href="#" class="delete-cancel k-button">Cancel</a>
+    </script>
+
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+
+<script>
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/DocumentTemplates');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/DocumentTemplates');
+        }
+    });
+</script>

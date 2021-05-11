@@ -1,0 +1,374 @@
+﻿@model IEnumerable<VisionDB.Models.Schedule>
+@{
+    ViewBag.Title = "Calendar";
+}
+<style type="text/css">
+    .status-label {
+    }
+
+        .status-label strong {
+            display: inline-block !important;
+        }
+</style>
+<div class="row">
+    <div class="col-sm-12"><h2><img src="~/Content/Images/calendar-48.png" alt="calendar" /> Calendar</h2></div>
+    <div class="col-sm-12">
+        <input type="button" value="Add appointment" class='k-button addevent' /> &nbsp;
+        <button class="k-button" type="button" value="Add" onclick="location.href='@Url.Action("Add", "Customers")'">Add patient</button>
+        @{
+            if (Request["ReturnTo"] != null && Request["ReturnTo"] == "customer" && Session["customer"] != null)
+            {
+                @:&nbsp;<button class="k-button" type="button" value="Cancel" onclick="location.href='@Url.Action("Customer", "Customers", new { id = ((VisionDB.Models.Customer)Session["customer"]).Id } )'">Back to patient</button>
+            }
+        }
+        &nbsp;<input type="button" value="Edit Selected Appointment" class='k-button editevent' />
+        &nbsp;<input type="button" value="Patient Record" class='k-button gotopatient' />
+        &nbsp;<input type="button" value="New Eye Exam" class='k-button neweyeexam' />
+        &nbsp;<input type="button" value="Patient Has Arrived" class='k-button patientarrived' />
+        &nbsp;<input type="button" value="Send Reminder" class='k-button sendreminder' />
+        &nbsp;<h10 id="appointment-reminder"></h10>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-7 col-md-6 col-sm-6 col-xs-12 status-label">
+        <strong>Colour key</strong> &nbsp;
+        <strong class="appointment-none">&#x25a0; None</strong> &nbsp;
+        <strong class="appointment-arrived"> &#x25a0; Arrived</strong> &nbsp;
+        <strong class="appointment-cancelled"> &#x25a0; Cancelled</strong> &nbsp;
+        <strong class="appointment-rebooked"> &#x25a0; Rebooked</strong> &nbsp;
+        <strong class="appointment-no-show"> &#x25a0; No show</strong>
+    </div>
+    <div class="col-lg-5 col-md-6 col-sm-6 col-xs-12">
+        @(Html.Kendo().DropDownList()
+            .Name("AppointmentTypes")
+            .DataValueField("Id")
+            .DataTextField("Name")
+            .DataSource(source =>
+            {
+                source.Read(read =>
+                {
+                    read.Action("GetAppointmentTypes", "AppointmentTypes");
+                })
+                .ServerFiltering(true);
+            })
+            .HtmlAttributes(new { @class = "kendo-dropdown-medium" })
+            .Events(e =>
+            {
+                e.Select("ApplyFilter");
+            })
+            .Value("")
+        )
+        @(Html.Kendo().DropDownList()
+            .Name("Staff")
+            .DataValueField("Id")
+            .DataTextField("UserToString")
+            .DataSource(source =>
+                {
+                    source.Read(read =>
+                    {
+                        read.Action("GetStaffMembers", "Appointments");
+                    })
+                    .ServerFiltering(true);
+                })
+            .HtmlAttributes(new { @class = "kendo-dropdown-medium" })
+            .Events(e =>
+            {
+                e.Select("ApplyFilter");
+            })
+            .Value("")
+        )
+        @(Html.Kendo().DropDownList()
+            .Name("Status")
+            .DataTextField("Text")
+            .DataValueField("Value")
+            .BindTo(new List<SelectListItem>() {
+                new SelectListItem() {
+                    Text = "All",
+                    Value = "0"
+                },
+                new SelectListItem() {
+                    Text = "Arrived",
+                    Value = "1"
+                },
+                new SelectListItem() {
+                    Text = "Cancelled",
+                    Value = "2"
+                },
+                new SelectListItem() {
+                    Text = "Rebooked",
+                    Value = "3"
+                },
+                new SelectListItem() {
+                    Text = "No Show",
+                    Value = "4"
+                }
+            })
+            .Events(e =>
+            {
+                e.Select("ApplyFilter");
+            })
+            .HtmlAttributes(new { @class = "kendo-dropdown-small" })
+            .Value("")
+        )
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-sm-12">
+        @(Html.Kendo().Scheduler<VisionDB.Models.Schedule>()
+            .Name("scheduler")
+            .Editable(edit =>
+            {
+                edit.TemplateName("AppointmentEditorTemplate");
+            })
+            .Date(ViewBag.Start != null ? (DateTime)ViewBag.Start : DateTime.Today.Date)
+            .StartTime(new DateTime(2013, 6, 13, 6, 00, 00))
+            .EndTime(new DateTime(2013, 6, 13, 23, 00, 00))
+            .DateHeaderTemplate("<strong>#=kendo.toString(date, 'ddd d MMM')#</strong>")
+            .MajorTimeHeaderTemplate("<strong>#=kendo.toString(date, 'HH:mm')#</strong>")
+            .MajorTick((int)ViewBag.Practice.SchedulerMajorTick)
+            .MinorTickCount((int)ViewBag.Practice.SchedulerMinorTickCount)
+            .Views(views =>
+            {
+                views.DayView(view => view.ShowWorkHours(true).WorkDayStart(ViewBag.Practice.WorkDayStart).WorkDayEnd(ViewBag.Practice.WorkDayEnd));
+                views.WeekView(view => view.ShowWorkHours(true).Selected(true).WorkDayStart(ViewBag.Practice.WorkDayStart).WorkDayEnd(ViewBag.Practice.WorkDayEnd));
+                views.MonthView();
+                views.AgendaView();
+            })
+            .Events(e =>
+            {
+                e.Change("scheduler_change");
+                e.Add("scheduler_add");
+            })
+            .Selectable(true)
+            .Editable(true)
+            .DataSource(d => d
+                .Model(m =>
+                {
+                    m.Id(f => f.Id);
+                    m.Field(f => f.Id).DefaultValue(Guid.NewGuid());
+                })
+                .Read("ReadSchedule", "Appointments")
+                .Create("CreateSchedule", "Appointments")
+                .Destroy("DestroySchedule", "Appointments")
+                .Update("UpdateSchedule", "Appointments")
+            )
+            .Resources(resource =>
+            {
+                resource.Add(m => m.StatusEnum)
+                .Title("Status")
+                .DataTextField("Text")
+                .DataValueField("Value")
+                .DataColorField("Color")
+                .BindTo(new[] {
+                    new { Text = "None", Value = 0, Color = "#6699ff" } ,
+                    new { Text = "Arrived", Value = 1, Color = "#53cf53" } ,
+                    new { Text = "Cancelled", Value = 2, Color = "#ff9900" } ,
+                    new { Text = "Rebooked", Value = 3, Color = "#cc66ff" } ,
+                    new { Text = "No Show", Value = 4, Color = "#ff1919" }
+                });
+            })
+        )
+    </div>
+</div>
+<script>
+    var selectedEvent;
+    $('.editevent').hide();
+    $('.gotopatient').hide();
+    $('.neweyeexam').hide();
+    $('.sendreminder').hide();
+    $('.patientarrived').hide();
+    var EventStart = null;
+    @if(ViewBag.PreventDraggingAppointments)
+    {
+        @:kendo.ui.Scheduler.prototype.options.editable = { resize: false, move: false };
+                                                                                                                                                                                                                                                                                                                                        }
+    @if(ViewBag.AutomaticallyResizeCalendar)
+    {
+        <text>
+    $(document).ready(function () {
+        var sch = $('#scheduler').data("kendoScheduler");
+        sch.element.height($(window).height() - 340)
+    });
+    </text>
+    }
+    $(function () {
+        $('.addevent').click(function () {
+            var scheduler = $("#scheduler").data("kendoScheduler");
+            scheduler.addEvent();
+        });
+    });
+    $(function () {
+        $('.editevent').click(function () {
+            if (selectedEvent != null) {
+                var scheduler = $("#scheduler").data("kendoScheduler");
+                scheduler.editEvent(selectedEvent);
+            }
+        });
+    });
+    $(function () {
+        $('.gotopatient').click(function () {
+            if (selectedEvent != null && selectedEvent.CustomerId != null) {
+                var scheduler = $("#scheduler").data("kendoScheduler");
+                @{
+                    if(((VisionDB.Models.Practice)Session["practice"]).EditPatientFromCalendar)
+                    {
+                        @:window.location.replace('/Customers/Edit/' + selectedEvent.CustomerId);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                    else
+                    {
+                        @:window.location.replace('/Customers/Customer/' + selectedEvent.CustomerId);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
+                }
+            }
+        });
+    });
+
+    $(function () {
+        $('.neweyeexam').click(function () {
+            if (selectedEvent != null && selectedEvent.CustomerId != null) {
+                var scheduler = $("#scheduler").data("kendoScheduler");
+                window.location.replace('/EyeExams/AddEyeExamForCustomer/' + selectedEvent.CustomerId);
+            }
+        });
+    });
+
+    $(function () {
+        $('.sendreminder').click(function () {
+            if (selectedEvent != null && selectedEvent.CustomerId != null) {
+                var scheduler = $("#scheduler").data("kendoScheduler");
+                window.location.replace('/Appointments/SendReminder/' + selectedEvent.Id);
+            }
+        });
+    });
+
+    $(function () {
+        $('.patientarrived').click(function () {
+            if (selectedEvent != null && selectedEvent.CustomerId != null) {
+                var scheduler = $("#scheduler").data("kendoScheduler");
+                window.location.replace('/Appointments/PatientArrived/' + selectedEvent.Id);
+            }
+        });
+    });
+
+    function scheduler_change(e) {
+        if (e.events.length > 0) {
+            selectedEvent = e.events[e.events.length - 1];
+
+            $('.editevent').show();
+            if (selectedEvent.CustomerId != null) {
+                $('.gotopatient').show();
+                $('.neweyeexam').show();
+                if (selectedEvent.ShowArrivedButton == true) {
+                    $('.patientarrived').show();
+                }
+                else {
+                    $('.patientarrived').hide();
+                }
+                if (selectedEvent.SendReminderMessages == true) {
+                    $('.sendreminder').show();
+                }
+                else {
+                    $('.sendreminder').hide();
+                }
+
+                $("#appointment-reminder").text(selectedEvent.ReminderText);
+            }
+            else {
+                $('.gotopatient').hide();
+                $('.neweyeexam').hide();
+                $('.sendreminder').hide();
+                $('.patientarrived').hide();
+                $("#appointment-reminder").text('');
+            }
+        }
+        else {
+            selectedEvent = null;
+            $('.editevent').hide();
+            $('.gotopatient').hide();
+            $('.neweyeexam').hide();
+            $('.sendreminder').hide();
+            $('.patientarrived').hide();
+            $("#appointment-reminder").text('');
+        }
+
+        EventStart = e.start;
+    }
+
+    function scheduler_add(e) {
+        if (EventStart != null) {
+            e.event.start = EventStart;
+            var startDateTime = new Date(EventStart);
+            var diff = 30;
+            var EventEnd = new Date(startDateTime.getTime() + diff * 60000);
+            e.event.end = EventEnd;
+        }
+        else {
+            e.event.start = null;
+            e.event.end = null;
+        }
+    }
+
+    function ApplyFilter() {
+        setTimeout(function () {
+            // GETTING LATEST VALUES
+            var appointmentType = $('#AppointmentTypes').data("kendoDropDownList").value(),
+            staff = $('#Staff').data("kendoDropDownList").value(),
+            status = parseInt($('#Status').data("kendoDropDownList").value());
+            // SETTING COOKIES
+            $.cookie('appointmentType', appointmentType);
+            $.cookie('staff', staff);
+            $.cookie('status', status);
+            // APPLYING FILTERS
+            if (appointmentType === "00000000-0000-0000-0000-000000000000") {
+                appointmentType = null;
+            }
+            if (staff === "00000000-0000-0000-0000-000000000000") {
+                staff = null;
+            }
+            var schedulerDataSource = $("#scheduler").data("kendoScheduler").dataSource;
+            var _filter = {
+                "logic": "and",
+                "filters": []
+            };
+            if (appointmentType) {
+                _filter.filters.push({
+                    "field": "appointmentType",
+                    "operator": "eq",
+                    "value": appointmentType
+                });
+            }
+            if (staff) {
+                _filter.filters.push({
+                    "field": "StaffMember",
+                    "operator": "eq",
+                    "value": staff
+                });
+            }
+            if (status > 0) {
+                _filter.filters.push({
+                    "field": "StatusEnum",
+                    "operator": "eq",
+                    "value": status
+                });
+            }
+            schedulerDataSource.filter(_filter);
+        }, 0);
+    }
+
+    $(function () {
+        var _appointmentType = $.cookie('appointmentType'), _staff = $.cookie('staff'), _status = $.cookie('status');
+        if (_appointmentType) {
+            $('#AppointmentTypes').val(_appointmentType);
+        }
+        if (_staff) {
+            $('#Staff').val(_staff);
+        }
+        if (_status) {
+            $('#Status').val(_status);
+        }
+        setTimeout(function () {
+            ApplyFilter();
+        }, 0);
+    });
+</script>

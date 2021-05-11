@@ -1,0 +1,139 @@
+﻿@model IEnumerable<VisionDB.Models.Schedule>
+@{
+    ViewBag.Title = "Add appointment for " + @ViewBag.Customer.ToString();
+}
+
+<h2><img src="~/Content/Images/calendar-48.png" alt="calendar" /> Add appointment for @ViewBag.Customer.ToString()</h2>
+<input type="button" value="Add appointment" class='k-button addevent' /> &nbsp;
+&nbsp;<input type="button" value="Edit Selected Appointment" class='k-button editevent' />
+&nbsp;<button class="k-button" type="button" value="Customer" onclick="location.href='@Url.Action("Customer", "Customers", new { id = ((VisionDB.Models.Customer)ViewBag.Customer).Id })'">Back to patient</button>
+<br />
+<strong>Colour key</strong> &nbsp;
+<strong class="appointment-none">&#x25a0; None</strong> &nbsp;
+<strong class="appointment-arrived"> &#x25a0; Arrived</strong> &nbsp;
+<strong class="appointment-cancelled"> &#x25a0; Cancelled</strong> &nbsp;
+<strong class="appointment-rebooked"> &#x25a0; Rebooked</strong> &nbsp;
+<strong class="appointment-no-show"> &#x25a0; No show</strong>
+<br />
+<br />
+@(Html.Kendo().Scheduler<VisionDB.Models.Schedule>()
+            .Name("scheduler")
+            .Editable(edit =>
+            {
+                edit.TemplateName("AppointmentEditorTemplate");
+            })
+            .Date(@DateTime.Today.Date)
+            .StartTime(new DateTime(2013, 6, 13, 6, 00, 00))
+            .EndTime(new DateTime(2013, 6, 13, 23, 00, 00))
+            .DateHeaderTemplate("<strong>#=kendo.toString(date, 'ddd d MMM')#</strong>")
+            .MajorTimeHeaderTemplate("<strong>#=kendo.toString(date, 'HH:mm')#</strong>")
+            .MajorTick((int)ViewBag.Practice.SchedulerMajorTick)
+            .MinorTickCount((int)ViewBag.Practice.SchedulerMinorTickCount)
+            .Views(views =>
+        {
+            views.DayView(view => view.ShowWorkHours(true).Selected(true).WorkDayStart(ViewBag.Practice.WorkDayStart).WorkDayEnd(ViewBag.Practice.WorkDayEnd));
+            views.WeekView(view => view.ShowWorkHours(true).Selected(true).WorkDayStart(ViewBag.Practice.WorkDayStart).WorkDayEnd(ViewBag.Practice.WorkDayEnd));
+            views.MonthView();
+            views.AgendaView();
+        })
+        .Events(e =>
+        {
+            e.Change("scheduler_change");
+            e.Add("scheduler_add");
+        })
+            .Selectable(true)
+            .Editable(true)
+            .BindTo(Model)
+            .DataSource(d => d
+                .Model(m =>
+                {
+                    m.Id(f => f.Id);
+                    m.Field(f => f.Id).DefaultValue(Guid.Empty);
+                    m.Field(f => f.Start);
+                })
+                .Read("ReadSchedule", "Appointments")
+                .Create("CreateSchedule", "Appointments")
+                .Destroy("DestroySchedule", "Appointments")
+                .Update("UpdateSchedule", "Appointments")
+
+        )
+                    .Resources(resource =>
+                {
+                    resource.Add(m => m.StatusEnum)
+                        .Title("Status")
+                        .DataTextField("Text")
+                        .DataValueField("Value")
+                        .DataColorField("Color")
+                        .BindTo(new[] {
+                    new { Text = "None", Value = 0, Color = "#6699ff" } ,
+                    new { Text = "Arrived", Value = 1, Color = "#53cf53" } ,
+                    new { Text = "Cancelled", Value = 2, Color = "#ff9900" } ,
+                    new { Text = "Rebooked", Value = 3, Color = "#cc66ff" } ,
+                    new { Text = "No Show", Value = 4, Color = "#ff1919" }
+                });
+                })
+)
+<script>
+    var selectedEvent;
+    $('.editevent').hide();
+    var EventStart = null;
+    @if(ViewBag.PreventDraggingAppointments)
+    {
+        @:kendo.ui.Scheduler.prototype.options.editable = { resize: false, move: false };
+    }
+
+    @if(ViewBag.AutomaticallyResizeCalendar)
+    {
+        <text>
+            $(document).ready(function () {
+                var sch = $('#scheduler').data("kendoScheduler");
+                sch.element.height($(window).height() - 340)
+            });
+        </text>
+    }
+
+    $(function () {
+        $('.addevent').click(function () {
+            var scheduler = $("#scheduler").data("kendoScheduler");
+            scheduler.addEvent();
+        });
+    });
+
+    $(function () {
+        $('.editevent').click(function () {
+            if (selectedEvent != null) {
+                var scheduler = $("#scheduler").data("kendoScheduler");
+                scheduler.editEvent(selectedEvent);
+            }
+        });
+    });
+
+    function scheduler_change(e) {
+        if (e.events.length > 0) {
+            selectedEvent = e.events[e.events.length - 1];
+            $('.editevent').show();
+        }
+        else {
+            selectedEvent = null;
+            $('.editevent').hide();
+        }
+        EventStart = e.start;
+    }
+
+    function scheduler_add(e) {
+        if (EventStart != null)
+        {
+            e.event.start = EventStart;
+            var startDateTime = new Date(EventStart);
+            var diff = 30;
+            var EventEnd = new Date(startDateTime.getTime() + diff * 60000);
+            e.event.end = EventEnd;
+        }
+        else
+        {
+            e.event.start = null;
+            e.event.end = null;
+        }
+    }
+
+</script>

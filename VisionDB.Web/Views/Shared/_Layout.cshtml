@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - VisionDB</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/kendo/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    @Scripts.Render("~/bundles/jquery.cookie")
+    @Scripts.Render("~/bundles/momentjs")
+    @Scripts.Render("~/bundles/kendo")
+    @RenderSection("styles", required: false)
+    @RenderSection("scripts", required: false)
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @if (Session["user"] != null && ((VisionDB.Models.ApplicationUser)Session["user"]).UserName == "clark")
+                {
+                    @:<img src="@Url.Content("~/Content/Images/superman.png")" />
+                }
+                else
+                {
+                    @:<img src="@Url.Content("~/Content/Images/visiondblogo.png")" />
+                }
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (Session["user"] != null && ((VisionDB.Models.ApplicationUser)Session["user"]).DefaultHomePageEnum == VisionDB.Models.Enums.DefaultHomePage.Launcher)
+                    {
+                        <li>@Html.ActionLink("Home", "Launcher", "Home")</li>
+                    }
+                    <li>@Html.ActionLink("Dashboard", "Dashboard", "Home")</li>
+                    <li>@Html.ActionLink("Patients", "Search", "Customers")</li>
+                    <li>@Html.ActionLink("Calendar", "Calendar", "Appointments")</li>
+                    <li>@Html.ActionLink("Dispensing", "Dispensing", "Invoices")</li>
+                    @if (Session["user"] != null && ((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Locum) == false)
+                    {
+                        <li>@Html.ActionLink("Recalls", "Recall", "Recalls")</li>
+                    }
+                    @if (Session["user"] != null && (
+                ((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Admin)
+                || ((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Product_Manager)
+                ))
+                    {
+                        <li>@Html.ActionLink("Products", "Search", "Inventory")</li>
+                    }
+                    @if (Session["user"] != null && ((VisionDB.Models.ApplicationUser)Session["user"]).VDBRoles.Contains(VisionDB.Models.Enums.UserRoles.Admin))
+                    {
+                        <li>@Html.ActionLink("Finance", "Index", "Finance")</li>
+                        <li>@Html.ActionLink("Reports", "Practice", "Reports")</li>
+                        <li>@Html.ActionLink("Setup", "Index", "Setup")</li>
+                    }
+                    <li>@Html.ActionLink("Support", "Support", "Home")</li>
+                    @if (Session["user"] != null && ((VisionDB.Models.ApplicationUser)Session["user"]).UserName == "clark")
+                    {
+                        <li>@Html.ActionLink("Admin", "Index", "Admin")</li>
+                    }
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    @{if (@System.Web.Configuration.WebConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString.ToString().ToLower().Contains("test")
+                || @System.Web.Configuration.WebConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString.ToString().ToLower().Contains("dev"))
+        {
+            <text><div class="alert-danger">&nbsp;Test System</div></text>
+        }
+    }
+    <div class="container body-content">
+        @{if (ViewBag.Error != null)
+            {
+                @:<div class="alert-danger">&nbsp;@ViewBag.Error</div>
+            }
+            else if (TempData["Error"] != null)
+            {
+                @:<div class="alert-danger">&nbsp;@TempData["Error"]</div>
+            }
+        }
+        @{if (ViewBag.Message != null)
+            {
+                @:<div class="alert-info">&nbsp;@ViewBag.Message</div>
+            }
+            else if (TempData["Message"] != null)
+            {
+                @:<div class="alert-info">&nbsp;@TempData["Message"]</div>
+            }
+        }
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>
+                VisionDB &copy; @DateTime.Now.Year Click Software Limited version 1.8.9.
+                @{if (Session["user"] != null)
+                    {
+                        <text>For support email <a href="mailto:support@visiondb.uk?subject=SupportCode@(((VisionDB.Models.ApplicationUser)Session["user"]).SupportCode)">support@visiondb.uk</a> with support code @(((VisionDB.Models.ApplicationUser)Session["user"]).SupportCode).</text>
+                    }
+                }
+            </p>
+        </footer>
+    </div>
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>

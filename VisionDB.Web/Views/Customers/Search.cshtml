@@ -1,0 +1,129 @@
+﻿@model IEnumerable<VisionDB.Models.PatientViewModel>
+
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2><img src="~/Content/Images/patient48.png" alt="patient" /> Patient search</h2>
+
+            <p>Search for your patient using the box below. You can search by name, address, phone number, patient number or DOB.</p>
+
+
+@using (Html.BeginForm("Search", "Customers"))
+{
+    <table>
+        <tr>
+            <td>
+                <div>
+                    @Html.TextBox("Search", null, new { @class = "k-textbox large" })
+                    &nbsp; <input type="submit" value="Search patients" class="k-button" id="Search" />
+                </div>
+            </td>
+            <td>
+                <div id="tooltip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                .For("#tooltip")
+                .Filter("div")
+                .Position(TooltipPosition.Right)
+                .AutoHide(false)
+                .ShowOn(TooltipShowOnEvent.Click)
+                .Content("You can search for a patient by name, phone number, patient number or DOB. To search by both the first and last name, type in 3 characters of each seperated by a space. For example, typing in 'joh smi' will find a patient named John Smith.")
+                .Width(200)
+                )
+                <script>
+                    function change() {
+                        $("#tooltip").data("kendoTooltip").show($("#target" + this.value()));
+                    }
+                </script>
+            </td>
+        </tr>
+    </table>
+}
+
+<p>
+    <br />
+    <button class="k-button" type="button" value="Add" onclick="location.href='@Url.Action("Add", "Customers")'">Add patient</button>
+</p>
+@if (Model.Count() > 0)
+{
+    <h3>Patients found</h3>
+    @(Html.Kendo().Grid<VisionDB.Models.PatientViewModel>()
+      .Name("CustomersFound")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Hidden(true);
+          columns.Bound(p => p.Name).Title("Customer");
+          columns.Bound(p => p.Address).Title("Address");
+          columns.Bound(p => p.Number).Title("Telephone");
+          columns.Bound(p => p.AgeOrDOB).Title(ViewBag.AgeOrDOBTitle);
+          columns.Template(x => { }).ClientTemplate(
+                "<a class='k-button' href='" +
+                    Url.Action("Customer", "Customers") +
+                    "/#= Id #'" +
+                ">View patient</a>"
+            ).Width(130);
+      })
+      .ClientRowTemplate("<tr bgcolor='#: Colour#'>"
+              + "<td>#: Name#</td>"
+              + "<td>#: Address#</td>"
+              + "<td>#: Number#</td>"
+              + "<td>#: AgeOrDOB#</td>"
+              + "<td><a class='k-button' href='" +
+                  Url.Action("Customer", "Customers") +
+              "/#= Id #'" +
+              ">View patient</a></td>"
+              + "</tr>")
+              .Sortable()
+              .Pageable()
+        //.Pageable() //todo: fix paging.
+         // .Sortable() // todo: fix sorting.
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model => model.Id(p => p.Id))
+              .Read(read => read.Action("_ReadCustomerSearch", "Customers", new { Search = ViewBag.SearchText }))
+        //.Sort
+        )
+    )
+}
+else if (ViewBag.SearchText != null)
+{
+    <h3>No patients found</h3>
+}
+
+<h3>Recent patients</h3>
+@(Html.Kendo().Grid<VisionDB.Models.PatientViewModel>()
+      .Name("RecentCustomers")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Hidden(true);
+          columns.Bound(p => p.Name).Title("Customer");
+          columns.Bound(p => p.Address).Title("Address");
+          columns.Bound(p => p.Number).Title("Telephone");
+          columns.Bound(p => p.AgeOrDOB).Title(ViewBag.AgeOrDOBTitle);
+          columns.Template(x => { }).ClientTemplate(
+                "<a class='k-button' href='" +
+                    Url.Action("Customer", "Customers") +
+                    "/#= Id #'" +
+                ">View patient</a>"
+            ).Width(130);
+      })
+          .ClientRowTemplate("<tr bgcolor='#: Colour#'>"
+              + "<td>#: Name#</td>"
+              + "<td>#: Address#</td>"
+              + "<td>#: Number#</td>"
+              + "<td>#: AgeOrDOB#</td>"
+          + "<td><a class='k-button' href='" +
+                  Url.Action("Customer", "Customers") +
+              "/#= Id #'" +
+              ">View patient</a></td>"
+          + "</tr>")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model => model.Id(p => p.Id))
+          .Read(read => read.Action("_ReadLastUpdatedCustomers", "Customers"))
+          )
+          .Sortable()
+)
+

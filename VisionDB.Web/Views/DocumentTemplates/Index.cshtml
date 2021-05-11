@@ -1,0 +1,34 @@
+﻿@model IEnumerable<VisionDB.Models.DocumentTemplateViewModel>
+
+@{
+    ViewBag.Title = "Document templates";
+}
+
+<h2>Document templates</h2>
+<br />
+<button class="k-button" type="button" value="DocumentTemplate" onclick="location.href='@Url.Action("Add", "DocumentTemplates")'">Add document template</button> &nbsp; You can copy a document template by selecting it and clicking on the copy button.
+<br />
+<br />
+@(Html.Kendo().Grid<VisionDB.Models.DocumentTemplateViewModel>()
+      .Name("Grid")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Batch(true)
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("_Read", "DocumentTemplates"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.Name);
+          columns.Bound(j => j.TemplateTypeEnum).Title("Type");
+          columns.Bound(j => j.TemplateMethodEnum).Title("Method");
+          columns.Template(x => { }).ClientTemplate(
+              "<a class='k-button' href='" +
+              Url.Action("Edit", "DocumentTemplates") +
+              "/#= Id #'" +
+              ">View details</a>"
+              ).Width(130);
+      })
+        .Sortable()
+)

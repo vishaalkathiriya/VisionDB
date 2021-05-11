@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Expenses";
+}
+
+<h2>Expenses</h2>
+<button class="k-button" type="button" value="Add" onclick="location.href='@Url.Action("Add", "Expenses")'">Add Expense</button> &nbsp;
+<br />
+<br />
+@using (Html.BeginForm("Expenses", "Expenses", FormMethod.Post, null))
+{
+    <text>Start</text>
+    @(Html.Kendo().DatePicker()
+    .Name("Start")
+    .Value(ViewBag.Start)
+    )
+    <text>&nbsp; End</text>
+    @(Html.Kendo().DatePicker()
+    .Name("End")
+    .Value(ViewBag.End)
+    )
+    <text>&nbsp; <input id="btnUpdate" type="submit" value="Refresh" class="k-button" /></text>
+}
+<br />
+@(Html.Kendo().Grid((IEnumerable<VisionDB.Models.ExpenseViewModel>)ViewBag.Expenses)
+      .Name("Expenses")
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model => model.Id(j => j.Id))
+          .Read(read => read.Action("OpenJournalEntry", "Customers"))
+       )
+      .Columns(columns =>
+      {
+          columns.Bound(j => j.Id).Hidden(true);
+          columns.Bound(j => j.ExpenseDate).Title("Date").Format("{0:dd/MM/yyyy}").Width(150);
+          columns.Bound(j => j.Payee);
+          columns.Bound(j => j.Cost).Width(110);
+          columns.Bound(j => j.Category);
+          columns.Bound(j => j.Status);
+          columns.Template(x => { }).ClientTemplate(
+      "<a class='k-button' href='" +
+          Url.Action("Edit", "Expenses") +
+          "/#= Id #'" +
+      ">Edit Details</a>"
+  ).Width(130);
+      })
+      .ClientRowTemplate("<tr bgcolor='#: Colour#'>"
+          + "<td>#: ExpenseDateToString#</td>"
+          + "<td>#: Payee#</td>"
+          + "<td>#: CostToString#</td>"
+          + "<td>#: Category#</td>"
+          + "<td>#: Status#</td>"
+      + "<td><a class='k-button' href='" +
+              Url.Action("Edit", "Expenses") +
+              "/#= Id #'" +
+          ">Edit Details</a></td>"
+      + "</tr>")
+        .Sortable() //todo: fix sorting
+        //.Pageable() //todo: fix paging.
+        //.Groupable() //todo: fix grouping.
+)

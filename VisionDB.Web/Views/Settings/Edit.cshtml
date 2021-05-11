@@ -1,0 +1,88 @@
+﻿@model VisionDB.Models.Setting
+@{
+    ViewBag.Title = "Edit settings";
+}
+
+<h2>Edit settings</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DailyDatabaseBackupTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().TimePickerFor(model => model.DailyDatabaseBackupTime)
+                @Html.ValidationMessageFor(model => model.DailyDatabaseBackupTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DailyBackupLastTaken, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().DateTimePickerFor(model => model.DailyBackupLastTaken) &nbsp; Clearing this will force a database backup when the service is run.
+                @Html.ValidationMessageFor(model => model.DailyBackupLastTaken, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SMSStartTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().TimePickerFor(model => model.SMSStartTime)
+                @Html.ValidationMessageFor(model => model.SMSStartTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SMSEndTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.Kendo().TimePickerFor(model => model.SMSEndTime)
+                @Html.ValidationMessageFor(model => model.SMSEndTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <input type="submit" value="Save" class="k-button" /> @:&nbsp;
+    <button id="cancel" class="lose-changes-button k-button" type="button" value="Cancel">Cancel</button>
+
+    <script id="lose-changes-confirmation" type="text/x-kendo-template">
+        <p class="lose-changes-message">There are unsaved changes?</p>
+
+        <button class="lose-changes-confirm k-button">Lose changes</button> &nbsp;
+        <a href="#" class="lose-changes-cancel k-button">Cancel</a>
+    </script>
+}
+
+<script>
+    $("form :input").change(function () {
+        $(this).closest('form').data('changed', true);
+    });
+    $('#cancel').click(function () {
+        if ($(this).closest('form').data('changed')) {
+            var kendoWindow = $("<div />").kendoWindow({
+                title: "Confirm",
+                resizable: false,
+                modal: true
+            });
+
+            kendoWindow.data("kendoWindow")
+                .content($("#lose-changes-confirmation").html())
+                .center().open();
+
+            kendoWindow
+                .find(".lose-changes-confirm,.lose-changes-cancel")
+                    .click(function () {
+                        if ($(this).hasClass("lose-changes-confirm")) {
+                            window.location.replace('/Admin');
+                        }
+
+                        kendoWindow.data("kendoWindow").close();
+                    })
+                    .end()
+        }
+        else {
+            window.location.replace('/Admin');
+        }
+    });
+</script>

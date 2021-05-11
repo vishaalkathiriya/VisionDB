@@ -1,0 +1,147 @@
+﻿@model IEnumerable<VisionDB.Models.Product>
+
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2><img src="~/Content/Images/product48.png" alt="Dispensing" /> Product Search</h2>
+
+<p>Search for your product using the search box below. You can search by product name, code or reference number.</p>
+
+@using (Html.BeginForm("Search", "Inventory"))
+{
+    <table>
+        <tr>
+            <td>
+               
+                    @Html.TextBox("Search", null, new { @class = "k-textbox large" }) &nbsp;
+                    <input type="submit" value="Search" class="k-button" />
+            </td>
+            <td>
+                <div id="tooltip">
+                    <div class="k-button">?</div>
+                </div>
+                @(Html.Kendo().Tooltip()
+                .For("#tooltip")
+                .Filter("div")
+                .Position(TooltipPosition.Right)
+                .AutoHide(false)
+                .ShowOn(TooltipShowOnEvent.Click)
+                .Content("You can search for a product using by using at least 3 digits of the product name or product number")
+                .Width(200)
+                )
+                <script>
+                    function change() {
+                        $("#tooltip").data("kendoTooltip").show($("#target" + this.value()));
+                    }
+                </script>
+            </td>
+        </tr>
+    </table>
+}
+
+<br />
+<table>
+    <tr>
+        <td>
+            <button class="k-button" type="button" value="Add" onclick="location.href='@Url.Action("Add", "Inventory")'">Add New Product</button> &nbsp;
+        </td>
+        <td>
+        <button class="k-button" type="button" value="GoodsIn" onclick="location.href='@Url.Action("GoodsIn", "Inventory")'">Order Stock / Stock Received</button>
+            </td>
+        <td>
+        <div id="tooltip3">
+            <div id="target3" class="k-button">
+                ?
+            </div>
+        </div>
+        @(Html.Kendo().Tooltip()
+            .For("#tooltip3")
+            .Filter("div")
+            .Position(TooltipPosition.Right)
+            .AutoHide(false)
+            .ShowOn(TooltipShowOnEvent.Click)
+            .Content("This button will show you all the stock that needs to be ordered or to change the status of an item e.g. change an item from ordered to arrived")
+            .Width(300)
+
+        )
+        </td>
+    </tr>
+</table>
+
+@if (Model.Count() > 0)
+{
+    <h3>Products found</h3>
+    @(Html.Kendo().Grid((IEnumerable<VisionDB.Models.Product>)Model)
+      .Name("ProductsFound")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Hidden(true);
+          columns.Bound(p => p.ProductTypeEnum).Title("Type").Width(80);
+          columns.Bound(p => p.ProductToString).Title("Product Name").Width(300);
+          columns.Bound(p => p.Price).Title("RRP Incl VAT").Width(100);
+          columns.Bound(p => p.VATRate).Title("VAT Rate").Width(80);
+          columns.Bound(p => p.PracticeStockLevel).Title("Local Stock Level").Width(100);
+          columns.Bound(p => p.CompanyStockLevel).Title("Company Stock Level").Width(100);
+          columns.Template(x => { }).ClientTemplate(
+                "<a class='k-button' href='" +
+                    Url.Action("Edit", "Inventory") +
+                    "/#= Id #'" +
+                ">Edit Product</a>"
+            ).Width(145);
+      })
+        //.Pageable() //todo: fix paging.
+          .Sortable() // todo: fix sorting.
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model => model.Id(p => p.Id))
+              .Read(read => read.Action("Edit", "Inventory"))
+    )
+    )
+    if (ViewBag.MoreThanMaxSearchProductsCount == true)
+    {
+        <br />
+        <h4>More products found. Try limiting your search.</h4>
+    }
+}
+else if (ViewBag.SearchText != null)
+{
+    <h3>No products found</h3>
+}
+
+
+<h3>Recent products</h3>
+@if (((IEnumerable<VisionDB.Models.Product>)ViewBag.RecentProducts).Count() > 0)
+{
+    @(Html.Kendo().Grid((IEnumerable<VisionDB.Models.Product>)ViewBag.RecentProducts)
+      .Name("RecentProducts")
+      .Columns(columns =>
+      {
+          columns.Bound(p => p.Id).Hidden(true);
+          columns.Bound(p => p.ProductTypeEnum).Title("Type").Width(80);
+          columns.Bound(p => p.ProductToString).Title("Product Name").Width(300);
+          columns.Bound(p => p.Price).Title("RRP Incl VAT").Width(80);
+          columns.Bound(p => p.VATRate).Title("VAT Rate").Width(80);
+          columns.Bound(p => p.PracticeStockLevel).Title("Local Stock Level").Width(100);
+          columns.Bound(p => p.CompanyStockLevel).Title("Company Stock Level").Width(100);
+          columns.Template(x => { }).ClientTemplate(
+                "<a class='k-button' href='" +
+                    Url.Action("Edit", "Inventory") +
+                    "/#= Id #'" +
+                ">Edit Product</a>"
+            ).Width(145);
+      })
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model => model.Id(p => p.Id))
+          .Read(read => read.Action("Edit", "Inventory"))
+          )
+    )
+}
+
+<script type="text/javascript">
+    function change() {
+        $("#tooltip").data("kendoTooltip").show($("#target" + this.value()));
+    }
+</script>
+
